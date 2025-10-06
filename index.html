@@ -1,41 +1,27 @@
-header>
-  <img src="logo.png" alt="Logo Sekolah" style="height: 80px;">
-  <h1>Mobile Legend Selamanya</h1>
-  <p>Sekolah masa depan untuk para pejuang digital</p>
-</header>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mobile Legend Selamanya</title>
+  <title>Galaxy Battle: Rise of Legends</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
     body {
+      margin: 0;
       font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      background: radial-gradient(circle at top, #0f0f0f, #1a1a1a);
       color: #fff;
-      overflow-x: hidden;
     }
     header {
       text-align: center;
       padding: 60px 20px;
-      animation: fadeIn 2s ease-in-out;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      animation: fadeIn 1.5s ease-in-out;
     }
     header h1 {
       font-size: 3em;
       color: #00ffcc;
       text-shadow: 0 0 10px #00ffcc;
-    }
-    header p {
-      font-size: 1.2em;
-      margin-top: 10px;
-      color: #ccc;
     }
     nav {
       display: flex;
@@ -43,7 +29,6 @@ header>
       gap: 30px;
       background-color: rgba(0,0,0,0.3);
       padding: 15px 0;
-      animation: slideDown 1.5s ease-out;
     }
     nav a {
       color: #00ffcc;
@@ -57,18 +42,41 @@ header>
     .hero {
       text-align: center;
       padding: 80px 20px;
-      animation: fadeInUp 2s ease-in;
+      background-image: url('https://images.unsplash.com/photo-1607083206172-3f3b6b6e3b6e?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      text-shadow: 0 0 5px #000;
     }
     .hero h2 {
-      font-size: 2em;
+      font-size: 2.5em;
       margin-bottom: 20px;
-      color: #ffcc00;
     }
     .hero p {
       font-size: 1.1em;
       max-width: 700px;
       margin: auto;
-      color: #eee;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 60px 20px;
+    }
+    .card {
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h3 {
+      margin-bottom: 10px;
+      color: #ffcc00;
     }
     footer {
       text-align: center;
@@ -78,39 +86,53 @@ header>
       color: #aaa;
     }
 
-    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes slideDown {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Mobile Legend Selamanya</h1>
-    <p>Sekolah masa depan untuk para pejuang digital</p>
+    <h1>Galaxy Battle: Rise of Legends</h1>
+    <p>Game petualangan luar angkasa penuh aksi dan strategi</p>
   </header>
 
   <nav>
     <a href="#">Beranda</a>
-    <a href="#">Tentang</a>
-    <a href="#">Program</a>
-    <a href="#">Kontak</a>
+    <a href="#">Karakter</a>
+    <a href="#">Mode Permainan</a>
+    <a href="#">Unduh</a>
   </nav>
 
   <section class="hero">
-    <h2>Belajar, Bertarung, Menang!</h2>
-    <p>Di Sekolah Mobile Legend Selamanya, kami menggabungkan pendidikan teknologi dengan semangat kompetisi dan kreativitas. Jadilah legenda di dunia nyata dan maya!</p>
+    <h2>Selamat Datang di Dunia Galaxy Battle</h2>
+    <p>Gabung dalam pertempuran epik melawan alien, robot, dan penjajah galaksi. Bangun timmu dan jadilah legenda!</p>
   </section>
+
+  <section class="features">
+    <div class="card">
+      <h3>Karakter Unik</h3>
+      <p>Pilih dari 12 hero dengan skill dan senjata khusus.</p>
+    </div>
+    <div class="card">
+      <h3>Mode PvP & PvE</h3>
+      <p>Bertarung melawan pemain lain atau selesaikan misi solo.</p>
+    </div>
+    <div class="card">
+      <h3>Upgrade & Skin</h3>
+      <p>Kustomisasi karakter dengan skin dan item langka.</p>
+    </div>
+    <div class="card">
+      <h3>Turnamen Global</h3>
+      <p>Ikuti kompetisi dan menangkan hadiah eksklusif.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Galaxy Battle. Semua hak dilindungi.</p>
+  </footer>
 
 </body>
 </html>
@@ -120,43 +142,27 @@ header>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Program Unggulan - Mobile Legend Selamanya</title>
+  <title>Karakter - Galaxy Battle</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at top, #1f1c2c, #928dab);
+      background: linear-gradient(to right, #141e30, #243b55);
       color: #fff;
     }
     header {
       text-align: center;
-      padding: 60px 20px;
-      animation: fadeIn 2s ease-in-out;
+      padding: 50px 20px;
+      background-color: rgba(0,0,0,0.3);
+      animation: fadeIn 1.5s ease-in-out;
     }
     header h1 {
       font-size: 2.5em;
       color: #00ffcc;
       text-shadow: 0 0 10px #00ffcc;
     }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      background-color: rgba(0,0,0,0.3);
-      padding: 15px 0;
-      animation: slideDown 1.5s ease-out;
-    }
-    nav a {
-      color: #00ffcc;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #ffffff;
-    }
-    .programs {
+    .characters {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
@@ -164,7 +170,7 @@ header>
       animation: fadeInUp 2s ease-in;
     }
     .card {
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255,255,255,0.05);
       border-radius: 10px;
       padding: 30px;
       text-align: center;
@@ -179,25 +185,19 @@ header>
       color: #ffcc00;
     }
     .card p {
-      color: #eee;
       font-size: 0.95em;
+      color: #eee;
     }
     footer {
       text-align: center;
       padding: 30px;
-      background-color: rgba(0,0,0,0.2);
       font-size: 0.9em;
       color: #aaa;
     }
 
-    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes slideDown {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
     }
     @keyframes fadeInUp {
       from { transform: translateY(50px); opacity: 0; }
@@ -208,150 +208,32 @@ header>
 <body>
 
   <header>
-    <h1>Program Unggulan</h1>
-    <p>Mobile Legend Selamanya - Sekolah Para Pejuang Digital</p>
+    <h1>Karakter Legendaris</h1>
+    <p>Pilih jagoanmu dan kuasai galaksi!</p>
   </header>
 
-  <section class="programs">
+  <section class="characters">
     <div class="card">
-      <h3>Akademi Esports</h3>
-      <p>Pelatihan strategi, teamwork, dan turnamen Mobile Legend tingkat nasional dan internasional.</p>
+      <h3>Nova</h3>
+      <p>Sniper luar angkasa dengan akurasi mematikan dan skill teleportasi.</p>
     </div>
     <div class="card">
-      <h3>Desain Game & Animasi</h3>
-      <p>Belajar membuat karakter, map, dan efek visual untuk game berbasis mobile dan PC.</p>
+      <h3>Blaze</h3>
+      <p>Tank berapi yang tahan serangan dan bisa meledakkan musuh di sekitarnya.</p>
     </div>
     <div class="card">
-      <h3>Streaming & Konten Kreatif</h3>
-      <p>Workshop jadi streamer profesional, editing video, dan membangun channel YouTube gaming.</p>
+      <h3>Echo</h3>
+      <p>Support dengan kemampuan menyembuhkan dan mempercepat gerakan tim.</p>
     </div>
     <div class="card">
-      <h3>Teknologi & Coding</h3>
-      <p>Belajar dasar pemrograman, pengembangan aplikasi, dan AI untuk masa depan digital.</p>
+      <h3>Shadow</h3>
+      <p>Assassin bayangan yang bisa menghilang dan menyerang dari belakang.</p>
     </div>
   </section>
 
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Formulir Pendaftaran - Mobile Legend Selamanya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      text-align: center;
-      padding: 50px 20px;
-      background-color: rgba(0,0,0,0.3);
-      animation: fadeIn 1.5s ease-in-out;
-    }
-    header h1 {
-      font-size: 2.5em;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-    form {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: fadeInUp 2s ease-in;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #ffcc00;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #eee;
-      font-family: 'Orbitron', sans-serif;
-    }
-    button {
-      background-color: #00ffcc;
-      color: #000;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #00e6b8;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9em;
-      color: #aaa;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>Formulir Pendaftaran</h1>
-    <p>Gabung sekarang dan jadilah legenda!</p>
-  </header>
-
-  <form>
-    <label for="nama">Nama Lengkap</label>
-    <input type="text" id="nama" name="nama" required />
-
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required />
-
-    <label for="telepon">Nomor Telepon</label>
-    <input type="tel" id="telepon" name="telepon" required />
-
-    <label for="program">Pilih Program Unggulan</label>
-    <select id="program" name="program" required>
-      <option value="">-- Pilih --</option>
-      <option value="esports">Akademi Esports</option>
-      <option value="desain">Desain Game & Animasi</option>
-      <option value="streaming">Streaming & Konten Kreatif</option>
-      <option value="coding">Teknologi & Coding</option>
-    </select>
-
-    <label for="pesan">Pesan Tambahan</label>
-    <textarea id="pesan" name="pesan" rows="4"></textarea>
-
-    <button type="submit">Daftar Sekarang</button>
-  </form>
-
   <footer>
-    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
+    <p>&copy; 2025 Galaxy Battle. Semua hak dilindungi.</p>
   </footer>
 
 </body>
 </html>
-
