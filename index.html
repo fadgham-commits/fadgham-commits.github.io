@@ -113,3 +113,133 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Program Unggulan - Mobile Legend Selamanya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #1f1c2c, #928dab);
+      color: #fff;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    header h1 {
+      font-size: 2.5em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background-color: rgba(0,0,0,0.3);
+      padding: 15px 0;
+      animation: slideDown 1.5s ease-out;
+    }
+    nav a {
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ffffff;
+    }
+    .programs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 60px 20px;
+      animation: fadeInUp 2s ease-in;
+    }
+    .card {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h3 {
+      margin-bottom: 10px;
+      color: #ffcc00;
+    }
+    .card p {
+      color: #eee;
+      font-size: 0.95em;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(0,0,0,0.2);
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Program Unggulan</h1>
+    <p>Mobile Legend Selamanya - Sekolah Para Pejuang Digital</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="tentang.html">Tentang</a>
+    <a href="program.html">Program</a>
+    <a href="kontak.html">Kontak</a>
+  </nav>
+
+  <section class="programs">
+    <div class="card">
+      <h3>Akademi Esports</h3>
+      <p>Pelatihan strategi, teamwork, dan turnamen Mobile Legend tingkat nasional dan internasional.</p>
+    </div>
+    <div class="card">
+      <h3>Desain Game & Animasi</h3>
+      <p>Belajar membuat karakter, map, dan efek visual untuk game berbasis mobile dan PC.</p>
+    </div>
+    <div class="card">
+      <h3>Streaming & Konten Kreatif</h3>
+      <p>Workshop jadi streamer profesional, editing video, dan membangun channel YouTube gaming.</p>
+    </div>
+    <div class="card">
+      <h3>Teknologi & Coding</h3>
+      <p>Belajar dasar pemrograman, pengembangan aplikasi, dan AI untuk masa depan digital.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
+  </footer>
+
+</body>
+</html>
