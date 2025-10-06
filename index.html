@@ -1,186 +1,114 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sekolah Mobile legend selamanya</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mobile Legend Selamanya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
+      padding: 0;
+    }
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      overflow-x: hidden;
     }
     header {
-      background-color: #2e86de;
-      color: white;
-      padding: 40px 20px;
       text-align: center;
+      padding: 60px 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    header h1 {
+      font-size: 3em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+    header p {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #ccc;
     }
     nav {
-      background-color: #1b4f72;
       display: flex;
       justify-content: center;
+      gap: 30px;
+      background-color: rgba(0,0,0,0.3);
+      padding: 15px 0;
+      animation: slideDown 1.5s ease-out;
     }
     nav a {
-      color: white;
-      padding: 14px 20px;
+      color: #00ffcc;
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
     }
     nav a:hover {
-      background-color: #2980b9;
+      color: #ffffff;
     }
-    main {
-      padding: 40px 20px;
+    .hero {
       text-align: center;
+      padding: 80px 20px;
+      animation: fadeInUp 2s ease-in;
     }
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
+    .hero h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #ffcc00;
     }
-    .card {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 250px;
-    }
-    footer {
-      background-color: #2e86de;
-      color: Blue;
-      text-align: center;
-      padding: 20px;
-      margin-top: 45px;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>Sekolah Mobile legend selamanya</h1>
-    <p>Membangun sekolah pro player</p>
-  </header>
-
-  <nav>
-    <a href="#">Awal</a>
-    <a href="#">Soal kami</a>
-    <a href="#">Program</a>
-    <a href="#">Kontak</a>
-  </nav>
-
-  <main>
-    <h2>Kenapa Memilih Kami?</h2>
-    <div class="features">
-      <div class="card">
-        <h3>Guru Profesional</h3>
-        <p>Tenaga pengajar berpengalaman dan berdedikasi tinggi.</p>
-      </div>
-      <div class="card">
-        <h3>Fasilitas Modern</h3>
-        <p>Laboratorium, lab gaming, dan ruang kelas ber ac.</p>
-      </div>
-      <div class="card">
-        <h3>Lingkungan Nyaman</h3>
-        <p>Suasana bermaim yang aman dan menyenangkan.</p>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Sekolah Mobile legend selamanya. Semua hak dirampas.</p>
-  </footer>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tentang Kami - Sekolah Mobile legend selamanya</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fdfdfd;
-    }
-    header {
-      background-color: #2e86de;
-      color: white;
-      padding: 30px 20px;
-      text-align: center;
-    }
-    nav {
-      background-color: #1b4f72;
-      display: flex;
-      justify-content: center;
-    }
-    nav a {
-      color: white;
-      padding: 14px 20px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      background-color: #2980b9;
-    }
-    main {
-      padding: 40px 20px;
-      max-width: 800px;
+    .hero p {
+      font-size: 1.1em;
+      max-width: 700px;
       margin: auto;
-    }
-    h2 {
-      color: #2e86de;
-    }
-    p {
-      line-height: 1.6;
+      color: #eee;
     }
     footer {
-      background-color: #2e86de;
-      color: Black;
       text-align: center;
-      padding: 20px;
-      margin-top: 40px;
+      padding: 30px;
+      background-color: rgba(0,0,0,0.2);
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Tentang Kami</h1>
-    <p>Mengenal lebih dekat Sekolah Mobile legend selamanya</p>
+    <h1>Mobile Legend Selamanya</h1>
+    <p>Sekolah masa depan untuk para pejuang digital</p>
   </header>
 
   <nav>
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang Kami</a>
+    <a href="#">Beranda</a>
+    <a href="#">Tentang</a>
     <a href="#">Program</a>
     <a href="#">Kontak</a>
   </nav>
 
-  <main>
-    <h2>Visi & Misi</h2>
-    <p><strong>Visi:</strong> Menjadi sekolah unggulan yang mencetak generasi cerdas, kreatif, dan jago bermain.</p>
-    <p><strong>Misi:</strong></p>
-    <ul>
-      <li>Menyediakan Player berkualitas dengan pendekatan modern.</li>
-      <li>Mengembangkan potensi siswa secara akademik dan non-akademik.</li>
-      <li>Mendorong nilai-nilai analisis, tanggung jawab, dan kepedulian sosial.</li>
-    </ul>
-
-    <h2>Sejarah Sekolah</h2>
-    <p>Sekolah Mobile legend selamanya didirikan pada tahun 2025 dengan tujuan memberikan pendidikan terbaik bagi anak-anak Indonesia. Berawal dari satu gedung kecil, kini kami telah berkembang menjadi institusi pendidikan yang dikenal luas dengan fasilitas lengkap dan tenaga pengajar profesional.</p>
-
-    <h2>Lokasi</h2>
-    <p>Kami berlokasi di Jl. RRQ GA LOLOS No. 123, Jakarta Selatan. Mudah diakses dan berada di lingkungan yang aman dan nyaman.</p>
-  </main>
+  <section class="hero">
+    <h2>Belajar, Bertarung, Menang!</h2>
+    <p>Di Sekolah Mobile Legend Selamanya, kami menggabungkan pendidikan teknologi dengan semangat kompetisi dan kreativitas. Jadilah legenda di dunia nyata dan maya!</p>
+  </section>
 
   <footer>
-    <p>&copy; 2025 Sekolah Mobile legend selamanya. Semua hak dirampas.</p>
+    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
   </footer>
 
 </body>
