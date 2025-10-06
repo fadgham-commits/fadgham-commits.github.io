@@ -207,13 +207,6 @@
     <p>Mobile Legend Selamanya - Sekolah Para Pejuang Digital</p>
   </header>
 
-  <nav>
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang</a>
-    <a href="program.html">Program</a>
-    <a href="kontak.html">Kontak</a>
-  </nav>
-
   <section class="programs">
     <div class="card">
       <h3>Akademi Esports</h3>
@@ -233,9 +226,127 @@
     </div>
   </section>
 
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulir Pendaftaran - Mobile Legend Selamanya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      background-color: rgba(0,0,0,0.3);
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    header h1 {
+      font-size: 2.5em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+    form {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: fadeInUp 2s ease-in;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #eee;
+      font-family: 'Orbitron', sans-serif;
+    }
+    button {
+      background-color: #00ffcc;
+      color: #000;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #00e6b8;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Formulir Pendaftaran</h1>
+    <p>Gabung sekarang dan jadilah legenda!</p>
+  </header>
+
+  <form>
+    <label for="nama">Nama Lengkap</label>
+    <input type="text" id="nama" name="nama" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="telepon">Nomor Telepon</label>
+    <input type="tel" id="telepon" name="telepon" required />
+
+    <label for="program">Pilih Program Unggulan</label>
+    <select id="program" name="program" required>
+      <option value="">-- Pilih --</option>
+      <option value="esports">Akademi Esports</option>
+      <option value="desain">Desain Game & Animasi</option>
+      <option value="streaming">Streaming & Konten Kreatif</option>
+      <option value="coding">Teknologi & Coding</option>
+    </select>
+
+    <label for="pesan">Pesan Tambahan</label>
+    <textarea id="pesan" name="pesan" rows="4"></textarea>
+
+    <button type="submit">Daftar Sekarang</button>
+  </form>
+
   <footer>
     <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
   </footer>
 
 </body>
 </html>
+
