@@ -158,11 +158,7 @@
       const nama = document.getElementById("nama").value;
       const program = document.getElementById("program").value;
       const nomor = "62895339045791"; // Ganti dengan nomor admin sekolah
-
-      if (!nama || !program) {
-        alert("Mohon isi nama dan pilih program terlebih dahulu.");
-        return;
-      }
+  }
 
       const pesan = `Halo, saya ${nama} ingin mendaftar ke program ${program} di Mobile Legend Selamanya.`;
       const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
