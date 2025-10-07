@@ -3,69 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Space Blaster</title>
+  <title>Roket vs Asteroid</title>
   <style>
     body {
       margin: 0;
       background-color: black;
       font-family: Arial, sans-serif;
-      text-align: center;
       color: white;
+      text-align: center;
     }
     canvas {
       background: url('https://i.ibb.co/3W0Z2Zg/space-bg.jpg') no-repeat center;
       background-size: cover;
       display: block;
-      margin: 20px auto;
+      margin: 10px auto;
       border: 2px solid #00ffff;
     }
     h1 {
       color: #00ffff;
-      margin-top: 20px;
+      margin-top: 10px;
       text-shadow: 0 0 10px #00ffff;
     }
-    #score {
-      font-size: 20px;
-      margin-top: 10px;
+    #score, #health {
+      font-size: 18px;
+      margin: 5px;
     }
     #controls {
-      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px;
     }
     button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 16px;
+      padding: 12px 20px;
+      font-size: 18px;
       background-color: #00ffff;
       border: none;
       border-radius: 6px;
       color: black;
       font-weight: bold;
+      flex: 1;
+    }
+    #healthBar {
+      width: 80%;
+      height: 20px;
+      background-color: #444;
+      margin: 0 auto 10px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #healthFill {
+      height: 100%;
+      background-color: #ff4444;
+      width: 100%;
+      transition: width 0.3s ease;
     }
   </style>
 </head>
 <body>
 
-  <h1>🚀 Space Blaster</h1>
+  <h1>🚀 Roket vs Asteroid</h1>
   <div id="score">Skor: 0</div>
+  <div id="health">Nyawa:</div>
+  <div id="healthBar"><div id="healthFill"></div></div>
+  <canvas id="gameCanvas" width="400" height="500"></canvas>
   <div id="controls">
     <button onclick="moveLeft()">⬅️</button>
     <button onclick="shoot()">🔥</button>
     <button onclick="moveRight()">➡️</button>
   </div>
-  <canvas id="gameCanvas" width="400" height="500"></canvas>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    let player = { x: 180, y: 440, width: 40, height: 20, speed: 20 };
+    let rocket = { x: 180, y: 440, width: 30, height: 50, speed: 4 };
     let bullets = [];
-    let enemies = [];
+    let asteroids = [];
     let score = 0;
+    let health = 100;
+    let keys = {};
+    let gameOver = false;
 
-    function drawPlayer() {
+    document.addEventListener("keydown", e => keys[e.key] = true);
+    document.addEventListener("keyup", e => keys[e.key] = false);
+
+    function drawRocket() {
       ctx.fillStyle = "#00ffff";
-      ctx.fillRect(player.x, player.y, player.width, player.height);
+      ctx.beginPath();
+      ctx.moveTo(rocket.x + rocket.width / 2, rocket.y);
+      ctx.lineTo(rocket.x, rocket.y + rocket.height);
+      ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height);
+      ctx.closePath();
+      ctx.fill();
     }
 
     function drawBullets() {
@@ -76,69 +106,102 @@
       });
     }
 
-    function drawEnemies() {
-      ctx.fillStyle = "#ffff00";
-      enemies.forEach(e => {
-        ctx.fillRect(e.x, e.y, e.size, e.size);
-        e.y += e.speed;
+    function drawAsteroids() {
+      ctx.fillStyle = "#888";
+      asteroids.forEach(a => {
+        ctx.beginPath();
+        ctx.arc(a.x + a.size / 2, a.y + a.size / 2, a.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        a.y += a.speed;
       });
     }
 
-    function spawnEnemy() {
+    function spawnAsteroid() {
       const size = 30;
       const x = Math.random() * (canvas.width - size);
-      enemies.push({ x, y: 0, size, speed: 2 });
+      asteroids.push({ x, y: 0, size, speed: 1.5 });
     }
 
     function shoot() {
+      if (gameOver) return;
       bullets.push({
-        x: player.x + player.width / 2 - 2,
-        y: player.y,
+        x: rocket.x + rocket.width / 2 - 2,
+        y: rocket.y,
         width: 4,
         height: 10,
-        speed: 7
+        speed: 5
       });
     }
 
     function moveLeft() {
-      if (player.x > 0) player.x -= player.speed;
+      if (gameOver) return;
+      if (rocket.x > 0) rocket.x -= rocket.speed;
     }
 
     function moveRight() {
-      if (player.x < canvas.width - player.width) player.x += player.speed;
+      if (gameOver) return;
+      if (rocket.x < canvas.width - rocket.width) rocket.x += rocket.speed;
     }
 
     function update() {
+      if (keys["ArrowLeft"]) moveLeft();
+      if (keys["ArrowRight"]) moveRight();
+      if (keys[" "] || keys["Spacebar"]) shoot();
+
       bullets = bullets.filter(b => b.y > 0);
-      enemies = enemies.filter(e => e.y < canvas.height);
+      asteroids = asteroids.filter(a => a.y < canvas.height);
 
       bullets.forEach((b, bi) => {
-        enemies.forEach((e, ei) => {
+        asteroids.forEach((a, ai) => {
           if (
-            b.x < e.x + e.size &&
-            b.x + b.width > e.x &&
-            b.y < e.y + e.size &&
-            b.y + b.height > e.y
+            b.x < a.x + a.size &&
+            b.x + b.width > a.x &&
+            b.y < a.y + a.size &&
+            b.y + b.height > a.y
           ) {
             bullets.splice(bi, 1);
-            enemies.splice(ei, 1);
+            asteroids.splice(ai, 1);
             score++;
             document.getElementById("score").textContent = "Skor: " + score;
           }
         });
       });
+
+      asteroids.forEach((a, ai) => {
+        if (
+          a.x < rocket.x + rocket.width &&
+          a.x + a.size > rocket.x &&
+          a.y + a.size > rocket.y
+        ) {
+          asteroids.splice(ai, 1);
+          health -= 20;
+          updateHealthBar();
+          if (health <= 0) {
+            gameOver = true;
+            setTimeout(() => {
+              alert("💥 Roketmu hancur! Skor akhir: " + score);
+              location.reload();
+            }, 100);
+          }
+        }
+      });
+    }
+
+    function updateHealthBar() {
+      document.getElementById("healthFill").style.width = health + "%";
     }
 
     function gameLoop() {
+      if (gameOver) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawPlayer();
+      drawRocket();
       drawBullets();
-      drawEnemies();
+      drawAsteroids();
       update();
       requestAnimationFrame(gameLoop);
     }
 
-    setInterval(spawnEnemy, 1500);
+    setInterval(spawnAsteroid, 1200);
     gameLoop();
   </script>
 
