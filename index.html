@@ -3,71 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tebak Angka</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      color: #333;
-      text-align: center;
-      padding: 50px;
-    }
-    h1 {
-      color: #444;
-    }
-    input[type="number"] {
-      padding: 10px;
-      font-size: 16px;
-      width: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-      background-color: #ddd;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ccc;
-    }
-    #result {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <title>Game Catur</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <h1>Tebak Angka</h1>
-  <p>Saya menyimpan angka antara 1 sampai 100. Bisakah kamu menebaknya?</p>
-
-  <input type="number" id="guess" min="1" max="100" />
-  <button onclick="checkGuess()">Tebak!</button>
-
-  <div id="result"></div>
-
-  <script>
-    const secretNumber = Math.floor(Math.random() * 10) + 1;
-
-    function checkGuess() {
-      const guess = parseInt(document.getElementById('guess').value);
-      const result = document.getElementById('result');
-
-      if (isNaN(guess) || guess < 1 || guess > 10) {
-        result.textContent = "Masukkan angka antara 1 sampai 10.";
-        return;
-      }
-
-      if (guess === secretNumber) {
-        result.textContent = "Selamat! Kamu menebak dengan benar 🎉";
-      } else if (guess < secretNumber) {
-        result.textContent = "Terlalu rendah. Coba lagi!";
-      } else {
-        result.textContent = "Terlalu tinggi. Coba lagi!";
-      }
-    }
-  </script>
-
+  <div class="container">
+    <h1>Selamat Datang di Game Catur</h1>
+    <p>Pilih tingkat kesulitan dan mulai bermain!</p>
+    <form action="game.html" method="GET">
+      <label for="level">Tingkat Kesulitan:</label>
+      <select name="level" id="level">
+        <option value="easy">Mudah</option>
+        <option value="medium">Sedang</option>
+        <option value="hard">Sulit</option>
+      </select>
+      <br><br>
+      <button type="submit">Mulai Bermain</button>
+    </form>
+  </div>
 </body>
 </html>
