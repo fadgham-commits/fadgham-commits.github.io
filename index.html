@@ -3,193 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mobile Legend Selamanya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <title>Game Luar Angkasa</title>
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
     body {
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
       margin: 0;
-      padding: 0;
-    }
-    header {
+      background: radial-gradient(circle at center, #000010, #000000);
+      color: white;
+      font-family: Arial, sans-serif;
       text-align: center;
-      padding: 60px 20px;
-      animation: zoomIn 1.2s ease-in;
     }
-    header h1 {
-      font-size: 3em;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
+    canvas {
+      background: url('https://i.ibb.co/3W0Z2Zg/space-bg.jpg') no-repeat center;
+      background-size: cover;
+      display: block;
+      margin: 20px auto;
+      border: 2px solid #00ffff;
     }
-    header p {
-      font-size: 1.2em;
-      color: #ccc;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      background-color: rgba(0,0,0,0.3);
-      padding: 15px 0;
-      animation: fadeInUp 1.2s ease-out;
-    }
-    nav a {
-      color: #00ffcc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #ffffff;
-    }
-    section {
-      text-align: center;
-      padding: 60px 20px;
-      animation: fadeInUp 1.2s ease-out;
-    }
-    section h2 {
-      font-size: 2em;
-      margin-bottom: 20px;
-      color: #ffcc00;
-    }
-    section p {
-      font-size: 1.1em;
-      max-width: 700px;
-      margin: auto;
-      color: #eee;
-    }
-    .blink {
-      animation: blink 1s infinite;
-      color: #ffcc00;
+    h1 {
       margin-top: 20px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
     }
-    form {
-      max-width: 400px;
-      margin: 30px auto;
-      text-align: left;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 6px;
-      background-color: #eee;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-    }
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background-color: #00ffcc;
-      color: #203a43;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    button:hover {
-      background-color: #00e6b3;
-      transform: scale(1.05);
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      background-color: rgba(0,0,0,0.2);
-      font-size: 0.9em;
-      color: #aaa;
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes zoomIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    #score {
+      font-size: 20px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Mobile Legend Selamanya</h1>
-    <p>Sekolah masa depan untuk para pejuang digital</p>
-  </header>
-
-  <nav>
-    <a href="#beranda">Beranda</a>
-    <a href="#program">Program</a>
-    <a href="#kontak">Kontak</a>
-  </nav>
-
-  <section id="beranda">
-    <h2>Belajar, Bertarung, Menang!</h2>
-    <p>Gabungkan pendidikan teknologi dengan semangat kompetisi dan kreativitas. Jadilah legenda di dunia nyata dan maya!</p>
-    <p class="blink">Daftar sekarang dan jadilah legenda!</p>
-  </section>
-
-  <section id="program">
-    <h2>Program Unggulan</h2>
-    <p>🎮 Akademi Esports<br>🎨 Desain Game & Animasi<br>📹 Streaming & Konten Kreatif<br>💻 Teknologi & Coding</p>
-  </section>
-
-  <section id="kontak">
-    <h2>Formulir Pendaftaran</h2>
-    <form id="form">
-      <label for="nama">Nama Lengkap</label>
-      <input type="text" id="nama" placeholder="Masukkan nama kamu" required />
-
-      <label for="program">Program Pilihan</label>
-      <select id="program" required>
-        <option value="">-- Pilih Program --</option>
-        <option value="Akademi Esports">Akademi Esports</option>
-        <option value="Desain Game & Animasi">Desain Game & Animasi</option>
-        <option value="Streaming & Konten Kreatif">Streaming & Konten Kreatif</option>
-        <option value="Teknologi & Coding">Teknologi & Coding</option>
-      </select>
-
-      <button type="button" onclick="kirimWhatsApp()">Kirim ke WhatsApp</button>
-    </form>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
-  </footer>
+  <h1>🚀 Tangkap Bintang!</h1>
+  <div id="score">Skor: 0</div>
+  <canvas id="gameCanvas" width="400" height="500"></canvas>
 
   <script>
-    function kirimWhatsApp() {
-      const nama = document.getElementById("nama").value.trim();
-      const program = document.getElementById("program").value;
-      const nomor = "62895339045791"; // GANTI dengan nomor admin kamu
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-      if (!nama || !program) {
-        alert("Mohon isi nama dan pilih program terlebih dahulu.");
-        return;
+    let spaceship = { x: 180, y: 460, width: 40, height: 20, speed: 5 };
+    let star = { x: Math.random() * 360, y: 0, size: 20, speed: 3 };
+    let score = 0;
+    let keys = {};
+
+    document.addEventListener("keydown", e => keys[e.key] = true);
+    document.addEventListener("keyup", e => keys[e.key] = false);
+
+    function drawSpaceship() {
+      ctx.fillStyle = "#00ffff";
+      ctx.fillRect(spaceship.x, spaceship.y, spaceship.width, spaceship.height);
+    }
+
+    function drawStar() {
+      ctx.fillStyle = "#ffff00";
+      ctx.beginPath();
+      ctx.arc(star.x + star.size / 2, star.y + star.size / 2, star.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function update() {
+      if (keys["ArrowLeft"] && spaceship.x > 0) spaceship.x -= spaceship.speed;
+      if (keys["ArrowRight"] && spaceship.x < canvas.width - spaceship.width) spaceship.x += spaceship.speed;
+
+      star.y += star.speed;
+
+      if (
+        star.y + star.size >= spaceship.y &&
+        star.x + star.size > spaceship.x &&
+        star.x < spaceship.x + spaceship.width
+      ) {
+        score++;
+        document.getElementById("score").textContent = "Skor: " + score;
+        resetStar();
       }
 
-      const pesan = `Halo, saya ${nama} ingin mendaftar ke program ${program} di Mobile Legend Selamanya. Mohon info lebih lanjut.`;
-      const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
-
-      window.open(url, "_blank");
+      if (star.y > canvas.height) {
+        resetStar();
+      }
     }
+
+    function resetStar() {
+      star.x = Math.random() * (canvas.width - star.size);
+      star.y = 0;
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawSpaceship();
+      drawStar();
+      update();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
   </script>
 
 </body>
