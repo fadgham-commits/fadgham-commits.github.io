@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mobile Legend Selamanya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Orbitron', sans-serif;
+      font-family: Arial, sans-serif;
       background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: #fff;
       margin: 0;
@@ -15,24 +14,18 @@
     }
     header {
       text-align: center;
-      padding: 50px 20px;
+      padding: 40px 20px;
     }
     header h1 {
-      font-size: 3em;
+      font-size: 2.5em;
       color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-    header p {
-      font-size: 1.2em;
-      color: #ccc;
     }
     main {
       max-width: 500px;
-      margin: 40px auto;
+      margin: 30px auto;
       background-color: rgba(255,255,255,0.1);
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border-radius: 10px;
     }
     label {
       display: block;
@@ -47,7 +40,6 @@
       border-radius: 6px;
       background-color: #eee;
       color: #000;
-      font-family: 'Orbitron', sans-serif;
     }
     button {
       width: 100%;
@@ -62,12 +54,6 @@
     }
     button:hover {
       background-color: #00e6b3;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9em;
-      color: #aaa;
     }
   </style>
 </head>
@@ -96,22 +82,18 @@
     </form>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
-  </footer>
-
   <script>
     function kirimWhatsApp() {
       const nama = document.getElementById("nama").value.trim();
       const program = document.getElementById("program").value;
-      const nomor = "62895339045791"; // Ganti dengan nomor admin sekolah
+      const nomor = "62895339045791"; // GANTI dengan nomor admin kamu
 
       if (!nama || !program) {
         alert("Mohon isi nama dan pilih program terlebih dahulu.");
         return;
       }
 
-      const pesan = `Halo, saya ${nama} ingin mendaftar ke program ${program} di Mobile Legend Selamanya. Mohon informasi lebih lanjut.`;
+      const pesan = `Halo, saya ${nama} ingin mendaftar ke program ${program} di Mobile Legend Selamanya. Mohon info lebih lanjut.`;
       const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 
       window.open(url, "_blank");
