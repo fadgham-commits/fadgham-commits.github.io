@@ -3,181 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sekolah Jaya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <title>Pendaftaran Sekolah Jaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #f0f4f8;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
       color: #333;
+      margin: 0;
+      padding: 0;
     }
     header {
-      background: linear-gradient(135deg, #5c6bc0, #3949ab);
+      background-color: #00acc1;
       color: white;
-      padding: 40px 20px;
       text-align: center;
-      animation: fadeIn 1.5s ease-in-out;
-    }
-    header img {
-      height: 80px;
-      margin-bottom: 10px;
-    }
-    nav {
-      background-color: #283593;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      padding: 15px 0;
-    }
-    nav a {
-      color: #ffeb3b;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #fff176;
-    }
-    section {
       padding: 40px 20px;
-      text-align: center;
-      animation: fadeInUp 1.5s ease-in;
     }
-    .highlight {
-      background-color: #e8eaf6;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
     }
-    form {
-      max-width: 500px;
+    main {
+      max-width: 600px;
       margin: 40px auto;
-      background-color: #e8eaf6;
+      background-color: #ffffffcc;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      animation: fadeInUp 2s ease-in;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
-      text-align: left;
     }
     input, select, textarea {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #fff;
-      font-family: 'Poppins', sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
     }
     button {
-      background-color: #5c6bc0;
+      background-color: #00acc1;
       color: white;
       padding: 12px 20px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
+      font-size: 16px;
     }
     button:hover {
-      background-color: #3949ab;
-    }
-    footer {
-      background-color: #3949ab;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      background-color: #00838f;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/School_icon.svg/1024px-School_icon.svg.png" alt="Logo Sekolah Jaya">
     <h1>Sekolah Jaya</h1>
-    <p>Menjadi Pelopor Pendidikan Berkualitas di Indonesia</p>
+    <p>Formulir Pendaftaran Siswa Baru</p>
   </header>
 
-  <nav>
-    <a href="#beranda">Beranda</a>
-    <a href="#tentang">Tentang Kami</a>
-    <a href="#program">Program</a>
-    <a href="#kontak">Kontak</a>
-  </nav>
-
-  <section id="beranda">
-    <h2>Selamat Datang di Sekolah Jaya</h2>
-    <p>Sekolah Jaya adalah tempat belajar yang menginspirasi, mendidik, dan membentuk karakter generasi masa depan.</p>
-    <div class="highlight">
-      <p>🎓 Fasilitas modern dan lengkap</p>
-      <p>👩‍🏫 Guru profesional dan berpengalaman</p>
-      <p>🌳 Lingkungan belajar yang aman dan nyaman</p>
-    </div>
-  </section>
-
-  <section id="tentang">
-    <h2>Tentang Kami</h2>
-    <p>Sekolah Jaya berdiri sejak tahun 1990 dan telah meluluskan ribuan siswa berprestasi. Kami berkomitmen untuk memberikan pendidikan yang relevan, inklusif, dan berbasis karakter.</p>
-  </section>
-
-  <section id="program">
-    <h2>Program Unggulan</h2>
-    <div class="highlight">
-      <p>📘 Ilmu Pengetahuan Alam</p>
-      <p>📗 Ilmu Pengetahuan Sosial</p>
-      <p>📙 Bahasa & Sastra</p>
-      <p>💻 Teknologi & Informatika</p>
-    </div>
-  </section>
-
-  <section id="kontak">
-    <h2>Formulir Pendaftaran</h2>
-    <form>
+  <main>
+    <form id="form">
       <label for="nama">Nama Lengkap</label>
-      <input type="text" id="nama" name="nama" required>
-
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required>
+      <input type="text" id="nama" required />
 
       <label for="program">Program Pilihan</label>
-      <select id="program" name="program" required>
+      <select id="program" required>
         <option value="">-- Pilih Program --</option>
-        <option value="ipa">Ilmu Pengetahuan Alam</option>
-        <option value="ips">Ilmu Pengetahuan Sosial</option>
-        <option value="bahasa">Bahasa & Sastra</option>
-        <option value="teknologi">Teknologi & Informatika</option>
+        <option value="IPA">IPA</option>
+        <option value="IPS">IPS</option>
+        <option value="Bahasa">Bahasa</option>
+        <option value="Teknologi">Teknologi</option>
       </select>
 
       <label for="pesan">Pesan Tambahan</label>
-      <textarea id="pesan" name="pesan" rows="4"></textarea>
+      <textarea id="pesan" rows="4"></textarea>
 
-      <button type="submit">Daftar Sekarang</button>
+      <button type="button" onclick="kirimWhatsApp()">Kirim ke WhatsApp</button>
     </form>
-  </section>
+  </main>
 
-  <footer>
-    <p>&copy; 2025 Sekolah Jaya. Semua hak dilindungi.</p>
-  </footer>
+  <script>
+    function kirimWhatsApp(0895339045791) {
+      const nama = document.getElementById("nama").value;
+      const program = document.getElementById("program").value;
+      const pesan = document.getElementById("pesan").value;
+
+      const nomorTujuan = "6281234567890"; // Ganti dengan nomor WA tujuan
+      const teks = `Halo, saya ingin mendaftar ke Sekolah Jaya.\n\nNama: ${nama}\nProgram: ${program}\nPesan: ${pesan}`;
+      const url = `https://wa.me/${nomorTujuan}?text=${encodeURIComponent(teks)}`;
+
+      window.open(url, "_blank");
+    }
+  </script>
 
 </body>
 </html>
