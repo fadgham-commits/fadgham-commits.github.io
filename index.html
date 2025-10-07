@@ -3,87 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tebak Angka 1–100</title>
+  <title>Sekolah Jaya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #1e1e2f;
-      color: #f0f0f0;
-      text-align: center;
-      padding: 50px;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      overflow-x: hidden;
     }
-    h1 {
-      color: #00c8ff;
+    header {
+      background: linear-gradient(135deg, #5c6bc0, #3949ab);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    header img {
+      height: 80px;
       margin-bottom: 10px;
     }
-    p {
-      color: #aaa;
-      margin-bottom: 30px;
+    nav {
+      background-color: #283593;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 0;
     }
-    input[type="number"] {
+    nav a {
+      color: #ffeb3b;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff176;
+    }
+    main {
+      padding: 40px 20px;
+      text-align: center;
+      animation: fadeInUp 1.5s ease-in;
+    }
+    .highlight {
+      background-color: #e8eaf6;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    form {
+      max-width: 500px;
+      margin: 40px auto;
+      background-color: #e8eaf6;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      animation: fadeInUp 2s ease-in;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      text-align: left;
+    }
+    input, select, textarea {
+      width: 100%;
       padding: 10px;
-      font-size: 16px;
-      width: 100px;
+      margin-bottom: 20px;
       border: none;
       border-radius: 5px;
-      background-color: #2e2e3e;
-      color: #f0f0f0;
+      background-color: #fff;
+      font-family: 'Poppins', sans-serif;
     }
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-      background-color: #00c8ff;
-      color: #1e1e2f;
+      background-color: #5c6bc0;
+      color: white;
+      padding: 12px 20px;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
     button:hover {
-      background-color: #0099cc;
+      background-color: #3949ab;
     }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #ffcc00;
+    footer {
+      background-color: #3949ab;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <h1>Tebak Angka</h1>
-  <p>Saya menyimpan angka antara 1 sampai 100. Bisakah kamu menebaknya?</p>
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/School_icon.svg/1024px-School_icon.svg.png" alt="Logo Sekolah Jaya">
+    <h1>Sekolah Jaya</h1>
+    <p>Menjadi Pelopor Pendidikan Berkualitas di Indonesia</p>
+  </header>
 
-  <input type="number" id="guess" min="1" max="100" />
-  <br>
-  <button onclick="checkGuess()">Tebak!</button>
+  <nav>
+    <a href="#">Beranda</a>
+    <a href="#">Tentang Kami</a>
+    <a href="#">Program</a>
+    <a href="#">Kontak</a>
+  </nav>
 
-  <div id="result"></div>
+  <main>
+    <h2>Selamat Datang di Sekolah Jaya</h2>
+    <p>Sekolah Jaya adalah tempat belajar yang menginspirasi, mendidik, dan membentuk karakter generasi masa depan.</p>
+    <div class="highlight">
+      <p>🎓 Fasilitas modern dan lengkap</p>
+      <p>👩‍🏫 Guru profesional dan berpengalaman</p>
+      <p>🌳 Lingkungan belajar yang aman dan nyaman</p>
+    </div>
 
-  <script>
-    const secretNumber = Math.floor(Math.random() * 100) + 1;
-    let attempts = 0;
+    <form>
+      <h3>Formulir Pendaftaran</h3>
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" name="nama" required>
 
-    function checkGuess() {
-      const guess = parseInt(document.getElementById('guess').value);
-      const result = document.getElementById('result');
-      attempts++;
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
 
-      if (isNaN(guess) || guess < 1 || guess > 100) {
-        result.textContent = "Masukkan angka antara 1 sampai 100.";
-        return;
-      }
+      <label for="program">Program Pilihan</label>
+      <select id="program" name="program" required>
+        <option value="">-- Pilih Program --</option>
+        <option value="ipa">Ilmu Pengetahuan Alam</option>
+        <option value="ips">Ilmu Pengetahuan Sosial</option>
+        <option value="bahasa">Bahasa & Sastra</option>
+        <option value="teknologi">Teknologi & Informatika</option>
+      </select>
 
-      if (guess === secretNumber) {
-        result.textContent = `Selamat! Kamu menebak dengan benar dalam ${attempts} percobaan 🎉`;
-      } else if (guess < secretNumber) {
-        result.textContent = "Terlalu rendah. Coba lagi!";
-      } else {
-        result.textContent = "Terlalu tinggi. Coba lagi!";
-      }
-    }
-  </script>
+      <label for="pesan">Pesan Tambahan</label>
+      <textarea id="pesan" name="pesan" rows="4"></textarea>
+
+      <button type="submit">Daftar Sekarang</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Sekolah Jaya. Semua hak dilindungi.</p>
+  </footer>
 
 </body>
 </html>
