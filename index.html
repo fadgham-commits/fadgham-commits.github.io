@@ -6,12 +6,14 @@
   <title>Sekolah Jaya</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background-color: #f0f4f8;
       color: #333;
-      overflow-x: hidden;
     }
     header {
       background: linear-gradient(135deg, #5c6bc0, #3949ab);
@@ -40,7 +42,7 @@
     nav a:hover {
       color: #fff176;
     }
-    main {
+    section {
       padding: 40px 20px;
       text-align: center;
       animation: fadeInUp 1.5s ease-in;
@@ -117,13 +119,13 @@
   </header>
 
   <nav>
-    <a href="#">Beranda</a>
-    <a href="#">Tentang Kami</a>
-    <a href="#">Program</a>
-    <a href="#">Kontak</a>
+    <a href="#beranda">Beranda</a>
+    <a href="#tentang">Tentang Kami</a>
+    <a href="#program">Program</a>
+    <a href="#kontak">Kontak</a>
   </nav>
 
-  <main>
+  <section id="beranda">
     <h2>Selamat Datang di Sekolah Jaya</h2>
     <p>Sekolah Jaya adalah tempat belajar yang menginspirasi, mendidik, dan membentuk karakter generasi masa depan.</p>
     <div class="highlight">
@@ -131,9 +133,26 @@
       <p>👩‍🏫 Guru profesional dan berpengalaman</p>
       <p>🌳 Lingkungan belajar yang aman dan nyaman</p>
     </div>
+  </section>
 
+  <section id="tentang">
+    <h2>Tentang Kami</h2>
+    <p>Sekolah Jaya berdiri sejak tahun 1990 dan telah meluluskan ribuan siswa berprestasi. Kami berkomitmen untuk memberikan pendidikan yang relevan, inklusif, dan berbasis karakter.</p>
+  </section>
+
+  <section id="program">
+    <h2>Program Unggulan</h2>
+    <div class="highlight">
+      <p>📘 Ilmu Pengetahuan Alam</p>
+      <p>📗 Ilmu Pengetahuan Sosial</p>
+      <p>📙 Bahasa & Sastra</p>
+      <p>💻 Teknologi & Informatika</p>
+    </div>
+  </section>
+
+  <section id="kontak">
+    <h2>Formulir Pendaftaran</h2>
     <form>
-      <h3>Formulir Pendaftaran</h3>
       <label for="nama">Nama Lengkap</label>
       <input type="text" id="nama" name="nama" required>
 
@@ -154,7 +173,7 @@
 
       <button type="submit">Daftar Sekarang</button>
     </form>
-  </main>
+  </section>
 
   <footer>
     <p>&copy; 2025 Sekolah Jaya. Semua hak dilindungi.</p>
