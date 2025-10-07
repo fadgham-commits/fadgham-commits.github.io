@@ -3,237 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Galaxy Battle: Rise of Legends</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <title>Tebak Angka</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at top, #0f0f0f, #1a1a1a);
-      color: #fff;
-    }
-    header {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
       text-align: center;
-      padding: 60px 20px;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      animation: fadeIn 1.5s ease-in-out;
+      padding: 50px;
     }
-    header h1 {
-      font-size: 3em;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
+    h1 {
+      color: #444;
     }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      background-color: rgba(0,0,0,0.3);
-      padding: 15px 0;
+    input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 100px;
     }
-    nav a {
-      color: #00ffcc;
-      text-decoration: none;
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      background-color: #ddd;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ccc;
+    }
+    #result {
+      margin-top: 20px;
       font-weight: bold;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #ffffff;
-    }
-    .hero {
-      text-align: center;
-      padding: 80px 20px;
-      background-image: url('https://images.unsplash.com/photo-1607083206172-3f3b6b6e3b6e?auto=format&fit=crop&w=1600&q=80');
-      background-size: cover;
-      background-position: center;
-      color: #fff;
-      text-shadow: 0 0 5px #000;
-    }
-    .hero h2 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
-    .hero p {
-      font-size: 1.1em;
-      max-width: 700px;
-      margin: auto;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      padding: 60px 20px;
-    }
-    .card {
-      background-color: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: transform 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.05);
-    }
-    .card h3 {
-      margin-bottom: 10px;
-      color: #ffcc00;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      background-color: rgba(0,0,0,0.2);
-      font-size: 0.9em;
-      color: #aaa;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Galaxy Battle: Rise of Legends</h1>
-    <p>Game petualangan luar angkasa penuh aksi dan strategi</p>
-  </header>
+  <h1>Tebak Angka</h1>
+  <p>Saya menyimpan angka antara 1 sampai 10. Bisakah kamu menebaknya?</p>
 
-  <nav>
-    <a href="#">Beranda</a>
-    <a href="#">Karakter</a>
-    <a href="#">Mode Permainan</a>
-    <a href="#">Unduh</a>
-  </nav>
+  <input type="number" id="guess" min="1" max="10" />
+  <button onclick="checkGuess()">Tebak!</button>
 
-  <section class="hero">
-    <h2>Selamat Datang di Dunia Galaxy Battle</h2>
-    <p>Gabung dalam pertempuran epik melawan alien, robot, dan penjajah galaksi. Bangun timmu dan jadilah legenda!</p>
-  </section>
+  <div id="result"></div>
 
-  <section class="features">
-    <div class="card">
-      <h3>Karakter Unik</h3>
-      <p>Pilih dari 12 hero dengan skill dan senjata khusus.</p>
-    </div>
-    <div class="card">
-      <h3>Mode PvP & PvE</h3>
-      <p>Bertarung melawan pemain lain atau selesaikan misi solo.</p>
-    </div>
-    <div class="card">
-      <h3>Upgrade & Skin</h3>
-      <p>Kustomisasi karakter dengan skin dan item langka.</p>
-    </div>
-    <div class="card">
-      <h3>Turnamen Global</h3>
-      <p>Ikuti kompetisi dan menangkan hadiah eksklusif.</p>
-    </div>
-  </section>
+  <script>
+    const secretNumber = Math.floor(Math.random() * 10) + 1;
 
-  <footer>
-    <p>&copy; 2025 Galaxy Battle. Semua hak dilindungi.</p>
-  </footer>
+    function checkGuess() {
+      const guess = parseInt(document.getElementById('guess').value);
+      const result = document.getElementById('result');
 
-</body>
-</html>
+      if (isNaN(guess) || guess < 1 || guess > 10) {
+        result.textContent = "Masukkan angka antara 1 sampai 10.";
+        return;
+      }
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Karakter - Galaxy Battle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
+      if (guess === secretNumber) {
+        result.textContent = "Selamat! Kamu menebak dengan benar 🎉";
+      } else if (guess < secretNumber) {
+        result.textContent = "Terlalu rendah. Coba lagi!";
+      } else {
+        result.textContent = "Terlalu tinggi. Coba lagi!";
+      }
     }
-    header {
-      text-align: center;
-      padding: 50px 20px;
-      background-color: rgba(0,0,0,0.3);
-      animation: fadeIn 1.5s ease-in-out;
-    }
-    header h1 {
-      font-size: 2.5em;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-    .characters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      padding: 60px 20px;
-      animation: fadeInUp 2s ease-in;
-    }
-    .card {
-      background-color: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: transform 0.3s;
-    }
-    .card:hover {
-      transform: scale(1.05);
-    }
-    .card h3 {
-      margin-bottom: 10px;
-      color: #ffcc00;
-    }
-    .card p {
-      font-size: 0.95em;
-      color: #eee;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9em;
-      color: #aaa;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeInUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>Karakter Legendaris</h1>
-    <p>Pilih jagoanmu dan kuasai galaksi!</p>
-  </header>
-
-  <section class="characters">
-    <div class="card">
-      <h3>Nova</h3>
-      <p>Sniper luar angkasa dengan akurasi mematikan dan skill teleportasi.</p>
-    </div>
-    <div class="card">
-      <h3>Blaze</h3>
-      <p>Tank berapi yang tahan serangan dan bisa meledakkan musuh di sekitarnya.</p>
-    </div>
-    <div class="card">
-      <h3>Echo</h3>
-      <p>Support dengan kemampuan menyembuhkan dan mempercepat gerakan tim.</p>
-    </div>
-    <div class="card">
-      <h3>Shadow</h3>
-      <p>Assassin bayangan yang bisa menghilang dan menyerang dari belakang.</p>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Galaxy Battle. Semua hak dilindungi.</p>
-  </footer>
+  </script>
 
 </body>
 </html>
