@@ -3,51 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pendaftaran Sekolah Jaya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+  <title>Mobile Legend Selamanya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
-      color: #333;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+    }
     header {
-      background-color: #00acc1;
-      color: white;
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
     }
     header h1 {
-      margin: 0;
-      font-size: 2.5em;
+      font-size: 3em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
     }
-    main {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: #ffffffcc;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    header p {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #ccc;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background-color: rgba(0,0,0,0.3);
+      padding: 15px 0;
+    }
+    nav a {
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #ffffff;
+    }
+    section {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    section h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #ffcc00;
+    }
+    section p {
+      font-size: 1.1em;
+      max-width: 700px;
+      margin: auto;
+      color: #eee;
+    }
+    form {
+      max-width: 400px;
+      margin: 30px auto;
+      text-align: left;
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
     }
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 10px;
       margin-bottom: 20px;
-      border: 1px solid #ccc;
+      border: none;
       border-radius: 6px;
-      font-family: 'Inter', sans-serif;
+      background-color: #eee;
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
     }
     button {
-      background-color: #00acc1;
-      color: white;
-      padding: 12px 20px;
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #00ffcc;
+      color: #203a43;
       border: none;
       border-radius: 6px;
       font-weight: bold;
@@ -55,18 +96,42 @@
       font-size: 16px;
     }
     button:hover {
-      background-color: #00838f;
+      background-color: #00e6b3;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(0,0,0,0.2);
+      font-size: 0.9em;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Sekolah Jaya</h1>
-    <p>Formulir Pendaftaran Siswa Baru</p>
+    <h1>Mobile Legend Selamanya</h1>
+    <p>Sekolah masa depan untuk para pejuang digital</p>
   </header>
 
-  <main>
+  <nav>
+    <a href="#beranda">Beranda</a>
+    <a href="#program">Program</a>
+    <a href="#kontak">Kontak</a>
+  </nav>
+
+  <section id="beranda">
+    <h2>Belajar, Bertarung, Menang!</h2>
+    <p>Gabungkan pendidikan teknologi dengan semangat kompetisi dan kreativitas. Jadilah legenda di dunia nyata dan maya!</p>
+  </section>
+
+  <section id="program">
+    <h2>Program Unggulan</h2>
+    <p>🎮 Akademi Esports<br>🎨 Desain Game & Animasi<br>📹 Streaming & Konten Kreatif<br>💻 Teknologi & Coding</p>
+  </section>
+
+  <section id="kontak">
+    <h2>Formulir Pendaftaran</h2>
     <form id="form">
       <label for="nama">Nama Lengkap</label>
       <input type="text" id="nama" required />
@@ -74,28 +139,33 @@
       <label for="program">Program Pilihan</label>
       <select id="program" required>
         <option value="">-- Pilih Program --</option>
-        <option value="IPA">IPA</option>
-        <option value="IPS">IPS</option>
-        <option value="Bahasa">Mobile legend</option>
-        <option value="Teknologi">Teknologi</option>
+        <option value="Akademi Esports">Akademi Esports</option>
+        <option value="Desain Game & Animasi">Desain Game & Animasi</option>
+        <option value="Streaming & Konten Kreatif">Streaming & Konten Kreatif</option>
+        <option value="Teknologi & Coding">Teknologi & Coding</option>
       </select>
-
-      <label for="pesan">Pesan Tambahan</label>
-      <textarea id="pesan" rows="4"></textarea>
 
       <button type="button" onclick="kirimWhatsApp()">Kirim ke WhatsApp</button>
     </form>
-  </main>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Mobile Legend Selamanya. Semua hak dilindungi.</p>
+  </footer>
 
   <script>
     function kirimWhatsApp() {
       const nama = document.getElementById("nama").value;
       const program = document.getElementById("program").value;
-      const pesan = document.getElementById("pesan").value;
+      const nomor = "62895339045791"; // Ganti dengan nomor admin sekolah
 
-      const nomorTujuan = "62895339045791"; // Ganti dengan nomor WA tujuan
-      const teks = `Halo, saya ingin mendaftar ke Sekolah Jaya.\n\nNama: ${nama}\nProgram: ${program}\nPesan: ${pesan}`;
-      const url = `https://wa.me/${nomorTujuan}?text=${encodeURIComponent(teks)}`;
+      if (!nama || !program) {
+        alert("Mohon isi nama dan pilih program terlebih dahulu.");
+        return;
+      }
+
+      const pesan = `Halo, saya ${nama} ingin mendaftar ke program ${program} di Mobile Legend Selamanya.`;
+      const url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 
       window.open(url, "_blank");
     }
