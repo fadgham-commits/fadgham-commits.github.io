@@ -3,84 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sekolah Modern</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f6f8;
-      color: #333;
-      scroll-behavior: smooth;
-    }
-
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    nav a {
-      margin: 0 15px;
-      color: #ecf0f1;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    nav a:hover {
-      color: #1abc9c;
-    }
-
-    section {
-      padding: 60px 20px;
-      text-align: center;
-      animation: fadeIn 1.5s ease-in;
-    }
-
-    section:nth-child(even) {
-      background: #ecf0f1;
-    }
-
-    h1, h2 {
-      margin-bottom: 20px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <title>Beranda - Sekolah Modern</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>Sekolah Modern</h1>
+    <h1 class="fade-in">Selamat Datang di Sekolah Modern</h1>
     <nav>
-      <a href="#beranda">Beranda</a>
-      <a href="#tentang">Tentang Kami</a>
-      <a href="#kontak">Kontak Kami</a>
+      <a href="index.html">Beranda</a>
+      <a href="tentang.html">Tentang Kami</a>
+      <a href="kontak.html">Kontak Kami</a>
     </nav>
   </header>
-
-  <section id="beranda">
-    <h2>Selamat Datang</h2>
-    <p>Kami adalah sekolah modern yang berkomitmen menciptakan generasi unggul melalui pendidikan berkualitas.</p>
-  </section>
-
-  <section id="tentang">
-    <h2>Tentang Kami</h2>
-    <p>Sekolah Modern berdiri sejak 2005 dan telah meluluskan ribuan siswa berprestasi. Kami mengedepankan teknologi dan pembelajaran interaktif.</p>
-  </section>
-
-  <section id="kontak">
-    <h2>Kontak Kami</h2>
-    <p>Email: info@sekolahmodern.sch.id</p>
-    <p>Telepon: (021) 123-4567</p>
-    <p>Alamat: Jl. Pendidikan No. 45, Telukjambe Timur</p>
-  </section>
+  <main>
+    <section class="slide-up">
+      <h2>Visi & Misi</h2>
+      <p>Kami berkomitmen menciptakan generasi unggul melalui pendidikan berkualitas.</p>
+    </section>
+  </main>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontak Kami - Sekolah Modern</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1 class="fade-in">Hubungi Kami</h1>
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="tentang.html">Tentang Kami</a>
+      <a href="kontak.html">Kontak Kami</a>
+    </nav>
+  </header>
+  <main>
+    <section class="slide-up">
+      <p>Email: info@sekolahmodern.sch.id</p>
+      <p>Telepon: (021) 123-4567</p>
+      <p>Alamat: Jl. Pendidikan No. 45, Telukjambe Timur</p>
+    </section>
+  </main>
+</body>
+</html>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6f8;
+  color: #333;
+}
+
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav a {
+  margin: 0 15px;
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #1abc9c;
+}
+
+main {
+  padding: 40px;
+  text-align: center;
+}
+
+.fade-in {
+  animation: fadeIn 2s ease-in;
+}
+
+.slide-up {
+  animation: slideUp 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
