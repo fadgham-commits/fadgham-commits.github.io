@@ -1,225 +1,112 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Roket vs Asteroid</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Komik Terbaru</title>
   <style>
     body {
-      margin: 0;
-      background-color: black;
       font-family: Arial, sans-serif;
-      color: white;
+      background-color: #f9f9f9;
       text-align: center;
+      margin: 0;
+      padding: 0;
     }
-    canvas {
-      background: url('https://i.ibb.co/3W0Z2Zg/space-bg.jpg') no-repeat center;
-      background-size: cover;
-      display: block;
-      margin: 10px auto;
-      border: 2px solid #00ffff;
-    }
-    h1 {
-      color: #00ffff;
-      margin-top: 10px;
-      text-shadow: 0 0 10px #00ffff;
-    }
-    #score, #health {
-      font-size: 18px;
-      margin: 5px;
-    }
-    #controls {
+
+    .navbar {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin: 10px;
+      gap: 15px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px 0;
+      position: sticky;
+      top: 0;
     }
-    button {
-      padding: 12px 20px;
-      font-size: 18px;
-      background-color: #00ffff;
-      border: none;
-      border-radius: 6px;
-      color: black;
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
       font-weight: bold;
-      flex: 1;
+      transition: all 0.3s;
     }
-    #healthBar {
-      width: 80%;
-      height: 20px;
-      background-color: #444;
-      margin: 0 auto 10px;
+
+    .btn:hover {
+      background-color: #0078ff;
+      color: #fff;
+      border-color: #0078ff;
+    }
+
+    h1 {
+      margin-top: 30px;
+      color: #333;
+    }
+
+    .komik-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .komik {
+      background-color: #fff;
+      padding: 15px;
       border-radius: 10px;
-      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    #healthFill {
-      height: 100%;
-      background-color: #ff4444;
+
+    .komik img {
       width: 100%;
-      transition: width 0.3s ease;
+      border-radius: 10px;
+    }
+
+    .komik h3 {
+      margin-top: 10px;
+      color: #0078ff;
+    }
+
+    .komik p {
+      color: #555;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🚀 Roket vs Asteroid</h1>
-  <div id="score">Skor: 0</div>
-  <div id="health">Nyawa:</div>
-  <div id="healthBar"><div id="healthFill"></div></div>
-  <canvas id="gameCanvas" width="400" height="500"></canvas>
-  <div id="controls">
-    <button id="btnLeft">⬅️</button>
-    <button onclick="shoot()">🔥</button>
-    <button id="btnRight">➡️</button>
+  <div class="navbar">
+    <button class="btn" onclick="window.location.href='index.html'">Beranda</button>
+    <button class="btn" onclick="window.location.href='app.html'">APP</button>
+    <button class="btn" onclick="window.location.href='terbaru.html'">Terbaru</button>
+    <button class="btn" onclick="window.location.href='populer.html'">Populer</button>
   </div>
 
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+  <h1>Komik Terbaru</h1>
 
-    let rocket = { x: 180, y: 440, width: 30, height: 50, speed: 4 };
-    let bullets = [];
-    let asteroids = [];
-    let score = 0;
-    let health = 100;
-    let gameOver = false;
+  <div class="komik-list">
+    <div class="komik">
+      <img src="https://via.placeholder.com/200x300?text=Komik+1" alt="Komik 1">
+      <h3>Judul Komik 1</h3>
+      <p>Bab 120 - Update hari ini</p>
+    </div>
 
-    let movingLeft = false;
-    let movingRight = false;
+    <div class="komik">
+      <img src="https://via.placeholder.com/200x300?text=Komik+2" alt="Komik 2">
+      <h3>Judul Komik 2</h3>
+      <p>Bab 78 - Update 1 jam lalu</p>
+    </div>
 
-    // Tombol tahan gerak
-    document.getElementById("btnLeft").addEventListener("touchstart", () => movingLeft = true);
-    document.getElementById("btnLeft").addEventListener("touchend", () => movingLeft = false);
-    document.getElementById("btnLeft").addEventListener("mousedown", () => movingLeft = true);
-    document.getElementById("btnLeft").addEventListener("mouseup", () => movingLeft = false);
-    document.getElementById("btnRight").addEventListener("touchstart", () => movingRight = true);
-    document.getElementById("btnRight").addEventListener("touchend", () => movingRight = false);
-    document.getElementById("btnRight").addEventListener("mousedown", () => movingRight = true);
-    document.getElementById("btnRight").addEventListener("mouseup", () => movingRight = false);
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "ArrowLeft") movingLeft = true;
-      if (e.key === "ArrowRight") movingRight = true;
-      if (e.key === " " || e.key === "Spacebar") shoot();
-    });
-    document.addEventListener("keyup", e => {
-      if (e.key === "ArrowLeft") movingLeft = false;
-      if (e.key === "ArrowRight") movingRight = false;
-    });
-
-    function drawRocket() {
-      ctx.fillStyle = "#00ffff";
-      ctx.beginPath();
-      ctx.moveTo(rocket.x + rocket.width / 2, rocket.y);
-      ctx.lineTo(rocket.x, rocket.y + rocket.height);
-      ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height);
-      ctx.closePath();
-      ctx.fill();
-    }
-
-    function drawBullets() {
-      ctx.fillStyle = "#ff0000";
-      bullets.forEach(b => {
-        ctx.fillRect(b.x, b.y, b.width, b.height);
-        b.y -= b.speed;
-      });
-    }
-
-    function drawAsteroids() {
-      ctx.fillStyle = "#888";
-      asteroids.forEach(a => {
-        ctx.beginPath();
-        ctx.arc(a.x + a.size / 2, a.y + a.size / 2, a.size / 2, 0, Math.PI * 2);
-        ctx.fill();
-        a.y += a.speed;
-      });
-    }
-
-    function spawnAsteroid() {
-      const size = 30;
-      const x = Math.random() * (canvas.width - size);
-      asteroids.push({ x, y: 0, size, speed: 1.5 });
-    }
-
-    function shoot() {
-      if (gameOver) return;
-      bullets.push({
-        x: rocket.x + rocket.width / 2 - 2,
-        y: rocket.y,
-        width: 4,
-        height: 10,
-        speed: 5
-      });
-    }
-
-    function moveLeft() {
-      if (rocket.x > 0) rocket.x -= rocket.speed;
-    }
-
-    function moveRight() {
-      if (rocket.x < canvas.width - rocket.width) rocket.x += rocket.speed;
-    }
-
-    function update() {
-      if (movingLeft) moveLeft();
-      if (movingRight) moveRight();
-
-      bullets = bullets.filter(b => b.y > 0);
-      asteroids = asteroids.filter(a => a.y < canvas.height);
-
-      bullets.forEach((b, bi) => {
-        asteroids.forEach((a, ai) => {
-          if (
-            b.x < a.x + a.size &&
-            b.x + b.width > a.x &&
-            b.y < a.y + a.size &&
-            b.y + b.height > a.y
-          ) {
-            bullets.splice(bi, 1);
-            asteroids.splice(ai, 1);
-            score++;
-            document.getElementById("score").textContent = "Skor: " + score;
-          }
-        });
-      });
-
-      asteroids.forEach((a, ai) => {
-        if (
-          a.x < rocket.x + rocket.width &&
-          a.x + a.size > rocket.x &&
-          a.y + a.size > rocket.y
-        ) {
-          asteroids.splice(ai, 1);
-          health -= 20;
-          updateHealthBar();
-          if (health <= 0) {
-            gameOver = true;
-            setTimeout(() => {
-              alert("💥 Roketmu hancur! Skor akhir: " + score);
-              location.reload();
-            }, 100);
-          }
-        }
-      });
-    }
-
-    function updateHealthBar() {
-      document.getElementById("healthFill").style.width = health + "%";
-    }
-
-    function gameLoop() {
-      if (gameOver) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawRocket();
-      drawBullets();
-      drawAsteroids();
-      update();
-      requestAnimationFrame(gameLoop);
-    }
-
-    setInterval(spawnAsteroid, 1200);
-    gameLoop();
-  </script>
+    <div class="komik">
+      <img src="https://via.placeholder.com/200x300?text=Komik+3" alt="Komik 3">
+      <h3>Judul Komik 3</h3>
+      <p>Bab 35 - Update kemarin</p>
+    </div>
+  </div>
 
 </body>
 </html>
