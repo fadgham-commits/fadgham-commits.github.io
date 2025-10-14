@@ -1,112 +1,86 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Komik Terbaru</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sekolah Modern</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      background: #f4f6f8;
+      color: #333;
+      scroll-behavior: smooth;
     }
 
-    .navbar {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 10px 0;
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      text-align: center;
       position: sticky;
       top: 0;
+      z-index: 1000;
     }
 
-    .btn {
-      padding: 10px 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      cursor: pointer;
+    nav a {
+      margin: 0 15px;
+      color: #ecf0f1;
+      text-decoration: none;
       font-weight: bold;
-      transition: all 0.3s;
+      transition: color 0.3s;
     }
 
-    .btn:hover {
-      background-color: #0078ff;
-      color: #fff;
-      border-color: #0078ff;
+    nav a:hover {
+      color: #1abc9c;
     }
 
-    h1 {
-      margin-top: 30px;
-      color: #333;
+    section {
+      padding: 60px 20px;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in;
     }
 
-    .komik-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 30px;
-      max-width: 900px;
-      margin: auto;
+    section:nth-child(even) {
+      background: #ecf0f1;
     }
 
-    .komik {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    h1, h2 {
+      margin-bottom: 20px;
     }
 
-    .komik img {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    .komik h3 {
-      margin-top: 10px;
-      color: #0078ff;
-    }
-
-    .komik p {
-      color: #555;
-      font-size: 14px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Sekolah Modern</h1>
+    <nav>
+      <a href="#beranda">Beranda</a>
+      <a href="#tentang">Tentang Kami</a>
+      <a href="#kontak">Kontak Kami</a>
+    </nav>
+  </header>
 
-  <div class="navbar">
-    <button class="btn" onclick="window.location.href='index.html'">Beranda</button>
-    <button class="btn" onclick="window.location.href='app.html'">APP</button>
-    <button class="btn" onclick="window.location.href='terbaru.html'">Terbaru</button>
-    <button class="btn" onclick="window.location.href='populer.html'">Populer</button>
-  </div>
+  <section id="beranda">
+    <h2>Selamat Datang</h2>
+    <p>Kami adalah sekolah modern yang berkomitmen menciptakan generasi unggul melalui pendidikan berkualitas.</p>
+  </section>
 
-  <h1>Komik Terbaru</h1>
+  <section id="tentang">
+    <h2>Tentang Kami</h2>
+    <p>Sekolah Modern berdiri sejak 2005 dan telah meluluskan ribuan siswa berprestasi. Kami mengedepankan teknologi dan pembelajaran interaktif.</p>
+  </section>
 
-  <div class="komik-list">
-    <div class="komik">
-      <img src="https://via.placeholder.com/200x300?text=Komik+1" alt="Komik 1">
-      <h3>Judul Komik 1</h3>
-      <p>Bab 120 - Update hari ini</p>
-    </div>
-
-    <div class="komik">
-      <img src="https://via.placeholder.com/200x300?text=Komik+2" alt="Komik 2">
-      <h3>Judul Komik 2</h3>
-      <p>Bab 78 - Update 1 jam lalu</p>
-    </div>
-
-    <div class="komik">
-      <img src="https://via.placeholder.com/200x300?text=Komik+3" alt="Komik 3">
-      <h3>Judul Komik 3</h3>
-      <p>Bab 35 - Update kemarin</p>
-    </div>
-  </div>
-
+  <section id="kontak">
+    <h2>Kontak Kami</h2>
+    <p>Email: info@sekolahmodern.sch.id</p>
+    <p>Telepon: (021) 123-4567</p>
+    <p>Alamat: Jl. Pendidikan No. 45, Telukjambe Timur</p>
+  </section>
 </body>
 </html>
