@@ -2,98 +2,185 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Beranda - Sekolah Modern</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sekolah Modern</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      overflow-x: hidden;
+    }
+    header {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      animation: fadeInDown 1s ease-out;
+    }
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.2em;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      animation: fadeInUp 1s ease-out;
+    }
+    nav a {
+      padding: 15px 20px;
+      text-decoration: none;
+      color: #0072ff;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background-color: #e0f0ff;
+    }
+    section {
+      padding: 60px 20px;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+    section h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #0072ff;
+    }
+    section p {
+      max-width: 700px;
+      margin: auto;
+      font-size: 1.1em;
+      color: #555;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 250px;
+      transition: transform 0.3s ease;
+      animation: zoomIn 0.8s ease;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+    }
+    footer {
+      background-color: #0072ff;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.9em;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .cards {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <h1 class="fade-in">Selamat Datang di Sekolah Modern</h1>
-    <nav>
-      <a href="index.html">Beranda</a>
-      <a href="tentang.html">Tentang Kami</a>
-      <a href="kontak.html">Kontak Kami</a>
-    </nav>
+    <h1>Sekolah Modern</h1>
+    <p>Membangun generasi cerdas, kreatif, dan berkarakter</p>
   </header>
-  <main>
-    <section class="slide-up">
-      <h2>Visi & Misi</h2>
-      <p>Kami berkomitmen menciptakan generasi unggul melalui pendidikan berkualitas.</p>
-    </section>
-  </main>
+
+  <nav>
+    <a href="#beranda">Beranda</a>
+    <a href="#program">Program</a>
+    <a href="#fasilitas">Fasilitas</a>
+    <a href="#kontak">Kontak</a>
+  </nav>
+
+  <section id="beranda">
+    <h2>Selamat Datang di Sekolah Modern</h2>
+    <p>Kami hadir sebagai sekolah masa depan yang menggabungkan teknologi, kreativitas, dan nilai-nilai karakter untuk membentuk siswa yang siap menghadapi dunia global.</p>
+  </section>
+
+  <section id="program">
+    <h2>Program Unggulan</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>STEM & Coding</h3>
+        <p>Belajar sains, teknologi, dan pemrograman sejak dini dengan kurikulum berbasis proyek.</p>
+      </div>
+      <div class="card">
+        <h3>Bahasa & Komunikasi</h3>
+        <p>Penguasaan bahasa asing dan keterampilan berbicara di depan umum.</p>
+      </div>
+      <div class="card">
+        <h3>Karakter & Kepemimpinan</h3>
+        <p>Program pembentukan karakter dan pelatihan kepemimpinan untuk semua siswa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="fasilitas">
+    <h2>Fasilitas Sekolah</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Smart Class</h3>
+        <p>Ruang kelas interaktif dengan layar digital dan koneksi internet.</p>
+      </div>
+      <div class="card">
+        <h3>Studio Kreatif</h3>
+        <p>Tempat siswa belajar desain, animasi, dan produksi konten digital.</p>
+      </div>
+      <div class="card">
+        <h3>Laboratorium STEM</h3>
+        <p>Laboratorium lengkap untuk eksperimen sains dan teknologi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontak">
+    <h2>Hubungi Kami</h2>
+    <p>Email: info@sekolahmodern.id<br>Telepon: (021) 1234-5678<br>Alamat: Jl. Pendidikan No. 1, Jakarta</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Sekolah Modern. Semua hak dilindungi.</p>
+  </footer>
+
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kontak Kami - Sekolah Modern</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <h1 class="fade-in">Hubungi Kami</h1>
-    <nav>
-      <a href="index.html">Beranda</a>
-      <a href="tentang.html">Tentang Kami</a>
-      <a href="kontak.html">Kontak Kami</a>
-    </nav>
-  </header>
-  <main>
-    <section class="slide-up">
-      <p>Email: info@sekolahmodern.sch.id</p>
-      <p>Telepon: (021) 123-4567</p>
-      <p>Alamat: Jl. Pendidikan No. 45, Telukjambe Timur</p>
-    </section>
-  </main>
-</body>
-</html>
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f6f8;
-  color: #333;
-}
-
-header {
-  background: #2c3e50;
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
-
-nav a {
-  margin: 0 15px;
-  color: #ecf0f1;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-nav a:hover {
-  color: #1abc9c;
-}
-
-main {
-  padding: 40px;
-  text-align: center;
-}
-
-.fade-in {
-  animation: fadeIn 2s ease-in;
-}
-
-.slide-up {
-  animation: slideUp 1.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
