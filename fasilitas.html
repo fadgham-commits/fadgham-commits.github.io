@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fasilitas Sekolah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      animation: fadeInDown 1s ease-out;
+    }
+    header h1 {
+      font-size: 2.8em;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.2em;
+    }
+    section {
+      padding: 40px 20px;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+    section h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #0072ff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+      padding: 0 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .card h3 {
+      margin: 15px 0 10px;
+      color: #0072ff;
+    }
+    .card p {
+      padding: 0 15px 20px;
+      font-size: 0.95em;
+      color: #555;
+    }
+    footer {
+      background-color: #0072ff;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.9em;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>FASILITAS SEKOLAH</h1>
+    <p>Kami menyediakan berbagai fasilitas modern untuk mendukung proses belajar-mengajar yang efektif dan menyenangkan.</p>
+  </header>
+
+  <section>
+    <h2>Fasilitas Unggulan</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Ruang Kelas">
+        <h3>Ruang Kelas</h3>
+        <p>Ruang kelas dilengkapi dengan peralatan pembelajaran terbaru dan nyaman.</p>
+      </div>
+      <div class="card">
+        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Perpustakaan">
+        <h3>Perpustakaan</h3>
+        <p>Perpustakaan lengkap dengan berbagai buku dan fasilitas membaca.</p>
+      </div>
+      <div class="card">
+        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Laboratorium">
+        <h3>Laboratorium</h3>
+        <p>Laboratorium dengan alat dan bahan untuk praktik sains dan eksperimen.</p>
+      </div>
+      <div class="card">
+        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Lapangan Olahraga">
+        <h3>Lapangan Olahraga</h3>
+        <p>Lapangan olahraga untuk berbagai aktivitas fisik dan rekreasi.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Sekolah Masa Depan. Semua hak dilindungi.</p>
+  </footer>
+
+</body>
+</html>
