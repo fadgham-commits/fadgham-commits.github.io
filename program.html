@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fasilitas Sekolah</title>
+  <title>Program Sekolah</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f0f4f8;
+      background: linear-gradient(to right, #f0f4f8, #ffffff);
       color: #333;
       margin: 0;
       padding: 0;
@@ -48,23 +48,17 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      overflow: hidden;
+      padding: 20px;
       transition: transform 0.3s ease;
     }
     .card:hover {
       transform: translateY(-10px);
     }
-    .card img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
     .card h3 {
-      margin: 15px 0 10px;
+      margin-bottom: 10px;
       color: #0072ff;
     }
     .card p {
-      padding: 0 15px 20px;
       font-size: 0.95em;
       color: #555;
     }
@@ -84,37 +78,43 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>FASILITAS SEKOLAH</h1>
-    <p>Kami menyediakan berbagai fasilitas modern untuk mendukung proses belajar-mengajar yang efektif dan menyenangkan.</p>
+    <h1>PROGRAM SEKOLAH</h1>
+    <p>Program unggulan kami dirancang untuk mengembangkan potensi siswa secara menyeluruh.</p>
   </header>
 
   <section>
-    <h2>Fasilitas Unggulan</h2>
+    <h2>Program Unggulan</h2>
     <div class="grid">
       <div class="card">
-        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Ruang Kelas">
-        <h3>Ruang Kelas</h3>
-        <p>Ruang kelas dilengkapi dengan peralatan pembelajaran terbaru dan nyaman.</p>
+        <h3>STEM & Coding</h3>
+        <p>Belajar sains, teknologi, dan pemrograman sejak dini dengan pendekatan berbasis proyek dan eksperimen langsung.</p>
       </div>
       <div class="card">
-        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Perpustakaan">
-        <h3>Perpustakaan</h3>
-        <p>Perpustakaan lengkap dengan berbagai buku dan fasilitas membaca.</p>
+        <h3>Bahasa & Komunikasi</h3>
+        <p>Penguasaan bahasa asing, keterampilan berbicara, menulis, dan presentasi untuk membentuk komunikator yang percaya diri.</p>
       </div>
       <div class="card">
-        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Laboratorium">
-        <h3>Laboratorium</h3>
-        <p>Laboratorium dengan alat dan bahan untuk praktik sains dan eksperimen.</p>
+        <h3>Seni & Kreativitas</h3>
+        <p>Ekspresi diri melalui seni rupa, musik, desain, dan media digital untuk mengasah imajinasi dan inovasi.</p>
       </div>
       <div class="card">
-        <img src="https://copilot.microsoft.com/th/id/BCO.8ff53b96-f0d4-4e79-8cdc-7f1fa1741a30.png" alt="Lapangan Olahraga">
-        <h3>Lapangan Olahraga</h3>
-        <p>Lapangan olahraga untuk berbagai aktivitas fisik dan rekreasi.</p>
+        <h3>Karakter & Kepemimpinan</h3>
+        <p>Program pembentukan karakter, etika, dan pelatihan kepemimpinan untuk membentuk pribadi yang tangguh dan inspiratif.</p>
+      </div>
+      <div class="card">
+        <h3>Olahraga & Kesehatan</h3>
+        <p>Aktivitas fisik dan edukasi kesehatan untuk mendukung gaya hidup aktif dan seimbang.</p>
       </div>
     </div>
   </section>
