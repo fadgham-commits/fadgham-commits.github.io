@@ -2,88 +2,99 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Beranda - Sekolah Kita</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <title>Sekolah Cyberpunk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #f0f4f8, #d9e2ec);
-      color: #333;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #0f0f0f;
+      color: #00fff7;
+      overflow-x: hidden;
     }
 
     header {
-      background-color: #2b6cb0;
-      color: white;
-      padding: 20px;
+      background: linear-gradient(to right, #ff00cc, #3333ff);
+      padding: 30px;
       text-align: center;
-      animation: fadeInDown 1s ease-in-out;
+      color: white;
+      text-shadow: 0 0 10px #00fff7;
+      animation: glowHeader 2s infinite alternate;
     }
 
     nav {
-      background-color: #2c5282;
-      padding: 10px;
+      background-color: #1a1a1a;
+      padding: 15px;
       text-align: center;
+      border-bottom: 2px solid #00fff7;
     }
 
     nav a {
-      color: white;
-      margin: 0 15px;
+      color: #00fff7;
+      margin: 0 20px;
       text-decoration: none;
       font-weight: bold;
       transition: color 0.3s;
     }
 
     nav a:hover {
-      color: #a0aec0;
+      color: #ff00cc;
     }
 
     main {
       padding: 40px;
       text-align: center;
-      animation: fadeInUp 1.5s ease-in-out;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      animation: textGlow 2s infinite alternate;
+      font-size: 3em;
+      margin-bottom: 20px;
     }
 
     p {
       font-size: 1.2em;
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
+      line-height: 1.6;
     }
 
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes glowHeader {
+      from { text-shadow: 0 0 10px #00fff7; }
+      to { text-shadow: 0 0 20px #ff00cc; }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+    .neon-box {
+      border: 2px solid #00fff7;
+      padding: 20px;
+      margin-top: 40px;
+      background-color: #1a1a1a;
+      box-shadow: 0 0 20px #00fff7;
+      animation: pulseBox 3s infinite;
     }
 
-    @keyframes textGlow {
-      from { text-shadow: 0 0 10px #2b6cb0; }
-      to { text-shadow: 0 0 20px #63b3ed; }
+    @keyframes pulseBox {
+      0% { box-shadow: 0 0 10px #00fff7; }
+      50% { box-shadow: 0 0 30px #ff00cc; }
+      100% { box-shadow: 0 0 10px #00fff7; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Selamat Datang di Sekolah Kita</h1>
+    <h1>Sekolah Cyberpunk</h1>
+    <p>Masa depan pendidikan dimulai di sini</p>
   </header>
   <nav>
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang Kami</a>
-    <a href="program.html">Program</a>
-    <a href="kontak.html">Kontak</a>
+    <a href="#">Beranda</a>
+    <a href="#">Tentang Kami</a>
+    <a href="#">Program</a>
+    <a href="#">Kontak</a>
   </nav>
   <main>
-    <p>Sekolah Kita adalah tempat belajar yang menyenangkan dan inspiratif untuk generasi masa depan. Mari tumbuh bersama dalam semangat pendidikan yang cerah dan penuh harapan.</p>
+    <div class="neon-box">
+      <h2>Selamat Datang</h2>
+      <p>Sekolah Cyberpunk adalah institusi pendidikan futuristik yang menggabungkan teknologi tinggi dan kreativitas digital. Kami membentuk generasi yang siap menghadapi dunia virtual dan nyata dengan semangat inovasi.</p>
+    </div>
   </main>
 </body>
 </html>
