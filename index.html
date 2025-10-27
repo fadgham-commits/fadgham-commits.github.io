@@ -1,108 +1,113 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Beranda - Sekolah Modern</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MALAHAYATI SCHOOL</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      color: #333;
+      font-family: 'Courier New', monospace;
+      background-color: #0f0f0f;
+      color: #00ff99;
+      overflow-x: hidden;
     }
+
     header {
-      background: #0077cc;
-      padding: 15px 30px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      margin: 0;
-      padding: 0;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .hero {
       text-align: center;
-      padding: 100px 20px;
-      background: linear-gradient(to right, #0077cc, #00c6ff);
-      color: white;
+      padding: 60px 20px;
+      background: linear-gradient(to right, #111, #222);
     }
-    .cta-button {
-      background: white;
-      color: #0077cc;
-      padding: 12px 24px;
-      border-radius: 5px;
-      text-decoration: none;
+
+    .animated-title {
+      font-size: 3em;
       font-weight: bold;
-      transition: background 0.3s ease;
-      display: inline-block;
-      margin-top: 20px;
-    }
-    .cta-button:hover {
-      background: #e0e0e0;
-    }
-    .typing {
-      font-size: 2.5em;
       white-space: nowrap;
       overflow: hidden;
-      border-right: 3px solid white;
+      border-right: 3px solid #00ff99;
       width: 0;
-      animation: typing 4s steps(30, end) forwards, blink 0.75s step-end infinite;
+      animation: typing 4s steps(20, end) forwards, blink 0.75s step-end infinite;
     }
+
     @keyframes typing {
       from { width: 0 }
       to { width: 100% }
     }
+
     @keyframes blink {
-      50% { border-color: transparent }
+      from, to { border-color: transparent }
+      50% { border-color: #00ff99 }
     }
-    .fade-in {
-      animation: fadeIn 2s ease-in;
+
+    nav {
+      background-color: #1a1a1a;
+      padding: 10px 0;
+      text-align: center;
     }
-    @keyframes fadeIn {
-      from { opacity: 0 }
-      to { opacity: 1 }
+
+    nav a {
+      color: #00ff99;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
     }
+
+    section {
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .code-box {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #00ff99;
+    }
+
+    .code-box pre {
+      color: #00ff99;
+      overflow-x: auto;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
-      background: #0077cc;
-      color: white;
+      background-color: #111;
+      color: #666;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <div class="logo">Sekolah Modern</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Beranda</a></li>
-        <li><a href="program.html">Program</a></li>
-        <li><a href="tentang.html">Tentang Kami</a></li>
-        <li><a href="kontak.html">Kontak</a></li>
-        <li><a href="pendaftaran.html">Pendaftaran</a></li>
-      </ul>
-    </nav>
+    <div class="animated-title">MALAHAYATI SCHOOL</div>
   </header>
 
-  <section class="hero">
-    <h1 class="typing">Selamat Datang di Sekolah Modern</h1>
-    <p class="fade-in">Membangun masa depan dengan pendidikan berkualitas dan teknologi terkini</p>
-    <a href="#" class="cta-button">Daftar Sekarang</a>
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="tentang.html">Tentang</a>
+    <a href="program.html">Program</a>
+    <a href="kontak.html">Kontak</a>
+  </nav>
+
+  <section>
+    <h2>Selamat Datang di Sekolah Komputer</h2>
+    <p>MALAHAYATI SCHOOL adalah tempat belajar teknologi, pemrograman, dan inovasi digital. Kami membentuk generasi masa depan yang siap menghadapi dunia digital.</p>
+
+    <div class="code-box">
+      <pre>
+function belajarCoding() {
+  console.log("Selamat datang di MALAHAYATI SCHOOL!");
+}
+belajarCoding();
+      </pre>
+    </div>
   </section>
 
   <footer>
-    <p>&copy; 2025 Sekolah Modern. Semua hak dilindungi.</p>
+    &copy; 2025 MALAHAYATI SCHOOL. Semua hak dilindungi.
   </footer>
+
 </body>
 </html>
