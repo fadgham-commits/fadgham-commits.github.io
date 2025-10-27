@@ -2,106 +2,117 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Tentang Kami - Sekolah Cyberpunk</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang | MALAHAYATI SCHOOL</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background-color: #0c0c0c;
-      color: #00ffe0;
+      font-family: 'Courier New', monospace;
+      background-color: #0d0d0d;
+      color: #00ffcc;
     }
 
     header {
-      background: linear-gradient(to right, #ff00cc, #3333ff);
-      padding: 30px;
+      background: linear-gradient(to right, #111, #222);
+      padding: 60px 20px;
       text-align: center;
-      color: white;
-      text-shadow: 0 0 10px #00ffe0;
-      animation: glowHeader 2s infinite alternate;
+    }
+
+    .animated-title {
+      font-size: 2.8em;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #00ffcc;
+      width: 0;
+      animation: typing 4s steps(25, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: #00ffcc }
     }
 
     nav {
       background-color: #1a1a1a;
-      padding: 15px;
+      padding: 10px 0;
       text-align: center;
-      border-bottom: 2px solid #00ffe0;
     }
 
     nav a {
-      color: #00ffe0;
-      margin: 0 20px;
+      color: #00ffcc;
       text-decoration: none;
+      margin: 0 15px;
       font-weight: bold;
-      transition: color 0.3s;
     }
 
-    nav a:hover {
-      color: #ff00cc;
-    }
-
-    main {
-      padding: 40px;
-      text-align: center;
+    section {
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
     }
 
     h2 {
-      font-size: 2.5em;
+      color: #00ffcc;
       margin-bottom: 20px;
-      text-shadow: 0 0 10px #ff00cc;
     }
 
     .about-box {
-      background-color: #1a1a1a;
-      border: 2px solid #00ffe0;
-      padding: 30px;
-      max-width: 700px;
-      margin: auto;
-      box-shadow: 0 0 20px #00ffe0;
-      animation: pulseBox 3s infinite;
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #00ffcc;
     }
 
     .about-box p {
-      font-size: 1.2em;
+      color: #cccccc;
       line-height: 1.6;
     }
 
-    @keyframes glowHeader {
-      from { text-shadow: 0 0 10px #00ffe0; }
-      to { text-shadow: 0 0 20px #ff00cc; }
-    }
-
-    @keyframes pulseBox {
-      0% { box-shadow: 0 0 10px #00ffe0; }
-      50% { box-shadow: 0 0 30px #ff00cc; }
-      100% { box-shadow: 0 0 10px #00ffe0; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #111;
+      color: #666;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Tentang Kami</h1>
-    <p>Sekolah Cyberpunk — Pendidikan Masa Depan Dimulai Hari Ini</p>
+    <div class="animated-title">MALAHAYATI SCHOOL</div>
   </header>
+
   <nav>
     <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang Kami</a>
+    <a href="tentang.html">Tentang</a>
     <a href="program.html">Program</a>
     <a href="kontak.html">Kontak</a>
-    <a href="pendaftaran.html">pendaftaran</a>
   </nav>
-  <main>
-    <h2>Visi & Misi</h2>
+
+  <section>
+    <h2>Tentang Kami</h2>
     <div class="about-box">
-      <p><strong>Visi:</strong> Menjadi pusat pendidikan futuristik yang mengintegrasikan teknologi, kreativitas, dan etika digital.</p>
-      <p><strong>Misi:</strong></p>
-      <ul style="list-style: none; padding-left: 0;">
-        <li>🚀 Mendorong inovasi dan eksplorasi teknologi sejak dini</li>
-        <li>🌐 Membentuk karakter digital yang tangguh dan bertanggung jawab</li>
-        <li>🎯 Menyediakan lingkungan belajar yang imersif dan interaktif</li>
-        <li>💡 Menggabungkan seni, sains, dan simulasi dalam kurikulum</li>
-      </ul>
+      <p>
+        MALAHAYATI SCHOOL adalah institusi pendidikan modern yang berfokus pada pengembangan keterampilan teknologi dan komputer. Kami percaya bahwa masa depan dibentuk oleh generasi yang mampu memahami dan menciptakan teknologi.
+      </p>
+      <p>
+        Dengan pendekatan berbasis praktik dan kurikulum yang relevan dengan industri, kami membekali siswa dengan kemampuan coding, pengembangan web, kecerdasan buatan, keamanan siber, dan banyak lagi.
+      </p>
+      <p>
+        Kami bukan hanya sekolah, tapi komunitas pembelajar digital yang siap menjawab tantangan zaman. Bergabunglah bersama kami dan jadilah bagian dari revolusi teknologi!
+      </p>
     </div>
-  </main>
+  </section>
+
+  <footer>
+    &copy; 2025 MALAHAYATI SCHOOL. Semua hak dilindungi.
+  </footer>
+
 </body>
 </html>
