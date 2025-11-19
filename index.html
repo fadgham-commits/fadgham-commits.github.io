@@ -1,113 +1,447 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MALAHAYATI SCHOOL</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dodger – Game HTML</title>
   <style>
+    :root {
+      --bg: #0f1226;
+      --panel: #1b1f3a;
+      --text: #e8eafd;
+      --accent: #7cf5ff;
+      --good: #ffe873;
+      --bad: #ff5a7a;
+      --player: #72ff8f;
+    }
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background-color: #0f0f0f;
-      color: #00ff99;
-      overflow-x: hidden;
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: radial-gradient(1200px at 30% 20%, #151840 0%, var(--bg) 65%);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
     }
-
+    .wrap {
+      width: min(900px, 94vw);
+    }
     header {
-      text-align: center;
-      padding: 60px 20px;
-      background: linear-gradient(to right, #111, #222);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
     }
-
-    .animated-title {
-      font-size: 3em;
-      font-weight: bold;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 3px solid #00ff99;
-      width: 0;
-      animation: typing 4s steps(20, end) forwards, blink 0.75s step-end infinite;
+    h1 { font-size: 20px; margin: 0; letter-spacing: 0.3px; }
+    .controls {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
     }
-
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
+    button, select {
+      background: var(--panel); color: var(--text); border: 1px solid #2a2f57;
+      padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600;
     }
-
-    @keyframes blink {
-      from, to { border-color: transparent }
-      50% { border-color: #00ff99 }
+    button:hover { border-color: var(--accent); }
+    .hud {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      margin-bottom: 8px;
     }
-
-    nav {
-      background-color: #1a1a1a;
-      padding: 10px 0;
-      text-align: center;
+    .card {
+      background: linear-gradient(180deg, #131738 0%, #0f132f 100%);
+      border: 1px solid #262b58; border-radius: 10px; padding: 10px 12px;
     }
-
-    nav a {
-      color: #00ff99;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
+    .label { font-size: 12px; opacity: 0.8; }
+    .value { font-size: 18px; font-weight: 700; }
+    canvas {
+      display: block; width: 100%; max-width: 900px; height: auto; border-radius: 12px;
+      background: #0a0e24; border: 1px solid #22264e; box-shadow: 0 8px 28px rgba(0,0,0,0.35);
     }
-
-    section {
-      padding: 40px 20px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .code-box {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #00ff99;
-    }
-
-    .code-box pre {
-      color: #00ff99;
-      overflow-x: auto;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #111;
-      color: #666;
+    .tip {
+      margin-top: 10px; font-size: 13px; opacity: 0.8;
     }
   </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1>Dodger – Hindari Rintangan!</h1>
+      <div class="controls">
+        <button id="btnStart">Mulai</button>
+        <button id="btnPause" disabled>Jeda</button>
+        <button id="btnReset">Reset</button>
+        <select id="difficulty" title="Tingkat kesulitan">
+          <option value="easy">Mudah</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Sulit</option>
+          <option value="insane">Gila</option>
+        </select>
+      </div>
+    </header>
 
-  <header>
-    <div class="animated-title">MALAHAYATI SCHOOL</div>
-  </header>
-
-  <nav>
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang</a>
-    <a href="program.html">Program</a>
-    <a href="kontak.html">Kontak</a>
-  </nav>
-
-  <section>
-    <h2>Selamat Datang di Sekolah Komputer</h2>
-    <p>MALAHAYATI SCHOOL adalah tempat belajar teknologi, pemrograman, dan inovasi digital. Kami membentuk generasi masa depan yang siap menghadapi dunia digital.</p>
-
-    <div class="code-box">
-      <pre>
-function belajarCoding() {
-  console.log("Selamat datang di MALAHAYATI SCHOOL!");
-}
-belajarCoding();
-      </pre>
+    <div class="hud">
+      <div class="card"><div class="label">Skor</div><div class="value" id="score">0</div></div>
+      <div class="card"><div class="label">Nyawa</div><div class="value" id="lives">3</div></div>
+      <div class="card"><div class="label">Level</div><div class="value" id="level">1</div></div>
+      <div class="card"><div class="label">Waktu</div><div class="value" id="time">0.0s</div></div>
     </div>
-  </section>
 
-  <footer>
-    &copy; 2025 MALAHAYATI SCHOOL. Semua hak dilindungi.
-  </footer>
+    <canvas id="game" width="900" height="520" aria-label="Area permainan"></canvas>
+    <p class="tip">Kontrol: Panah kiri/kanan/atas/bawah atau WASD. Ambil bintang untuk skor. Hindari musuh berwarna merah.</p>
+  </div>
 
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const levelEl = document.getElementById('level');
+    const timeEl = document.getElementById('time');
+    const btnStart = document.getElementById('btnStart');
+    const btnPause = document.getElementById('btnPause');
+    const btnReset = document.getElementById('btnReset');
+    const difficultySel = document.getElementById('difficulty');
+
+    const W = canvas.width, H = canvas.height;
+
+    // Game state
+    let running = false;
+    let paused = false;
+    let last = 0;
+    let elapsed = 0;
+
+    const state = {
+      score: 0,
+      lives: 3,
+      level: 1,
+      speedFactor: 1,
+      player: { x: W/2, y: H/2, w: 26, h: 26, speed: 240, vx: 0, vy: 0 },
+      enemies: [],
+      pickups: [],
+      particles: []
+    };
+
+    // Difficulty presets
+    const DIFF = {
+      easy:   { enemySpeed: 140, spawnRate: 1.2, maxEnemies: 6 },
+      normal: { enemySpeed: 180, spawnRate: 1.0, maxEnemies: 9 },
+      hard:   { enemySpeed: 230, spawnRate: 0.85, maxEnemies: 12 },
+      insane: { enemySpeed: 300, spawnRate: 0.7, maxEnemies: 16 }
+    };
+
+    let currentDiff = DIFF[difficultySel.value];
+
+    // Input
+    const keys = new Set();
+    window.addEventListener('keydown', e => {
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code)) e.preventDefault();
+      keys.add(e.code);
+    });
+    window.addEventListener('keyup', e => keys.delete(e.code));
+
+    // Utils
+    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+    function rand(min, max){ return Math.random()*(max-min)+min; }
+    function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function dist(ax, ay, bx, by){ const dx = ax-bx, dy = ay-by; return Math.hypot(dx, dy); }
+
+    // Spawns
+    function spawnEnemy(){
+      if (state.enemies.length >= currentDiff.maxEnemies) return;
+      const size = rand(16, 34);
+      const edge = choice(['top','bottom','left','right']);
+      let x = rand(0, W), y = rand(0, H);
+      if (edge === 'top') { y = -size; x = rand(0, W); }
+      else if (edge === 'bottom') { y = H + size; x = rand(0, W); }
+      else if (edge === 'left') { x = -size; y = rand(0, H); }
+      else { x = W + size; y = rand(0, H); }
+
+      const angle = Math.atan2(state.player.y - y, state.player.x - x);
+      const speed = currentDiff.enemySpeed * state.speedFactor * rand(0.85, 1.15);
+      state.enemies.push({ x, y, w: size, h: size, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, wobble: rand(0, Math.PI*2) });
+    }
+
+    function spawnPickup(){
+      if (state.pickups.length > 5) return;
+      const r = 10;
+      const x = rand(40, W-40);
+      const y = rand(40, H-40);
+      state.pickups.push({ x, y, r, pulse: 0 });
+    }
+
+    function explode(x, y, color = '#fff'){
+      for (let i=0;i<16;i++){
+        state.particles.push({
+          x, y, life: rand(0.3, 0.8),
+          vx: rand(-160, 160), vy: rand(-160, 160),
+          color
+        });
+      }
+    }
+
+    // Reset
+    function resetGame(){
+      running = false;
+      paused = false;
+      elapsed = 0;
+      state.score = 0;
+      state.lives = 3;
+      state.level = 1;
+      state.speedFactor = 1;
+      state.player.x = W/2; state.player.y = H/2;
+      state.player.vx = 0; state.player.vy = 0;
+      state.enemies.length = 0;
+      state.pickups.length = 0;
+      state.particles.length = 0;
+      spawnPickup();
+      updateHUD();
+      draw(0);
+    }
+
+    // HUD
+    function updateHUD(){
+      scoreEl.textContent = Math.floor(state.score);
+      livesEl.textContent = state.lives;
+      levelEl.textContent = state.level;
+      timeEl.textContent = `${elapsed.toFixed(1)}s`;
+      btnPause.disabled = !running;
+      btnStart.textContent = running ? 'Lanjut' : 'Mulai';
+    }
+
+    // Movement & collisions
+    function handleInput(dt){
+      const p = state.player;
+      const s = p.speed * state.speedFactor;
+      const left  = keys.has('ArrowLeft') || keys.has('KeyA');
+      const right = keys.has('ArrowRight') || keys.has('KeyD');
+      const up    = keys.has('ArrowUp') || keys.has('KeyW');
+      const down  = keys.has('ArrowDown') || keys.has('KeyS');
+
+      p.vx = (right - left) * s;
+      p.vy = (down - up) * s;
+
+      p.x = clamp(p.x + p.vx * dt, 0, W - p.w);
+      p.y = clamp(p.y + p.vy * dt, 0, H - p.h);
+    }
+
+    function rectsOverlap(a, b){
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+    function playerHitEnemy(p, e){
+      return rectsOverlap(p, e);
+    }
+    function playerHitPickup(p, c){
+      const px = p.x + p.w/2, py = p.y + p.h/2;
+      return dist(px, py, c.x, c.y) < c.r + Math.min(p.w, p.h)/2;
+    }
+
+    // Leveling
+    function maybeLevelUp(){
+      const next = 1 + Math.floor(state.score / 20);
+      if (next > state.level){
+        state.level = next;
+        state.speedFactor = 1 + (state.level-1) * 0.08;
+        explode(W/2, 40, '#7cf5ff');
+      }
+    }
+
+    // Update world
+    let enemySpawnTimer = 0;
+    let pickupSpawnTimer = 0;
+
+    function update(dt){
+      if (!running || paused) return;
+
+      elapsed += dt;
+      enemySpawnTimer += dt;
+      pickupSpawnTimer += dt;
+
+      // Spawning paced by difficulty
+      if (enemySpawnTimer > currentDiff.spawnRate){
+        spawnEnemy();
+        enemySpawnTimer = 0;
+      }
+      if (pickupSpawnTimer > 2.5){
+        spawnPickup();
+        pickupSpawnTimer = 0;
+      }
+
+      // Input + player
+      handleInput(dt);
+
+      // Enemies
+      for (let i=state.enemies.length-1; i>=0; i--){
+        const e = state.enemies[i];
+        e.wobble += dt * 4;
+        e.x += e.vx * dt + Math.sin(e.wobble) * 10 * dt;
+        e.y += e.vy * dt + Math.cos(e.wobble) * 10 * dt;
+
+        // Despawn if off-screen far
+        if (e.x < -80 || e.x > W+80 || e.y < -80 || e.y > H+80){
+          state.enemies.splice(i,1);
+          continue;
+        }
+
+        if (playerHitEnemy(state.player, e)){
+          state.enemies.splice(i,1);
+          state.lives--;
+          explode(e.x+e.w/2, e.y+e.h/2, '#ff5a7a');
+          if (state.lives <= 0){
+            gameOver();
+            return;
+          }
+        }
+      }
+
+      // Pickups
+      for (let i=state.pickups.length-1; i>=0; i--){
+        const c = state.pickups[i];
+        c.pulse += dt * 2.5;
+        if (playerHitPickup(state.player, c)){
+          state.pickups.splice(i,1);
+          state.score += 5;
+          explode(c.x, c.y, '#ffe873');
+          maybeLevelUp();
+        }
+      }
+
+      // Particles
+      for (let i=state.particles.length-1; i>=0; i--){
+        const p = state.particles[i];
+        p.life -= dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        if (p.life <= 0) state.particles.splice(i,1);
+      }
+
+      // Passive score over time
+      state.score += dt * 0.8;
+      maybeLevelUp();
+      updateHUD();
+    }
+
+    // Draw
+    function draw(dt){
+      // Clear
+      ctx.clearRect(0,0,W,H);
+
+      // Background stars
+      for (let i=0;i<60;i++){
+        const x = (i*37 % W);
+        const y = (i*77 % H);
+        const r = (i % 5) * 0.2 + 0.4;
+        ctx.fillStyle = i % 9 ? '#111742' : '#0c1334';
+        ctx.beginPath(); ctx.arc((x + Math.sin(elapsed + i)*4) % W, (y + Math.cos(elapsed*0.5 + i)*3) % H, r, 0, Math.PI*2); ctx.fill();
+      }
+
+      // Player
+      const p = state.player;
+      ctx.fillStyle = 'rgba(114,255,143,0.9)';
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), p.w, p.h);
+      ctx.strokeStyle = '#2cff6a';
+      ctx.strokeRect(Math.floor(p.x)+0.5, Math.floor(p.y)+0.5, p.w-1, p.h-1);
+
+      // Enemies
+      for (const e of state.enemies){
+        const grd = ctx.createLinearGradient(e.x, e.y, e.x+e.w, e.y+e.h);
+        grd.addColorStop(0, '#ff2f56'); grd.addColorStop(1, '#ff7a94');
+        ctx.fillStyle = grd;
+        ctx.fillRect(e.x, e.y, e.w, e.h);
+      }
+
+      // Pickups
+      for (const c of state.pickups){
+        const pulse = 1 + Math.sin(c.pulse)*0.25;
+        ctx.beginPath(); ctx.arc(c.x, c.y, c.r*pulse, 0, Math.PI*2);
+        ctx.fillStyle = '#ffe873'; ctx.fill();
+        ctx.strokeStyle = '#ffcf3a'; ctx.lineWidth = 2; ctx.stroke();
+        // star glow
+        ctx.beginPath(); ctx.moveTo(c.x-12, c.y); ctx.lineTo(c.x+12, c.y);
+        ctx.moveTo(c.x, c.y-12); ctx.lineTo(c.x, c.y+12);
+        ctx.strokeStyle = 'rgba(255,233,115,0.55)'; ctx.lineWidth = 1.5; ctx.stroke();
+      }
+
+      // Particles
+      for (const prt of state.particles){
+        ctx.globalAlpha = Math.max(prt.life, 0);
+        ctx.fillStyle = prt.color;
+        ctx.fillRect(prt.x, prt.y, 2.2, 2.2);
+        ctx.globalAlpha = 1;
+      }
+
+      // Overlay when paused or game over
+      if (!running){
+        drawCenterText('Tekan "Mulai" untuk bermain', '#7cf5ff');
+      } else if (paused){
+        drawCenterText('Jeda – tekan "Jeda" lagi untuk lanjut', '#ffe873');
+      }
+    }
+
+    function drawCenterText(text, color){
+      ctx.fillStyle = 'rgba(10,14,36,0.65)';
+      ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = color;
+      ctx.font = '700 26px system-ui, Segoe UI, Roboto';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, W/2, H/2);
+    }
+
+    function gameOver(){
+      running = false;
+      paused = false;
+      updateHUD();
+      draw(0);
+      setTimeout(()=> {
+        ctx.fillStyle = 'rgba(10,14,36,0.7)';
+        ctx.fillRect(0,0,W,H);
+        ctx.fillStyle = '#ff5a7a';
+        ctx.font = '700 30px system-ui, Segoe UI, Roboto';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game Over', W/2, H/2 - 12);
+        ctx.fillStyle = '#e8eafd';
+        ctx.font = '500 18px system-ui, Segoe UI, Roboto';
+        ctx.fillText(`Skor: ${Math.floor(state.score)} • Level: ${state.level} • Waktu: ${elapsed.toFixed(1)}s`, W/2, H/2 + 22);
+      }, 60);
+    }
+
+    // Main loop
+    function loop(ts){
+      const now = ts || performance.now();
+      const dt = Math.min(0.033, (now - last) / 1000); // cap 30 FPS delta
+      last = now;
+
+      update(dt);
+      draw(dt);
+
+      requestAnimationFrame(loop);
+    }
+
+    // Events
+    btnStart.addEventListener('click', () => {
+      if (!running){
+        running = true; paused = false;
+        last = performance.now();
+      } else {
+        paused = false;
+      }
+      btnPause.disabled = false;
+      updateHUD();
+    });
+
+    btnPause.addEventListener('click', () => {
+      if (!running) return;
+      paused = !paused;
+      btnPause.textContent = paused ? 'Lanjut' : 'Jeda';
+    });
+
+    btnReset.addEventListener('click', () => {
+      resetGame();
+    });
+
+    difficultySel.addEventListener('change', (e) => {
+      currentDiff = DIFF[e.target.value];
+      // Adjust enemy list to new max
+      while (state.enemies.length > currentDiff.maxEnemies) state.enemies.pop();
+    });
+
+    // Init
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
 </body>
 </html>
