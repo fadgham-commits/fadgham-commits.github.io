@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Neon Grid: Ascend</title>
+  <title>Neon Grid: Parallax</title>
   <style>
     :root{
       --bg:#0a0f1f;
-      --grid:#142240;
-      --grid2:#0f1b34;
+      --panel:#0c1838;
+      --border:#183568;
+      --grid-cyan:rgba(0,229,255,0.08);
+      --grid-magenta:rgba(255,46,249,0.08);
       --neon-cyan:#00e5ff;
       --neon-magenta:#ff2ef9;
       --neon-yellow:#ffe600;
       --neon-green:#00ffa6;
       --neon-red:#ff3b3b;
-      --white:#e6f7ff;
+      --text:#e6f7ff;
+      --muted:#9fc7ff;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:radial-gradient(1200px at 50% 50%, #0e1730 0%, var(--bg) 60%, #060a19 100%); font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--white)}
+    html,body{height:100%;margin:0;background:radial-gradient(1200px at 50% 50%, #0e1730 0%, var(--bg) 60%, #060a19 100%); font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--text)}
     header{
       display:flex;align-items:center;justify-content:space-between;
-      padding:10px 16px;border-bottom:1px solid #1a2c52;background:linear-gradient(180deg, rgba(20,34,64,0.35), transparent);
+      padding:10px 16px;border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(20,34,64,0.35), transparent);
       position:sticky;top:0;z-index:10;
       backdrop-filter:saturate(140%) blur(6px);
     }
@@ -28,7 +32,7 @@
     .controls{display:flex;gap:10px;flex-wrap:wrap}
     .btn{
       border:1px solid #29487a;background:linear-gradient(180deg,#132347,#0c1936);
-      color:var(--white);padding:8px 10px;border-radius:8px;cursor:pointer;
+      color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer;
       box-shadow:0 0 10px rgba(0,229,255,0.1) inset, 0 0 12px rgba(255,46,249,0.08);
       transition:transform .05s ease, box-shadow .2s ease, border-color .2s ease;
       font-weight:600;font-size:13px;letter-spacing:.03em;
@@ -36,75 +40,74 @@
     .btn:hover{border-color:var(--neon-cyan); box-shadow:0 0 14px rgba(0,229,255,0.2) inset, 0 0 14px rgba(255,46,249,0.18)}
     .btn:active{transform:scale(0.98)}
     .hud{
-      display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 16px;border-bottom:1px solid #15305e;
+      display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 16px;border-bottom:1px solid var(--border);
       background:linear-gradient(180deg, rgba(20,34,64,0.25), transparent);
       backdrop-filter:saturate(140%) blur(6px);
     }
     .bars{display:flex;gap:12px;flex-wrap:wrap}
-    .bar{min-width:180px;flex:1;background:#0a1631;border:1px solid #1e366b;border-radius:10px;padding:6px;position:relative}
-    .bar-label{font-size:12px;color:#b8d7ff;margin-bottom:4px;text-shadow:0 0 6px rgba(184,215,255,0.25)}
+    .bar{min-width:220px;flex:1;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:6px;position:relative}
+    .bar-label{font-size:12px;color:var(--muted);margin-bottom:4px;text-shadow:0 0 6px rgba(184,215,255,0.25)}
     .bar-fill{
       height:10px;border-radius:8px;background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan));
       box-shadow:0 0 8px rgba(0,229,255,0.6), 0 0 12px rgba(0,255,166,0.3) inset;
       width:100%;
       transition:width .2s ease;
     }
-    .bar-fill.ammo{background:linear-gradient(90deg,#ffd166,var(--neon-yellow)); box-shadow:0 0 8px rgba(255,230,0,0.6), 0 0 12px rgba(255,209,102,0.3) inset}
-    .stats{display:flex;gap:16px;align-items:center}
+    .bar-fill.energy{background:linear-gradient(90deg,#ffd166,var(--neon-yellow)); box-shadow:0 0 8px rgba(255,230,0,0.6), 0 0 12px rgba(255,209,102,0.3) inset}
+    .stats{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
     .stat{
-      display:flex;align-items:center;gap:8px;border:1px solid #1e366b;background:#0a1631;padding:6px 10px;border-radius:10px;
+      display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--panel);padding:6px 10px;border-radius:10px;
       box-shadow:0 0 10px rgba(0,229,255,0.08) inset;
       font-size:13px;
     }
     .chip{width:14px;height:14px;border-radius:50%;box-shadow:0 0 10px currentColor}
     .chip.hp{color:var(--neon-green)}
-    .chip.ammo{color:var(--neon-yellow)}
+    .chip.energy{color:var(--neon-yellow)}
     .chip.coin{color:#ffd166}
     .chip.stage{color:var(--neon-magenta)}
     .shop{
-      display:flex;gap:10px;flex-wrap:wrap; padding:8px 16px; border-bottom:1px solid #15305e;
+      display:flex;gap:10px;flex-wrap:wrap; padding:8px 16px; border-bottom:1px solid var(--border);
       background:linear-gradient(180deg, rgba(20,34,64,0.20), transparent);
     }
     .skin-card{
-      border:1px solid #1e366b;background:#0b1430;border-radius:12px;padding:8px 10px; min-width:150px;
+      border:1px solid var(--border);background:#0b1430;border-radius:12px;padding:8px 10px; min-width:160px;
       display:flex;align-items:center;justify-content:space-between; gap:8px;
     }
     .skin-swatch{
-      width:36px;height:36px;border-radius:8px;box-shadow:0 0 12px currentColor, inset 0 0 10px rgba(255,255,255,0.08);
+      width:38px;height:38px;border-radius:8px;box-shadow:0 0 12px currentColor, inset 0 0 10px rgba(255,255,255,0.08);
       border:1px solid rgba(255,255,255,0.1);
     }
     .skin-name{font-weight:700; font-size:13px}
     .skin-price{font-size:12px;color:#ffd166}
     .canvas-wrap{
-      position:relative; margin:14px auto; max-width:900px; padding:10px; border:1px solid #15305e; border-radius:14px;
+      position:relative; margin:14px auto; max-width:900px; padding:10px; border:1px solid var(--border); border-radius:14px;
       background:linear-gradient(180deg, rgba(20,34,64,0.20), rgba(10,22,49,0.35));
       box-shadow:0 0 18px rgba(0,229,255,0.06), inset 0 0 14px rgba(255,46,249,0.05);
     }
-    canvas{width:100%; height:520px; display:block; background:#0b1633; border-radius:12px}
+    canvas{width:100%; height:540px; display:block; background:#0b1633; border-radius:12px}
     .overlay-msg{
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;
-      font-size:24px; letter-spacing:.05em; color:#a7eaff; text-shadow:0 0 12px rgba(0,229,255,0.4);
+      font-size:22px; letter-spacing:.04em; color:#a7eaff; text-shadow:0 0 12px rgba(0,229,255,0.4);
     }
     footer{padding:18px 16px;color:#8fb7ff;font-size:12px;opacity:.9}
-    /* Neon grid pattern behind the canvas using pseudo stripes */
+    /* Neon grid behind the canvas */
     .canvas-wrap::before{
       content:""; position:absolute; inset:10px; border-radius:12px; pointer-events:none;
       background:
-        linear-gradient(90deg, rgba(0,229,255,0.08) 1px, transparent 1px) 0 0 / 40px 100%,
-        linear-gradient(0deg, rgba(255,46,249,0.08) 1px, transparent 1px) 0 0 / 100% 40px;
+        linear-gradient(90deg, var(--grid-cyan) 1px, transparent 1px) 0 0 / 48px 100%,
+        linear-gradient(0deg, var(--grid-magenta) 1px, transparent 1px) 0 0 / 100% 48px;
       mix-blend-mode:screen; filter:drop-shadow(0 0 6px rgba(0,229,255,0.15));
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>NEON GRID: ASCEND</h1>
+    <h1>NEON GRID: PARALLAX</h1>
     <div class="controls">
       <button class="btn" id="btnStart">Mulai</button>
       <button class="btn" id="btnPause">Pause</button>
       <button class="btn" id="btnReset">Reset</button>
       <button class="btn" id="btnNextStage">Lewati Stage</button>
-      <button class="btn" id="btnRefillAmmo">Isi Peluru</button>
     </div>
   </header>
 
@@ -115,13 +118,13 @@
         <div class="bar-fill" id="hpBar"></div>
       </div>
       <div class="bar">
-        <div class="bar-label">Amunisi</div>
-        <div class="bar-fill ammo" id="ammoBar"></div>
+        <div class="bar-label">Energi</div>
+        <div class="bar-fill energy" id="energyBar"></div>
       </div>
     </div>
     <div class="stats">
       <div class="stat"><span class="chip hp"></span> <span id="hpText">100 / 100</span></div>
-      <div class="stat"><span class="chip ammo"></span> <span id="ammoText">12</span></div>
+      <div class="stat"><span class="chip energy"></span> <span id="energyText">0</span></div>
       <div class="stat"><span class="chip coin"></span> <span id="coinText">0</span></div>
       <div class="stat"><span class="chip stage"></span> <span id="stageText">Stage 1</span></div>
     </div>
@@ -132,66 +135,63 @@
       <div class="skin-swatch" style="color:#00e5ff; background:radial-gradient(20px at 50% 50%, rgba(0,229,255,0.4), transparent)"></div>
       <div>
         <div class="skin-name">Cyan Core</div>
-        <div class="skin-price">Harga: 20 coin</div>
+        <div class="skin-price">Harga: 25 coin</div>
       </div>
-      <button class="btn buy" data-skin="cyan" data-price="20">Beli</button>
+      <button class="btn buy" data-skin="cyan" data-price="25">Beli</button>
     </div>
     <div class="skin-card">
       <div class="skin-swatch" style="color:#ff2ef9; background:radial-gradient(20px at 50% 50%, rgba(255,46,249,0.35), transparent)"></div>
       <div>
         <div class="skin-name">Magenta Pulse</div>
-        <div class="skin-price">Harga: 35 coin</div>
+        <div class="skin-price">Harga: 40 coin</div>
       </div>
-      <button class="btn buy" data-skin="magenta" data-price="35">Beli</button>
+      <button class="btn buy" data-skin="magenta" data-price="40">Beli</button>
     </div>
     <div class="skin-card">
       <div class="skin-swatch" style="color:#ffe600; background:radial-gradient(20px at 50% 50%, rgba(255,230,0,0.4), transparent)"></div>
       <div>
         <div class="skin-name">Solar Neon</div>
-        <div class="skin-price">Harga: 50 coin</div>
+        <div class="skin-price">Harga: 60 coin</div>
       </div>
-      <button class="btn buy" data-skin="yellow" data-price="50">Beli</button>
+      <button class="btn buy" data-skin="yellow" data-price="60">Beli</button>
     </div>
     <div class="skin-card">
       <div class="skin-swatch" style="color:#00ffa6; background:radial-gradient(20px at 50% 50%, rgba(0,255,166,0.35), transparent)"></div>
       <div>
         <div class="skin-name">Emerald Flux</div>
-        <div class="skin-price">Harga: 70 coin</div>
+        <div class="skin-price">Harga: 80 coin</div>
       </div>
-      <button class="btn buy" data-skin="green" data-price="70">Beli</button>
+      <button class="btn buy" data-skin="green" data-price="80">Beli</button>
     </div>
   </div>
 
   <div class="canvas-wrap">
-    <canvas id="game" width="900" height="520"></canvas>
+    <canvas id="game" width="900" height="540"></canvas>
     <div class="overlay-msg" id="overlay">Tekan "Mulai" untuk bermain</div>
   </div>
 
   <footer>
-    Kontrol: WASD atau panah untuk bergerak • Spasi untuk menembak • R untuk isi peluru • P untuk pause • Enter untuk lanjut stage
+    Kontrol: WASD/Arrow untuk bergerak • Spasi untuk menembak (butuh energi) • P untuk pause • Enter untuk lanjut stage setelah boss
   </footer>
 
   <script>
   (() => {
-    // Core state
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
-    const overlay = document.getElementById('overlay');
 
     const hpBar = document.getElementById('hpBar');
-    const ammoBar = document.getElementById('ammoBar');
+    const energyBar = document.getElementById('energyBar');
     const hpText = document.getElementById('hpText');
-    const ammoText = document.getElementById('ammoText');
+    const energyText = document.getElementById('energyText');
     const coinText = document.getElementById('coinText');
     const stageText = document.getElementById('stageText');
+    const overlay = document.getElementById('overlay');
+    const shop = document.getElementById('shop');
 
     const btnStart = document.getElementById('btnStart');
     const btnPause = document.getElementById('btnPause');
     const btnReset = document.getElementById('btnReset');
     const btnNextStage = document.getElementById('btnNextStage');
-    const btnRefillAmmo = document.getElementById('btnRefillAmmo');
-
-    const shop = document.getElementById('shop');
 
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
@@ -199,13 +199,15 @@
     // Player
     const basePlayer = {
       x: WIDTH/2, y: HEIGHT-80, w: 26, h: 26,
-      speed: 3.3,
+      speed: 3.4,
       maxHP: 100, hp: 100,
-      maxAmmo: 12, ammo: 12,
-      skin: 'cyan', // cyan | magenta | yellow | green
+      maxEnergy: 100, energy: 20,  // awalnya rendah, harus kumpulkan
+      skin: 'cyan',
+      shootCost: 12,
+      damage: 12
     };
 
-    // Game
+    // Game state
     let state = {
       running: false,
       paused: false,
@@ -213,26 +215,40 @@
       coins: 0,
       bullets: [],
       enemies: [],
+      pickups: [], // energi & HP
       particles: [],
       keys: {},
       boss: null,
       spawnTimer: 0,
       difficulty: 1,
+      maxEnemiesOnScreen: 8, // penyeimbang spawn
       player: {...basePlayer},
+      stageClear: false
     };
 
-    // Audio-less pulse via particles
+    // Utility colors
+    function colorForSkin(skin){
+      switch(skin){
+        case 'magenta': return '#ff2ef9';
+        case 'yellow': return '#ffe600';
+        case 'green': return '#00ffa6';
+        default: return '#00e5ff';
+      }
+    }
+
+    // Particles
     function addParticle(x,y,color){
       state.particles.push({x,y,life:20,color,dx:(Math.random()-0.5)*2,dy:(Math.random()-0.5)*2});
     }
 
+    // Reset
     function reset(){
       state = {
         running: false, paused: false,
-        stage: 1, coins: 0,
-        bullets: [], enemies: [], particles: [], keys: {},
-        boss: null, spawnTimer:0, difficulty:1,
-        player: {...basePlayer, hp: basePlayer.maxHP, ammo: basePlayer.maxAmmo, x: WIDTH/2, y: HEIGHT-80}
+        stage: 1, coins: 0, bullets: [], enemies: [], pickups: [], particles: [],
+        keys: {}, boss: null, spawnTimer:0, difficulty:1, maxEnemiesOnScreen:8,
+        player: {...basePlayer, hp: basePlayer.maxHP, energy: 20, x: WIDTH/2, y: HEIGHT-80},
+        stageClear: false
       };
       updateHUD();
       overlay.textContent = 'Tekan "Mulai" untuk bermain';
@@ -254,31 +270,20 @@
     }
 
     function nextStage(){
+      if (!state.stageClear) return;
       state.stage++;
-      state.difficulty += 0.8;
-      stageText.textContent = 'Stage ' + state.stage;
-      state.boss = null;
+      state.difficulty += 0.9;
+      state.maxEnemiesOnScreen = Math.min(12, 6 + Math.floor(state.difficulty));
       state.enemies.length = 0;
-      // Reward small refill
-      state.player.ammo = Math.min(state.player.maxAmmo, state.player.ammo + 4);
-      addParticle(state.player.x, state.player.y, colorForSkin(state.player.skin));
+      state.pickups.length = 0;
+      state.boss = null;
+      state.stageClear = false;
+      state.player.energy = Math.min(state.player.maxEnergy, state.player.energy + 15);
+      stageText.textContent = 'Stage ' + state.stage;
+      overlay.style.display = 'none';
     }
 
-    function refillAmmo(){
-      const cost = 5;
-      if (state.coins >= cost){
-        state.coins -= cost;
-        state.player.ammo = state.player.maxAmmo;
-        flashHUD();
-      }
-    }
-
-    function flashHUD(){
-      ammoText.style.textShadow = '0 0 12px rgba(255,230,0,0.9)';
-      setTimeout(()=> ammoText.style.textShadow = '', 250);
-    }
-
-    // Shop handling
+    // Shop
     shop.addEventListener('click', (e)=>{
       const btn = e.target.closest('.buy');
       if (!btn) return;
@@ -287,6 +292,7 @@
       if (state.coins >= price){
         state.coins -= price;
         state.player.skin = skin;
+        addParticle(state.player.x, state.player.y, colorForSkin(skin));
         updateHUD();
       }
     });
@@ -296,7 +302,6 @@
       state.keys[e.key.toLowerCase()] = true;
       if (e.key === ' '){ e.preventDefault(); shoot(); }
       if (e.key.toLowerCase() === 'p'){ pause(); }
-      if (e.key.toLowerCase() === 'r'){ refillAmmo(); }
       if (e.key === 'Enter'){ nextStage(); }
     });
     window.addEventListener('keyup', (e)=>{ state.keys[e.key.toLowerCase()] = false; });
@@ -305,26 +310,17 @@
     btnPause.addEventListener('click', pause);
     btnReset.addEventListener('click', reset);
     btnNextStage.addEventListener('click', nextStage);
-    btnRefillAmmo.addEventListener('click', refillAmmo);
 
-    // Rendering helpers
-    function colorForSkin(skin){
-      switch(skin){
-        case 'magenta': return '#ff2ef9';
-        case 'yellow': return '#ffe600';
-        case 'green': return '#00ffa6';
-        default: return '#00e5ff';
-      }
-    }
+    // Gameplay helpers
     function drawPlayer(p){
       const c = colorForSkin(state.player.skin);
-      // Ship core
       ctx.save();
       ctx.shadowColor = c; ctx.shadowBlur = 12;
       ctx.translate(p.x, p.y);
       ctx.fillStyle = c;
       ctx.strokeStyle = c;
       ctx.lineWidth = 2;
+      // Diamond ship
       ctx.beginPath();
       ctx.moveTo(0,-p.h);
       ctx.lineTo(p.w,-2);
@@ -334,9 +330,9 @@
       ctx.fill();
 
       // Inner glow
-      ctx.globalAlpha = 0.4;
+      ctx.globalAlpha = 0.45;
       ctx.beginPath();
-      ctx.arc(0,0,10,0,Math.PI*2); ctx.fill();
+      ctx.arc(0,0,9,0,Math.PI*2); ctx.fill();
       ctx.globalAlpha = 1;
 
       // Thruster
@@ -369,7 +365,7 @@
       ctx.beginPath();
       ctx.arc(0,0,b.r,0,Math.PI*2);
       ctx.fill(); ctx.stroke();
-      // Boss eye
+      // Eye
       ctx.beginPath();
       ctx.arc(0,0,8,0,Math.PI*2);
       ctx.fillStyle = '#fff';
@@ -378,7 +374,7 @@
 
       // Boss HP bar (mini)
       const pct = Math.max(0,b.hp)/b.maxHP;
-      const barW = 160, barH = 8;
+      const barW = 180, barH = 8;
       ctx.save();
       ctx.translate(b.x - barW/2, b.y - b.r - 16);
       ctx.fillStyle = 'rgba(10,22,49,0.85)';
@@ -401,6 +397,19 @@
       ctx.restore();
     }
 
+    function drawPickup(pu){
+      ctx.save();
+      ctx.translate(pu.x, pu.y);
+      ctx.shadowColor = pu.type === 'energy' ? '#ffe600' : '#00ffa6';
+      ctx.shadowBlur = 10;
+      ctx.strokeStyle = pu.type === 'energy' ? '#ffe600' : '#00ffa6';
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.beginPath();
+      ctx.arc(0,0,pu.r,0,Math.PI*2);
+      ctx.fill(); ctx.stroke();
+      ctx.restore();
+    }
+
     function drawParticles(){
       for (let i=state.particles.length-1;i>=0;i--){
         const p = state.particles[i];
@@ -417,22 +426,89 @@
 
     // Spawning
     function spawnEnemy(){
+      if (state.enemies.length >= state.maxEnemiesOnScreen) return;
       const w = 18 + Math.random()*16;
       const h = 18 + Math.random()*16;
       const x = 30 + Math.random()*(WIDTH-60);
       const y = -30;
-      const speed = 1 + Math.random()*state.difficulty;
+      const speed = 0.8 + Math.random()*(0.8 + 0.4*state.difficulty);
       const color = Math.random() < 0.5 ? '#00e5ff' : '#ff2ef9';
-      state.enemies.push({x,y,w,h,speed,color,hp: 10+Math.floor(5*state.difficulty)});
+      state.enemies.push({x,y,w,h,speed,color,hp: 10+Math.floor(6*state.difficulty)});
+    }
+
+    function spawnPickup(x,y,type){
+      state.pickups.push({x,y, r: 10, type, vy: 1.2});
+    }
+
+    function ambientEnergyOrb(){
+      if (Math.random() < 0.04) {
+        const x = 40 + Math.random()*(WIDTH-80);
+        spawnPickup(x, -20, 'energy');
+      }
     }
 
     function spawnBoss(){
-      state.boss = {x: WIDTH/2, y: 120, r: 50, vx: 2.2, maxHP: 220 + 40*state.stage, hp: 220 + 40*state.stage, shootTimer:0};
+      state.boss = {x: WIDTH/2, y: 120, r: 56, vx: 2.0, maxHP: 240 + 50*state.stage, hp: 240 + 50*state.stage, shootTimer:0};
     }
 
-    // Update game
+    // Collisions
+    function rectCircleCollide(e, p){
+      const pr = Math.max(p.w,p.h)/2;
+      const dx = Math.abs(e.x - p.x);
+      const dy = Math.abs(e.y - p.y);
+      return dx < (e.w/2 + pr) && dy < (e.h/2 + pr);
+    }
+    function pointRectCollide(x,y,e){
+      return x > e.x - e.w/2 && x < e.x + e.w/2 && y > e.y - e.h/2 && y < e.y + e.h/2;
+    }
+    function pointCircleCollide(x,y,pu){
+      const d = Math.hypot(x - pu.x, y - pu.y);
+      return d <= pu.r + 12; // radius + ship approximation
+    }
+
+    // Damage
+    let shakeTime = 0;
+    function damagePlayer(d){
+      state.player.hp -= d;
+      shakeTime = 180;
+    }
+
+    function applyShake(){
+      if (shakeTime > 0){
+        shakeTime -= 16;
+        const sx = (Math.random()-0.5)*5;
+        const sy = (Math.random()-0.5)*5;
+        ctx.setTransform(1,0,0,1,sx,sy);
+      } else {
+        ctx.setTransform(1,0,0,1,0,0);
+      }
+    }
+
+    // HUD
+    function updateHUD(){
+      const hpPct = Math.max(0, state.player.hp)/state.player.maxHP;
+      const energyPct = Math.max(0, state.player.energy)/state.player.maxEnergy;
+      hpBar.style.width = (hpPct*100)+'%';
+      energyBar.style.width = (energyPct*100)+'%';
+      hpText.textContent = `${Math.max(0,state.player.hp)} / ${state.player.maxHP}`;
+      energyText.textContent = `${Math.floor(state.player.energy)}`;
+      coinText.textContent = `${state.coins}`;
+      stageText.textContent = `Stage ${state.stage}`;
+    }
+
+    // Shooting (uses energy)
+    function shoot(){
+      if (!state.running || state.paused) return;
+      const p = state.player;
+      if (p.energy < p.shootCost) return;
+      p.energy -= p.shootCost;
+      state.bullets.push({x:p.x, y:p.y - p.h, speed:6, damage: p.damage});
+    }
+
+    // Update
     function update(dt){
       const p = state.player;
+
       // Movement
       if (state.keys['w'] || state.keys['arrowup']) p.y -= p.speed;
       if (state.keys['s'] || state.keys['arrowdown']) p.y += p.speed;
@@ -441,29 +517,31 @@
       p.x = Math.max(20, Math.min(WIDTH-20, p.x));
       p.y = Math.max(40, Math.min(HEIGHT-20, p.y));
 
-      // Spawning waves
+      // Spawning pacing
       state.spawnTimer += dt;
+      const interval = 850 - Math.min(300, (state.stage-1)*60); // makin naik stage, sedikit lebih cepat tapi tetap seimbang
       if (!state.boss){
-        if (state.spawnTimer > 600){
+        if (state.spawnTimer > interval){
           state.spawnTimer = 0;
           spawnEnemy();
+          ambientEnergyOrb();
         }
-        // Trigger boss after certain enemies cleared or time
-        if (state.enemies.length === 0 && Math.random() < 0.005){
+        // Boss trigger: setelah cukup waktu dan layar tidak terlalu penuh
+        if (state.enemies.length <= 3 && Math.random() < 0.006){
           spawnBoss();
         }
       } else {
         // Boss movement
         state.boss.x += state.boss.vx;
-        if (state.boss.x < 80 || state.boss.x > WIDTH-80) state.boss.vx *= -1;
+        if (state.boss.x < 90 || state.boss.x > WIDTH-90) state.boss.vx *= -1;
 
-        // Boss shoots neon orbs
+        // Boss shoots rotating orbs (bullets-as-enemies)
         state.boss.shootTimer += dt;
         if (state.boss.shootTimer > 900){
           state.boss.shootTimer = 0;
           for (let i=0;i<8;i++){
             const angle = (Math.PI*2/8)*i;
-            const speed = 2.4;
+            const speed = 2.2;
             const bx = state.boss.x + Math.cos(angle)*state.boss.r;
             const by = state.boss.y + Math.sin(angle)*state.boss.r;
             state.enemies.push({x:bx,y:by,w:10,h:10,speed:0.5,color:'#ff3b3b',hp:1, orb:true, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed});
@@ -493,25 +571,53 @@
         }
       }
 
+      // Pickups update
+      for (let i=state.pickups.length-1;i>=0;i--){
+        const pu = state.pickups[i];
+        pu.y += pu.vy;
+        if (pointCircleCollide(p.x, p.y, pu)){
+          if (pu.type === 'energy'){
+            p.energy = Math.min(p.maxEnergy, p.energy + 18);
+          } else {
+            p.hp = Math.min(p.maxHP, p.hp + 18);
+          }
+          addParticle(pu.x, pu.y, pu.type === 'energy' ? '#ffe600' : '#00ffa6');
+          state.pickups.splice(i,1);
+        } else if (pu.y > HEIGHT + 20){
+          state.pickups.splice(i,1);
+        }
+      }
+
       // Bullets
       for (let i=state.bullets.length-1;i>=0;i--){
         const b = state.bullets[i];
         b.y -= b.speed;
-        if (b.y < -10) state.bullets.splice(i,1);
+        if (b.y < -10) { state.bullets.splice(i,1); continue; }
+
         // hit enemies
+        let hit = false;
         for (let j=state.enemies.length-1;j>=0;j--){
           const e = state.enemies[j];
           if (pointRectCollide(b.x,b.y,e)){
             e.hp -= b.damage;
             addParticle(b.x,b.y,'#ffe600');
             state.bullets.splice(i,1);
+            hit = true;
             if (e.hp <= 0){
+              // drop chance: energy 35%, hp 20%
+              if (!e.orb){
+                const roll = Math.random();
+                if (roll < 0.35) spawnPickup(e.x, e.y, 'energy');
+                else if (roll < 0.55) spawnPickup(e.x, e.y, 'hp');
+              }
               state.enemies.splice(j,1);
               state.coins += 2;
             }
             break;
           }
         }
+        if (hit) continue;
+
         // hit boss
         if (state.boss){
           const dist = Math.hypot(b.x - state.boss.x, b.y - state.boss.y);
@@ -520,11 +626,11 @@
             addParticle(b.x,b.y,'#ff3b3b');
             state.bullets.splice(i,1);
             if (state.boss.hp <= 0){
-              // Boss defeated -> stage clear
-              state.coins += 25;
+              state.coins += 30;
               addParticle(state.boss.x,state.boss.y,'#ff3b3b');
               state.boss = null;
-              overlay.textContent = 'Boss dikalahkan! Tekan Enter untuk lanjut stage';
+              state.stageClear = true;
+              overlay.textContent = 'Stage Clear! Boss dikalahkan • Tekan Enter untuk lanjut';
               overlay.style.display = 'flex';
               state.paused = true;
             }
@@ -543,55 +649,18 @@
       updateHUD();
     }
 
-    function shoot(){
-      if (!state.running || state.paused) return;
-      const p = state.player;
-      if (p.ammo <= 0) return;
-      p.ammo--;
-      state.bullets.push({x:p.x, y:p.y - p.h, speed:6, damage: 12});
-    }
-
-    function damagePlayer(d){
-      state.player.hp -= d;
-      // screen shake (light)
-      shakeTime = 180;
-    }
-
-    function rectCircleCollide(e, p){
-      // Treat player as diamond; approximate with circle for collision
-      const pr = Math.max(p.w,p.h)/2;
-      const dx = Math.abs(e.x - p.x);
-      const dy = Math.abs(e.y - p.y);
-      return dx < (e.w/2 + pr) && dy < (e.h/2 + pr);
-    }
-
-    function pointRectCollide(x,y,e){
-      return x > e.x - e.w/2 && x < e.x + e.w/2 && y > e.y - e.h/2 && y < e.y + e.h/2;
-    }
-
-    // Camera shake
-    let shakeTime = 0;
-    function applyShake(){
-      if (shakeTime > 0){
-        shakeTime -= 16;
-        const sx = (Math.random()-0.5)*6;
-        const sy = (Math.random()-0.5)*6;
-        ctx.setTransform(1,0,0,1,sx,sy);
-      } else {
-        ctx.setTransform(1,0,0,1,0,0);
+    // Grid backdrop
+    function drawBackdrop(){
+      ctx.save();
+      for (let y=0;y<HEIGHT;y+=48){
+        ctx.strokeStyle = 'rgba(0,229,255,0.06)';
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(WIDTH,y); ctx.stroke();
       }
-    }
-
-    // HUD
-    function updateHUD(){
-      const hpPct = Math.max(0, state.player.hp)/state.player.maxHP;
-      const ammoPct = Math.max(0, state.player.ammo)/state.player.maxAmmo;
-      hpBar.style.width = (hpPct*100)+'%';
-      ammoBar.style.width = (ammoPct*100)+'%';
-      hpText.textContent = `${Math.max(0,state.player.hp)} / ${state.player.maxHP}`;
-      ammoText.textContent = `${state.player.ammo}`;
-      coinText.textContent = `${state.coins}`;
-      stageText.textContent = `Stage ${state.stage}`;
+      for (let x=0;x<WIDTH;x+=48){
+        ctx.strokeStyle = 'rgba(255,46,249,0.06)';
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,HEIGHT); ctx.stroke();
+      }
+      ctx.restore();
     }
 
     // Main loop
@@ -600,25 +669,14 @@
       const dt = now - last; last = now;
       ctx.clearRect(0,0,WIDTH,HEIGHT);
       applyShake();
-
-      // Backdrop subtle scanlines
-      ctx.save();
-      for (let y=0;y<HEIGHT;y+=40){
-        ctx.strokeStyle = 'rgba(0,229,255,0.06)';
-        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(WIDTH,y); ctx.stroke();
-      }
-      for (let x=0;x<WIDTH;x+=40){
-        ctx.strokeStyle = 'rgba(255,46,249,0.06)';
-        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,HEIGHT); ctx.stroke();
-      }
-      ctx.restore();
+      drawBackdrop();
 
       if (state.running && !state.paused) update(dt);
 
-      // Draw entities
       for (const e of state.enemies) drawEnemy(e);
       for (const b of state.bullets) drawBullet(b);
       if (state.boss) drawBoss(state.boss);
+      for (const pu of state.pickups) drawPickup(pu);
       drawPlayer(state.player);
       drawParticles();
 
@@ -628,6 +686,7 @@
 
     // Init
     reset();
+
   })();
   </script>
 </body>
