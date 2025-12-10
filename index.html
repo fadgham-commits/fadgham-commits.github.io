@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Neon Rift — Arcade Sci‑Fi</title>
+<title>Neon Rift — Aimed</title>
 <style>
   :root {
     --bg: #0b0f14;
@@ -36,7 +36,7 @@
       linear-gradient(transparent 95%, var(--grid) 95%) 0 0/100% 24px,
       linear-gradient(90deg, transparent 95%, var(--grid) 95%) 0 0/24px 100%;
   }
-  canvas { display: block; width: 100%; height: 100%; }
+  canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
   #hud {
     border-left: 1px solid rgba(108, 246, 255, 0.2);
     backdrop-filter: blur(8px);
@@ -50,7 +50,6 @@
     color: var(--accent);
     margin-bottom: 8px;
   }
-  /* HP Bar */
   #hpBar {
     height: 16px; border-radius: 8px; background: rgba(255,255,255,0.08);
     box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
@@ -61,13 +60,11 @@
     box-shadow: 0 0 10px rgba(54,251,161,0.5);
     transition: width 140ms ease, background 140ms ease;
   }
-  /* Info Row */
   .row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
   .pill {
     padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06);
     border: 1px solid rgba(108, 246, 255, 0.18); color: var(--hud); font-size: 13px;
   }
-  /* Buttons */
   .btn {
     appearance: none; border: 1px solid rgba(108,246,255,0.35); background: rgba(12,22,30,0.5);
     color: #eaf6f7; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-weight: 600;
@@ -76,7 +73,6 @@
   .btn:hover { transform: translateY(-1px); background: rgba(16,26,34,0.7); }
   .btn:active { transform: translateY(0); }
   .btn.small { padding: 6px 8px; font-size: 13px; }
-  /* Shop & Skins */
   #shop, #skins { display: grid; gap: 8px; }
   .card {
     border: 1px solid rgba(108, 246, 255, 0.25);
@@ -85,7 +81,6 @@
   }
   .card h4 { margin: 0 0 6px; font-size: 14px; color: #b9f7ff; }
   .card .desc { font-size: 12px; color: #a6c8cc; }
-  /* Toast */
   #toast {
     position: absolute; left: 20px; bottom: 20px; padding: 10px 12px;
     border-radius: 8px; background: rgba(0,0,0,0.6); border: 1px solid rgba(108,246,255,0.25);
@@ -155,6 +150,11 @@
           <p class="desc">+8% damage, peluru kuning.</p>
           <button class="btn small skinBtn" data-skin="nova">Beli/Pakai</button>
         </div>
+        <div class="card">
+          <h4>Aether (rahasia)</h4>
+          <p class="desc">Unlock lewat secret item. +6% speed, +6% damage, aura neon.</p>
+          <button class="btn small skinBtn" data-skin="aether" disabled>Aether terkunci</button>
+        </div>
       </div>
     </div>
   </div>
@@ -178,11 +178,7 @@
     skinBtns: Array.from(document.querySelectorAll('.skinBtn')),
   };
 
-  // Resize canvas
-  function resize() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-  }
+  function resize() { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; }
   window.addEventListener('resize', resize);
   resize();
 
@@ -191,20 +187,27 @@
   window.addEventListener('keydown', (e) => { keys[e.code] = true; });
   window.addEventListener('keyup',   (e) => { keys[e.code] = false; });
 
-  // Utility
+  // Mouse aim
+  const mouse = { x: canvas.width/2, y: canvas.height/3 };
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    mouse.y = (e.clientY - rect.top)  * (canvas.height / rect.height);
+  });
+
+  // Utils
   const rand = (a=0, b=1) => a + Math.random() * (b - a);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a,b,t) => a + (b - a) * t;
   const dist = (ax,ay,bx,by) => Math.hypot(ax-bx, ay-by);
   const now = () => performance.now();
 
-  // Game state
+  // State
   const state = {
     running: true,
     score: 0,
     coins: 0,
     wave: 1,
-    time: 0,
     player: {
       x: 380, y: 300, r: 14,
       vx: 0, vy: 0,
@@ -224,7 +227,6 @@
     drops: [],
     boss: null,
     spawn: {
-      waveTimer: 0,
       enemyCooldown: 1200, // ms
       lastSpawn: 0,
       enemiesToSpawn: 6,
@@ -237,7 +239,6 @@
     }
   };
 
-  // Visual helpers
   function showToast(text) {
     toast.textContent = text;
     toast.classList.add('show');
@@ -254,7 +255,7 @@
     hpFill.style.boxShadow = `0 0 10px ${glow}`;
   }
 
-  // Player skin stats
+  // Skins
   function applySkinAttributes() {
     const p = state.player;
     if (p.skin === 'default') {
@@ -263,6 +264,8 @@
       p.speed = 2.4 * 1.05; p.damage = 10; p.color = '#ff7bd1';
     } else if (p.skin === 'nova') {
       p.speed = 2.4; p.damage = 10 * 1.08; p.color = '#ffd54f';
+    } else if (p.skin === 'aether') {
+      p.speed = 2.4 * 1.06; p.damage = 10 * 1.06; p.color = '#b388ff';
     }
   }
 
@@ -289,17 +292,13 @@
     return `${r}, ${g}, ${b}`;
   }
 
-  // Spawning
+  // Waves & spawns
   function scheduleWave() {
     const s = state.spawn;
-    s.waveTimer = 0;
     s.enemyCooldown = Math.max(500, 1200 - (state.wave-1) * 80);
     s.enemiesToSpawn = Math.min(16, 6 + Math.floor((state.wave-1) * 1.5));
     state.boss = null;
-    // Boss every 5 waves
-    if (state.wave % 5 === 0) {
-      spawnBoss();
-    }
+    if (state.wave % 5 === 0) spawnBoss();
   }
 
   function spawnEnemy() {
@@ -331,16 +330,16 @@
     showToast('Bos muncul!');
   }
 
-  // Drops
+  // Drops (termasuk secret item 0.1%)
   function tryDrops(x,y) {
-    // independent probabilities
     if (Math.random() < 0.18) state.drops.push({x,y,type:'coin', value: 1+Math.floor(rand(0,3))});
     if (Math.random() < 0.10) state.drops.push({x,y,type:'heal', value: 12});
     if (Math.random() < 0.08) state.drops.push({x,y,type:'overcharge', value: 2500});
     if (Math.random() < 0.06) state.drops.push({x,y,type:'shield', value: 1800});
+    if (Math.random() < 1.0) state.drops.push({x,y,type:'secret', value: 1});
   }
 
-  // Movement & combat
+  // Player update
   function updatePlayer(dt) {
     const p = state.player;
     const sp = p.speed;
@@ -364,23 +363,36 @@
     }
     p.iframes = Math.max(0, p.iframes - dt);
 
-    // Shooting
+    // Shooting toward cursor
     p.shootCD = Math.max(0, p.shootCD - dt);
     const rapid = rapidLeft();
     const canShoot = p.shootCD <= 0;
     if (keys['Space'] && canShoot) {
-      const speed = 5.2;
-      state.bullets.push({x:p.x, y:p.y-12, vx:0, vy:-speed, color:p.color, damage: currentDamage()});
-      state.bullets.push({x:p.x-4, y:p.y-8, vx:-0.6, vy:-speed*0.98, color:p.color, damage: currentDamage()*0.8});
-      state.bullets.push({x:p.x+4, y:p.y-8, vx:0.6, vy:-speed*0.98, color:p.color, damage: currentDamage()*0.8});
+      const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+      const spread = 0.08; // sedikit sebaran
+      shootBullet(angle, 1.0);
+      shootBullet(angle - spread, 0.8);
+      shootBullet(angle + spread, 0.8);
       p.shootCD = Math.max(60, p.shootDelay * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     }
+  }
+
+  function shootBullet(angle, scale=1) {
+    const p = state.player;
+    const speed = 5.2;
+    const vx = Math.cos(angle) * speed;
+    const vy = Math.sin(angle) * speed;
+    state.bullets.push({
+      x: p.x, y: p.y, vx, vy,
+      color: p.color, damage: currentDamage() * scale
+    });
   }
 
   function currentDamage() {
     const p = state.player;
     let base = p.damage * (1 + state.upgrades.damageLvl * 0.10);
     if (p.skin === 'nova') base *= 1.08;
+    if (p.skin === 'aether') base *= 1.06;
     return base;
   }
   function rapidLeft() {
@@ -409,7 +421,6 @@
         s.lastSpawn = t;
         s.enemiesToSpawn--;
       }
-      // Next wave (no enemies alive and none left to spawn)
       if (s.enemiesToSpawn <= 0 && state.enemies.length === 0) {
         state.wave++;
         ui.wave.textContent = state.wave;
@@ -418,21 +429,16 @@
       }
     }
 
-    // Boss moves in and attacks
+    // Boss logic
     if (state.boss) {
       const b = state.boss;
       b.y = lerp(b.y, canvas.height * 0.25, 0.02);
-      // Phase change
       if (b.hp < b.maxHp * 0.5 && b.phase === 1) {
-        b.phase = 2;
-        b.volleyCD *= 0.8;
-        b.sweepCD *= 0.8;
+        b.phase = 2; b.volleyCD *= 0.8; b.sweepCD *= 0.8;
         showToast('Bos marah!');
       }
-      // Attacks
       if (t - b.lastVolley > b.volleyCD) {
         b.lastVolley = t;
-        // radial volley
         const shots = 18 + (b.phase===2?6:0);
         for (let i=0;i<shots;i++) {
           const a = (i / shots) * Math.PI * 2;
@@ -446,7 +452,6 @@
       }
       if (t - b.lastSweep > b.sweepCD) {
         b.lastSweep = t;
-        // sweeping lines
         for (let i=0;i<6;i++) {
           state.enemies.push({
             x: rand(40, canvas.width-40), y: -10, r: 7, hp: 1, maxHp: 1,
@@ -465,7 +470,6 @@
         const angle = Math.atan2(p.y - e.y, p.x - e.x);
         e.x += Math.cos(angle) * e.speed;
         e.y += Math.sin(angle) * e.speed;
-        // Enemy shooting toward player occasionally
         if (now() - e.lastShot > e.fireCD) {
           e.lastShot = now();
           const a = Math.atan2(p.y - e.y, p.x - e.x);
@@ -476,11 +480,9 @@
           });
         }
       } else {
-        // projectile type
         e.x += e.vx || 0; e.y += e.vy || 0;
       }
 
-      // Remove offscreen shots
       if ((e.type === 'shot' || e.type === 'bosShot' || e.type === 'bosSweep') &&
           (e.x < -30 || e.x > canvas.width+30 || e.y < -30 || e.y > canvas.height+30)) {
         state.enemies.splice(i,1);
@@ -495,16 +497,9 @@
           addParticle(e.x, e.y, e.color, 500, 2);
           state.bullets.splice(j,1);
           if (e.hp <= 0) {
-            // Death
             state.score += (e.type==='grunt'?5:1);
             ui.score.textContent = state.score;
-            if (e.type === 'grunt') {
-              tryDrops(e.x, e.y);
-            }
-            // Boss damage handled separately
-            if (state.boss && e === state.boss) {
-              // not used: boss is separate object
-            }
+            if (e.type === 'grunt') tryDrops(e.x, e.y);
             state.enemies.splice(i,1);
             break;
           }
@@ -513,27 +508,21 @@
 
       // Player collision
       if (dist(e.x,e.y,state.player.x,state.player.y) < e.r + state.player.r) {
-        if (state.player.iframes <= 0) {
-          damagePlayer(e.type === 'grunt' ? 16 : 10);
-        }
-        // projectiles disappear on hit
-        if (e.type !== 'grunt') {
-          state.enemies.splice(i,1);
-        }
+        if (state.player.iframes <= 0) damagePlayer(e.type === 'grunt' ? 16 : 10);
+        if (e.type !== 'grunt') state.enemies.splice(i,1);
       }
     }
 
-    // Boss bullet collision with player bullets
+    // Boss bullet collision
     if (state.boss) {
       const b = state.boss;
       for (let j = state.bullets.length - 1; j >= 0; j--) {
         const bl = state.bullets[j];
         if (dist(b.x,b.y,bl.x,bl.y) < b.r + 6) {
-          b.hp -= bl.damage * 0.8; // boss has armor
+          b.hp -= bl.damage * 0.8;
           addParticle(b.x, b.y, b.color, 600, 3);
           state.bullets.splice(j,1);
           if (b.hp <= 0) {
-            // Boss defeated!
             state.score += 200;
             ui.score.textContent = state.score;
             for (let k=0;k<8;k++) tryDrops(b.x + rand(-10,10), b.y + rand(-10,10));
@@ -549,44 +538,34 @@
     const p = state.player;
     p.hp = Math.max(0, p.hp - dmg);
     hpBarUpdate();
-    // screen shake via quick particle burst
     for (let i=0;i<6;i++) addParticle(p.x, p.y, '#ffffff', 300, 2);
-    if (p.hp <= 0) {
-      state.running = false;
-      showToast('Game Over');
-    }
+    if (p.hp <= 0) { state.running = false; showToast('Game Over'); }
   }
 
   // Drops update
   function updateDrops(dt) {
     for (let i = state.drops.length - 1; i >= 0; i--) {
       const d = state.drops[i];
-      // Gravity-like drift
       if (d.type !== 'overchargeActive') {
         d.y += 0.6;
         d.x += Math.sin(d.y * 0.02) * 0.2;
       }
-      // Pickup
       if (dist(d.x,d.y,state.player.x,state.player.y) < state.player.r + 10) {
         if (d.type === 'coin') {
-          state.coins += d.value;
-          ui.coins.textContent = state.coins;
-          showToast(`+${d.value} koin`);
+          state.coins += d.value; ui.coins.textContent = state.coins; showToast(`+${d.value} koin`);
         } else if (d.type === 'heal') {
-          state.player.hp = clamp(state.player.hp + d.value, 0, state.player.maxHp);
-          hpBarUpdate();
-          showToast(`+${d.value} HP`);
+          state.player.hp = clamp(state.player.hp + d.value, 0, state.player.maxHp); hpBarUpdate(); showToast(`+${d.value} HP`);
         } else if (d.type === 'overcharge') {
-          state.drops.push({type:'overchargeActive', value: 2500, x:0, y:0});
-          showToast('Overcharge!');
+          state.drops.push({type:'overchargeActive', value: 2500, x:0, y:0}); showToast('Overcharge!');
         } else if (d.type === 'shield') {
-          state.player.iframes = Math.max(state.player.iframes, 1200);
-          showToast('Shield!');
+          state.player.iframes = Math.max(state.player.iframes, 1200); showToast('Shield!');
+        } else if (d.type === 'secret') {
+          unlockAether();
+          showToast('Secret Core ditemukan! Skin Aether terbuka');
         }
         state.drops.splice(i,1);
       }
     }
-    // Tick overcharge timer
     const oc = state.drops.find(d => d.type === 'overchargeActive');
     if (oc) {
       oc.value = Math.max(0, oc.value - dt);
@@ -598,22 +577,30 @@
     }
   }
 
+  function unlockAether() {
+    state.upgrades.skinsOwned.add('aether');
+    const btn = document.querySelector('.skinBtn[data-skin="aether"]');
+    if (btn) { btn.disabled = false; btn.textContent = 'Pakai'; }
+  }
+
   // Rendering
-  function drawPlayer() {
+  function drawPlayer(t) {
     const p = state.player;
     ctx.save();
-    // glow
-    ctx.shadowColor = p.color;
-    ctx.shadowBlur = 12;
-    // body
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fillStyle = p.color;
-    ctx.fill();
-    // muzzle
+    ctx.shadowColor = p.color; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.color; ctx.fill();
     ctx.fillStyle = 'rgba(255,255,255,0.6)';
     ctx.fillRect(p.x-2, p.y-18, 4, 8);
     ctx.restore();
+
+    // Aether aura
+    if (p.skin === 'aether') {
+      const pulse = 4 + Math.sin(t * 0.006) * 2;
+      ctx.strokeStyle = 'rgba(179,136,255,0.7)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + pulse, 0, Math.PI*2); ctx.stroke();
+    }
 
     // iframes ring
     if (p.iframes > 0) {
@@ -623,48 +610,43 @@
       ctx.lineWidth = 2;
       ctx.stroke();
     }
+
+    // Aim reticle ke kursor
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.moveTo(mouse.x-8, mouse.y); ctx.lineTo(mouse.x+8, mouse.y);
+    ctx.moveTo(mouse.x, mouse.y-8); ctx.lineTo(mouse.x, mouse.y+8);
+    ctx.stroke();
   }
 
   function drawEnemies() {
     for (const e of state.enemies) {
       ctx.save();
-      ctx.shadowColor = e.color;
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
-      ctx.fillStyle = e.color;
-      ctx.fill();
+      ctx.shadowColor = e.color; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
+      ctx.fillStyle = e.color; ctx.fill();
       ctx.restore();
     }
-    // Boss
     if (state.boss) {
       const b = state.boss;
       ctx.save();
-      ctx.shadowColor = b.color;
-      ctx.shadowBlur = 18;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-      ctx.fillStyle = b.color;
-      ctx.fill();
+      ctx.shadowColor = b.color; ctx.shadowBlur = 18;
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+      ctx.fillStyle = b.color; ctx.fill();
       ctx.restore();
-      // Boss HP bar
-      const w = canvas.width * 0.5, h = 8;
-      const x = canvas.width * 0.25, y = 18;
+      const w = canvas.width * 0.5, h = 8, x = canvas.width * 0.25, y = 18;
       const pct = clamp(b.hp/b.maxHp, 0, 1);
-      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = '#ff2e88';
-      ctx.fillRect(x, y, w * pct, h);
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = '#ff2e88'; ctx.fillRect(x, y, w * pct, h);
     }
   }
 
   function drawBullets() {
     for (const b of state.bullets) {
       ctx.save();
-      ctx.shadowColor = b.color;
-      ctx.shadowBlur = 10;
+      ctx.shadowColor = b.color; ctx.shadowBlur = 10;
       ctx.fillStyle = b.color;
-      ctx.fillRect(b.x-2, b.y-6, 4, 12);
+      ctx.fillRect(b.x-2, b.y-2, 6, 6); // bullet kecil, arah bebas
       ctx.restore();
     }
   }
@@ -672,24 +654,24 @@
   function drawDrops() {
     for (const d of state.drops) {
       if (d.type === 'coin') {
+        ctx.save(); ctx.shadowColor = '#ffd54f'; ctx.shadowBlur = 8;
+        ctx.fillStyle = '#ffd54f'; ctx.beginPath(); ctx.arc(d.x,d.y,6,0,Math.PI*2); ctx.fill(); ctx.restore();
+      } else if (d.type === 'heal') {
+        ctx.fillStyle = '#36fba1'; ctx.fillRect(d.x-5,d.y-5,10,10);
+      } else if (d.type === 'overcharge') {
+        ctx.fillStyle = '#ff7bd1'; ctx.beginPath(); ctx.moveTo(d.x, d.y-6); ctx.lineTo(d.x+6,d.y+6); ctx.lineTo(d.x-6,d.y+6); ctx.closePath(); ctx.fill();
+      } else if (d.type === 'shield') {
+        ctx.strokeStyle = '#6cf6ff'; ctx.beginPath(); ctx.arc(d.x,d.y,7,0,Math.PI*2); ctx.stroke();
+      } else if (d.type === 'secret') {
         ctx.save();
-        ctx.shadowColor = '#ffd54f';
-        ctx.shadowBlur = 8;
-        ctx.fillStyle = '#ffd54f';
+        ctx.shadowColor = '#b388ff'; ctx.shadowBlur = 14;
+        ctx.strokeStyle = '#b388ff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(d.x,d.y,10,0,Math.PI*2); ctx.stroke();
+        ctx.fillStyle = 'rgba(179,136,255,0.25)';
         ctx.beginPath(); ctx.arc(d.x,d.y,6,0,Math.PI*2); ctx.fill();
         ctx.restore();
-      } else if (d.type === 'heal') {
-        ctx.fillStyle = '#36fba1';
-        ctx.fillRect(d.x-5,d.y-5,10,10);
-      } else if (d.type === 'overcharge') {
-        ctx.fillStyle = '#ff7bd1';
-        ctx.beginPath(); ctx.moveTo(d.x, d.y-6); ctx.lineTo(d.x+6,d.y+6); ctx.lineTo(d.x-6,d.y+6); ctx.closePath(); ctx.fill();
-      } else if (d.type === 'shield') {
-        ctx.strokeStyle = '#6cf6ff';
-        ctx.beginPath(); ctx.arc(d.x,d.y,7,0,Math.PI*2); ctx.stroke();
       }
     }
-    // Overcharge indicator (top-left)
     const oc = state.drops.find(d => d.type === 'overchargeActive');
     if (oc) {
       ctx.fillStyle = 'rgba(255,255,255,0.8)';
@@ -698,7 +680,7 @@
     }
   }
 
-  // UI bindings
+  // UI
   ui.pauseBtn.addEventListener('click', () => {
     state.running = !state.running;
     ui.pauseBtn.textContent = state.running ? 'Pause' : 'Resume';
@@ -722,15 +704,15 @@
     btn.addEventListener('click', () => {
       const skin = btn.dataset.skin;
       const price = skin === 'pulse' ? 60 : (skin === 'nova' ? 80 : 0);
+      if (skin === 'aether' && !state.upgrades.skinsOwned.has('aether')) {
+        showToast('Belum terbuka'); return;
+      }
       if (!state.upgrades.skinsOwned.has(skin)) {
         if (state.coins >= price) {
           state.coins -= price; ui.coins.textContent = state.coins;
           state.upgrades.skinsOwned.add(skin);
           showToast(`Skin ${skin} dibeli`);
-        } else {
-          showToast('Koin kurang');
-          return;
-        }
+        } else { showToast('Koin kurang'); return; }
       }
       state.player.skin = skin;
       applySkinAttributes();
@@ -738,7 +720,6 @@
     });
   });
 
-  // Reset
   function resetGame() {
     state.score = 0; state.coins = 0; state.wave = 1;
     state.player.x = canvas.width/2; state.player.y = canvas.height*0.6;
@@ -746,36 +727,33 @@
     state.player.shootDelay = 180; state.player.damage = 10; state.player.speed = 2.4; state.player.skin = 'default';
     state.upgrades.damageLvl = 0; state.upgrades.rateLvl = 0; state.upgrades.hpLvl = 0;
     state.upgrades.skinsOwned = new Set(['default']);
+    const aetherBtn = document.querySelector('.skinBtn[data-skin="aether"]');
+    if (aetherBtn) { aetherBtn.disabled = true; aetherBtn.textContent = 'Aether terkunci'; }
     state.bullets.length = 0; state.enemies.length = 0; state.particles.length = 0; state.drops.length = 0; state.boss = null;
-    scheduleWave();
-    hpBarUpdate();
+    scheduleWave(); hpBarUpdate();
     ui.wave.textContent = state.wave; ui.coins.textContent = state.coins; ui.score.textContent = state.score;
     state.running = true; ui.pauseBtn.textContent = 'Pause';
   }
 
   // Game loop
   let last = now();
-  scheduleWave();
-  hpBarUpdate();
+  scheduleWave(); hpBarUpdate();
 
   function step() {
     const t = now();
     const dt = t - last; last = t;
     if (state.running) {
-      state.time += dt;
       updatePlayer(dt);
       updateBullets(dt);
       updateEnemies(dt, t);
       updateDrops(dt);
     }
-    // Draw
     ctx.clearRect(0,0,canvas.width,canvas.height);
     drawDrops();
     drawBullets();
     drawEnemies();
-    drawPlayer();
+    drawPlayer(t);
     drawParticles(t);
-
     requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
