@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Neon Rift — Aimed</title>
+<title>Neon Rift — Secret Unit</title>
 <style>
   :root {
     --bg: #0b0f14;
@@ -24,12 +24,7 @@
     color: #eaf6f7;
     overflow: hidden;
   }
-  #wrap {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 0;
-    height: 100%;
-  }
+  #wrap { display: grid; grid-template-columns: 1fr 340px; height: 100%; }
   #game {
     position: relative;
     background:
@@ -44,34 +39,17 @@
     padding: 14px 16px;
   }
   .section { margin-bottom: 18px; }
-  .title {
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  #hpBar {
-    height: 16px; border-radius: 8px; background: rgba(255,255,255,0.08);
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
-    overflow: hidden;
-  }
-  #hpFill {
-    height: 100%; width: 100%; background: var(--hp-green);
-    box-shadow: 0 0 10px rgba(54,251,161,0.5);
-    transition: width 140ms ease, background 140ms ease;
-  }
+  .title { font-weight: 600; letter-spacing: 0.3px; color: var(--accent); margin-bottom: 8px; }
+  #hpBar { height: 16px; border-radius: 8px; background: rgba(255,255,255,0.08); box-shadow: inset 0 0 6px rgba(0,0,0,0.6); overflow: hidden; }
+  #hpFill { height: 100%; width: 100%; background: var(--hp-green); box-shadow: 0 0 10px rgba(54,251,161,0.5); transition: width 140ms ease, background 140ms ease; }
   .row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
-  .pill {
-    padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(108, 246, 255, 0.18); color: var(--hud); font-size: 13px;
-  }
+  .pill { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(108, 246, 255, 0.18); color: var(--hud); font-size: 13px; }
   .btn {
     appearance: none; border: 1px solid rgba(108,246,255,0.35); background: rgba(12,22,30,0.5);
     color: #eaf6f7; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-weight: 600;
     transition: transform .06s ease, background .2s, border-color .2s;
   }
   .btn:hover { transform: translateY(-1px); background: rgba(16,26,34,0.7); }
-  .btn:active { transform: translateY(0); }
   .btn.small { padding: 6px 8px; font-size: 13px; }
   #shop, #skins { display: grid; gap: 8px; }
   .card {
@@ -116,17 +94,17 @@
       <div id="shop">
         <div class="card">
           <h4>Upgrade Damage — 30 koin</h4>
-          <p class="desc">Nambah output tembakan +10%.</p>
+          <p class="desc">+10% damage.</p>
           <button class="btn small" id="upDamage">Beli</button>
         </div>
         <div class="card">
           <h4>Upgrade Rate Fire — 40 koin</h4>
-          <p class="desc">Kurangi cooldown tembak 8%.</p>
+          <p class="desc">−8% cooldown tembak.</p>
           <button class="btn small" id="upRate">Beli</button>
         </div>
         <div class="card">
           <h4>Upgrade HP — 50 koin</h4>
-          <p class="desc">Tambah max HP +20 dan heal +20.</p>
+          <p class="desc">+20 max HP dan heal +20.</p>
           <button class="btn small" id="upHP">Beli</button>
         </div>
       </div>
@@ -142,7 +120,7 @@
         </div>
         <div class="card">
           <h4>Pulse — 60 koin</h4>
-          <p class="desc">+5% move speed, peluru magenta.</p>
+          <p class="desc">+5% speed, peluru magenta.</p>
           <button class="btn small skinBtn" data-skin="pulse">Beli/Pakai</button>
         </div>
         <div class="card">
@@ -152,8 +130,8 @@
         </div>
         <div class="card">
           <h4>Aether (rahasia)</h4>
-          <p class="desc">Unlock lewat secret item. +6% speed, +6% damage, aura neon.</p>
-          <button class="btn small skinBtn" data-skin="aether" disabled>Aether terkunci</button>
+          <p class="desc">Unlock via Secret Unit. +6% speed, +6% damage, aura neon.</p>
+          <button class="btn small skinBtn" data-skin="aether" disabled>Terkunci</button>
         </div>
       </div>
     </div>
@@ -182,18 +160,24 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // Input
+  // Input keyboard
   const keys = {};
   window.addEventListener('keydown', (e) => { keys[e.code] = true; });
   window.addEventListener('keyup',   (e) => { keys[e.code] = false; });
 
-  // Mouse aim
+  // Aim kursor
   const mouse = { x: canvas.width/2, y: canvas.height/3 };
   canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
     mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
     mouse.y = (e.clientY - rect.top)  * (canvas.height / rect.height);
   });
+
+  // Klik kanan untuk menembak
+  let rightMouseDown = false;
+  canvas.addEventListener('mousedown', (e) => { if (e.button === 2) rightMouseDown = true; });
+  canvas.addEventListener('mouseup',   (e) => { if (e.button === 2) rightMouseDown = false; });
+  canvas.addEventListener('contextmenu', (e) => e.preventDefault()); // cegah menu klik kanan
 
   // Utils
   const rand = (a=0, b=1) => a + Math.random() * (b - a);
@@ -209,7 +193,7 @@
     coins: 0,
     wave: 1,
     player: {
-      x: 380, y: 300, r: 14,
+      x: canvas.width/2, y: canvas.height*0.6, r: 14,
       vx: 0, vy: 0,
       speed: 2.4,
       hp: 100, maxHp: 100,
@@ -226,27 +210,20 @@
     particles: [],
     drops: [],
     boss: null,
-    spawn: {
-      enemyCooldown: 1200, // ms
-      lastSpawn: 0,
-      enemiesToSpawn: 6,
-    },
-    upgrades: {
-      damageLvl: 0,
-      rateLvl: 0,
-      hpLvl: 0,
-      skinsOwned: new Set(['default']),
+    spawn: { enemyCooldown: 1200, lastSpawn: 0, enemiesToSpawn: 6 },
+    upgrades: { damageLvl: 0, rateLvl: 0, hpLvl: 0, skinsOwned: new Set(['default']) },
+    config: {
+      dropCoin: 0.18,
+      dropHeal: 0.10,
+      dropOver: 0.08,
+      dropShield: 0.06,
+      dropSecret: 0.001 // 0.1%
     }
   };
 
-  function showToast(text) {
-    toast.textContent = text;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 1200);
-  }
+  function showToast(text) { toast.textContent = text; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1200); }
   function hpBarUpdate() {
-    const p = state.player;
-    const pct = clamp(p.hp / p.maxHp, 0, 1);
+    const p = state.player; const pct = clamp(p.hp / p.maxHp, 0, 1);
     hpFill.style.width = (pct * 100).toFixed(1) + '%';
     let col = '--hp-green', glow = 'rgba(54,251,161,0.5)';
     if (pct < 0.5 && pct >= 0.25) { col = '--hp-yellow'; glow = 'rgba(255,209,102,0.5)'; }
@@ -275,8 +252,7 @@
   }
   function drawParticles(t) {
     for (let i = state.particles.length - 1; i >= 0; i--) {
-      const p = state.particles[i];
-      const age = t - p.born;
+      const p = state.particles[i]; const age = t - p.born;
       if (age > p.life) { state.particles.splice(i,1); continue; }
       const a = 1 - age / p.life;
       p.x += p.vx; p.y += p.vy;
@@ -330,13 +306,15 @@
     showToast('Bos muncul!');
   }
 
-  // Drops (termasuk secret item 0.1%)
+  // Drops (termasuk Secret Unit 0.1%)
   function tryDrops(x,y) {
-    if (Math.random() < 0.18) state.drops.push({x,y,type:'coin', value: 1+Math.floor(rand(0,3))});
-    if (Math.random() < 0.10) state.drops.push({x,y,type:'heal', value: 12});
-    if (Math.random() < 0.08) state.drops.push({x,y,type:'overcharge', value: 2500});
-    if (Math.random() < 0.06) state.drops.push({x,y,type:'shield', value: 1800});
-    if (Math.random() < 1.0) state.drops.push({x,y,type:'secret', value: 1});
+    const cfg = state.config;
+    if (Math.random() < cfg.dropCoin)   state.drops.push({x,y,type:'coin', value: 1+Math.floor(rand(0,3))});
+    if (Math.random() < cfg.dropHeal)   state.drops.push({x,y,type:'heal', value: 12});
+    if (Math.random() < cfg.dropOver)   state.drops.push({x,y,type:'overcharge', value: 2500});
+    if (Math.random() < cfg.dropShield) state.drops.push({x,y,type:'shield', value: 1800});
+    // Secret Unit: rare, memberikan bonus permanen kecil (stack sekali), dan unlock skin Aether
+    if (Math.random() < cfg.dropSecret) state.drops.push({x,y,type:'secretUnit'});
   }
 
   // Player update
@@ -363,36 +341,30 @@
     }
     p.iframes = Math.max(0, p.iframes - dt);
 
-    // Shooting toward cursor
+    // Shooting toward cursor with right click
     p.shootCD = Math.max(0, p.shootCD - dt);
     const rapid = rapidLeft();
     const canShoot = p.shootCD <= 0;
     if (rightMouseDown && canShoot) {
-  const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-  shootBullet(angle, 1.0);
-  shootBullet(angle - 0.08, 0.8);
-  shootBullet(angle + 0.08, 0.8);
-  p.shootCD = Math.max(60, p.shootDelay);
-}
-y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
+      const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+      const spread = 0.08;
+      shootBullet(angle, 1.0);
+      shootBullet(angle - spread, 0.8);
+      shootBullet(angle + spread, 0.8);
+      p.shootCD = Math.max(60, p.shootDelay * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     }
   }
 
   function shootBullet(angle, scale=1) {
-    const p = state.player;
-    const speed = 5.2;
-    const vx = Math.cos(angle) * speed;
-    const vy = Math.sin(angle) * speed;
-    state.bullets.push({
-      x: p.x, y: p.y, vx, vy,
-      color: p.color, damage: currentDamage() * scale
-    });
+    const p = state.player; const speed = 5.2;
+    const vx = Math.cos(angle) * speed; const vy = Math.sin(angle) * speed;
+    state.bullets.push({ x: p.x, y: p.y, vx, vy, color: p.color, damage: currentDamage() * scale });
   }
 
   function currentDamage() {
     const p = state.player;
     let base = p.damage * (1 + state.upgrades.damageLvl * 0.10);
-    if (p.skin === 'nova') base *= 1.08;
+    if (p.skin === 'nova')   base *= 1.08;
     if (p.skin === 'aether') base *= 1.06;
     return base;
   }
@@ -543,13 +515,12 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     if (p.hp <= 0) { state.running = false; showToast('Game Over'); }
   }
 
-  // Drops update
+  // Drops update (termasuk Secret Unit effect)
   function updateDrops(dt) {
     for (let i = state.drops.length - 1; i >= 0; i--) {
       const d = state.drops[i];
       if (d.type !== 'overchargeActive') {
-        d.y += 0.6;
-        d.x += Math.sin(d.y * 0.02) * 0.2;
+        d.y += 0.6; d.x += Math.sin(d.y * 0.02) * 0.2;
       }
       if (dist(d.x,d.y,state.player.x,state.player.y) < state.player.r + 10) {
         if (d.type === 'coin') {
@@ -560,13 +531,14 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
           state.drops.push({type:'overchargeActive', value: 2500, x:0, y:0}); showToast('Overcharge!');
         } else if (d.type === 'shield') {
           state.player.iframes = Math.max(state.player.iframes, 1200); showToast('Shield!');
-        } else if (d.type === 'secret') {
-          unlockAether();
-          showToast('Secret Core ditemukan! Skin Aether terbuka');
+        } else if (d.type === 'secretUnit') {
+          applySecretUnitBuff();
+          showToast('Secret Unit! +HP, +DMG, +Speed');
         }
         state.drops.splice(i,1);
       }
     }
+    // Overcharge timer
     const oc = state.drops.find(d => d.type === 'overchargeActive');
     if (oc) {
       oc.value = Math.max(0, oc.value - dt);
@@ -576,6 +548,20 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
         showToast('Overcharge habis');
       }
     }
+  }
+
+  // Secret Unit: buff permanen kecil (stack sekali)
+  let secretBuffApplied = false;
+  function applySecretUnitBuff() {
+    if (secretBuffApplied) return;
+    secretBuffApplied = true;
+    const p = state.player;
+    // Bonus: +30 max HP (heal +30), +12% damage, +8% speed, unlock Aether
+    p.maxHp += 30; p.hp = clamp(p.hp + 30, 0, p.maxHp);
+    p.damage *= 1.12;
+    p.speed  *= 1.08;
+    hpBarUpdate();
+    unlockAether();
   }
 
   function unlockAether() {
@@ -596,7 +582,7 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     ctx.restore();
 
     // Aether aura
-    if (p.skin === 'aether') {
+    if (p.skin === 'aether' || secretBuffApplied) {
       const pulse = 4 + Math.sin(t * 0.006) * 2;
       ctx.strokeStyle = 'rgba(179,136,255,0.7)';
       ctx.lineWidth = 2;
@@ -605,14 +591,11 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
 
     // iframes ring
     if (p.iframes > 0) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r+4, 0, Math.PI*2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r+4, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 2; ctx.stroke();
     }
 
-    // Aim reticle ke kursor
+    // Reticle kursor
     ctx.strokeStyle = 'rgba(255,255,255,0.35)';
     ctx.beginPath();
     ctx.moveTo(mouse.x-8, mouse.y); ctx.lineTo(mouse.x+8, mouse.y);
@@ -622,21 +605,19 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
 
   function drawEnemies() {
     for (const e of state.enemies) {
-      ctx.save();
-      ctx.shadowColor = e.color; ctx.shadowBlur = 8;
+      ctx.save(); ctx.shadowColor = e.color; ctx.shadowBlur = 8;
       ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
       ctx.fillStyle = e.color; ctx.fill();
       ctx.restore();
     }
     if (state.boss) {
       const b = state.boss;
-      ctx.save();
-      ctx.shadowColor = b.color; ctx.shadowBlur = 18;
+      ctx.save(); ctx.shadowColor = b.color; ctx.shadowBlur = 18;
       ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
       ctx.fillStyle = b.color; ctx.fill();
       ctx.restore();
       const w = canvas.width * 0.5, h = 8, x = canvas.width * 0.25, y = 18;
-      const pct = clamp(b.hp/b.maxHp, 0, 1);
+      const pct = Math.max(0, Math.min(1, b.hp/b.maxHp));
       ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.strokeRect(x, y, w, h);
       ctx.fillStyle = '#ff2e88'; ctx.fillRect(x, y, w * pct, h);
     }
@@ -644,10 +625,9 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
 
   function drawBullets() {
     for (const b of state.bullets) {
-      ctx.save();
-      ctx.shadowColor = b.color; ctx.shadowBlur = 10;
+      ctx.save(); ctx.shadowColor = b.color; ctx.shadowBlur = 10;
       ctx.fillStyle = b.color;
-      ctx.fillRect(b.x-2, b.y-2, 6, 6); // bullet kecil, arah bebas
+      ctx.fillRect(b.x-2, b.y-2, 6, 6); // bullet kecil arah bebas
       ctx.restore();
     }
   }
@@ -663,7 +643,7 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
         ctx.fillStyle = '#ff7bd1'; ctx.beginPath(); ctx.moveTo(d.x, d.y-6); ctx.lineTo(d.x+6,d.y+6); ctx.lineTo(d.x-6,d.y+6); ctx.closePath(); ctx.fill();
       } else if (d.type === 'shield') {
         ctx.strokeStyle = '#6cf6ff'; ctx.beginPath(); ctx.arc(d.x,d.y,7,0,Math.PI*2); ctx.stroke();
-      } else if (d.type === 'secret') {
+      } else if (d.type === 'secretUnit') {
         ctx.save();
         ctx.shadowColor = '#b388ff'; ctx.shadowBlur = 14;
         ctx.strokeStyle = '#b388ff'; ctx.lineWidth = 2;
@@ -675,8 +655,7 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     }
     const oc = state.drops.find(d => d.type === 'overchargeActive');
     if (oc) {
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      ctx.font = '12px Segoe UI';
+      ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = '12px Segoe UI';
       ctx.fillText('Overcharge', 12, 36);
     }
   }
@@ -705,9 +684,7 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     btn.addEventListener('click', () => {
       const skin = btn.dataset.skin;
       const price = skin === 'pulse' ? 60 : (skin === 'nova' ? 80 : 0);
-      if (skin === 'aether' && !state.upgrades.skinsOwned.has('aether')) {
-        showToast('Belum terbuka'); return;
-      }
+      if (skin === 'aether' && !state.upgrades.skinsOwned.has('aether')) { showToast('Belum terbuka'); return; }
       if (!state.upgrades.skinsOwned.has(skin)) {
         if (state.coins >= price) {
           state.coins -= price; ui.coins.textContent = state.coins;
@@ -723,13 +700,15 @@ y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
 
   function resetGame() {
     state.score = 0; state.coins = 0; state.wave = 1;
-    state.player.x = canvas.width/2; state.player.y = canvas.height*0.6;
-    state.player.hp = 100; state.player.maxHp = 100; state.player.iframes = 0;
-    state.player.shootDelay = 180; state.player.damage = 10; state.player.speed = 2.4; state.player.skin = 'default';
+    const p = state.player;
+    p.x = canvas.width/2; p.y = canvas.height*0.6;
+    p.hp = 100; p.maxHp = 100; p.iframes = 0;
+    p.shootDelay = 180; p.damage = 10; p.speed = 2.4; p.skin = 'default';
     state.upgrades.damageLvl = 0; state.upgrades.rateLvl = 0; state.upgrades.hpLvl = 0;
     state.upgrades.skinsOwned = new Set(['default']);
+    secretBuffApplied = false;
     const aetherBtn = document.querySelector('.skinBtn[data-skin="aether"]');
-    if (aetherBtn) { aetherBtn.disabled = true; aetherBtn.textContent = 'Aether terkunci'; }
+    if (aetherBtn) { aetherBtn.disabled = true; aetherBtn.textContent = 'Terkunci'; }
     state.bullets.length = 0; state.enemies.length = 0; state.particles.length = 0; state.drops.length = 0; state.boss = null;
     scheduleWave(); hpBarUpdate();
     ui.wave.textContent = state.wave; ui.coins.textContent = state.coins; ui.score.textContent = state.score;
