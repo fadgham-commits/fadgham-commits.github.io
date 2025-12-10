@@ -367,13 +367,14 @@
     p.shootCD = Math.max(0, p.shootCD - dt);
     const rapid = rapidLeft();
     const canShoot = p.shootCD <= 0;
-    if (keys['Space'] && canShoot) {
-      const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-      const spread = 0.08; // sedikit sebaran
-      shootBullet(angle, 1.0);
-      shootBullet(angle - spread, 0.8);
-      shootBullet(angle + spread, 0.8);
-      p.shootCD = Math.max(60, p.shootDelay * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
+    if (rightMouseDown && canShoot) {
+  const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+  shootBullet(angle, 1.0);
+  shootBullet(angle - 0.08, 0.8);
+  shootBullet(angle + 0.08, 0.8);
+  p.shootCD = Math.max(60, p.shootDelay);
+}
+y * (rapid ? 0.35 : (1 - state.upgrades.rateLvl*0.08)));
     }
   }
 
