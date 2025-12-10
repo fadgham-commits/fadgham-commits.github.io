@@ -3,135 +3,176 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Neon Rift — Secret Unit</title>
+<title>Neon Rift — Cart Edition</title>
 <style>
   :root {
     --bg: #0b0f14;
     --grid: rgba(0, 255, 200, 0.06);
-    --hud: #c8faff;
+    --accent: #6cf6ff;
     --hp-green: #36fba1;
     --hp-yellow: #ffd166;
     --hp-red: #ff4d6d;
-    --accent: #6cf6ff;
-    --boss: #ff2e88;
     --coin: #ffd54f;
+    --boss: #ff2e88;
   }
   html, body {
-    height: 100%;
-    margin: 0;
-    background: radial-gradient(1200px at 50% 50%, #0d1520, var(--bg));
-    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-    color: #eaf6f7;
-    overflow: hidden;
+    height: 100%; margin: 0; background: radial-gradient(1000px at 50% 50%, #0d1520, var(--bg));
+    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Arial, sans-serif; color: #eaf6f7; overflow: hidden;
   }
-  #wrap { display: grid; grid-template-columns: 1fr 340px; height: 100%; }
+  #wrap { position: relative; width: 100%; height: 100%; }
   #game {
-    position: relative;
+    position: absolute; inset: 48px 0 0 0;
     background:
       linear-gradient(transparent 95%, var(--grid) 95%) 0 0/100% 24px,
       linear-gradient(90deg, transparent 95%, var(--grid) 95%) 0 0/24px 100%;
   }
   canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
-  #hud {
-    border-left: 1px solid rgba(108, 246, 255, 0.2);
+
+  /* Top HUD bar (no scroll) */
+  #topbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 48px;
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+    padding: 6px 10px; background: linear-gradient(180deg, rgba(12,22,30,0.65), rgba(12,22,30,0.35));
+    border-bottom: 1px solid rgba(108,246,255,0.2);
     backdrop-filter: blur(8px);
-    background: linear-gradient(180deg, rgba(12,22,30,0.55), rgba(12,22,30,0.25));
-    padding: 14px 16px;
   }
-  .section { margin-bottom: 18px; }
-  .title { font-weight: 600; letter-spacing: 0.3px; color: var(--accent); margin-bottom: 8px; }
-  #hpBar { height: 16px; border-radius: 8px; background: rgba(255,255,255,0.08); box-shadow: inset 0 0 6px rgba(0,0,0,0.6); overflow: hidden; }
+  .stat {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(108, 246, 255, 0.18); font-size: 13px;
+  }
+  #hpBar { width: 220px; height: 14px; border-radius: 7px; background: rgba(255,255,255,0.08); box-shadow: inset 0 0 6px rgba(0,0,0,0.6); overflow: hidden; }
   #hpFill { height: 100%; width: 100%; background: var(--hp-green); box-shadow: 0 0 10px rgba(54,251,161,0.5); transition: width 140ms ease, background 140ms ease; }
-  .row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
-  .pill { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(108, 246, 255, 0.18); color: var(--hud); font-size: 13px; }
   .btn {
     appearance: none; border: 1px solid rgba(108,246,255,0.35); background: rgba(12,22,30,0.5);
-    color: #eaf6f7; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-weight: 600;
+    color: #eaf6f7; padding: 7px 10px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px;
     transition: transform .06s ease, background .2s, border-color .2s;
   }
   .btn:hover { transform: translateY(-1px); background: rgba(16,26,34,0.7); }
-  .btn.small { padding: 6px 8px; font-size: 13px; }
-  #shop, #skins { display: grid; gap: 8px; }
+
+  /* Cart button */
+  #cartBtn {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  #cartBtn svg { width: 18px; height: 18px; }
+
+  /* Modal shop (no scrolling page; modal scroll internal if needed) */
+  #shopModal {
+    position: absolute; inset: 0; display: none; place-items: center;
+    background: rgba(0,0,0,0.5);
+  }
+  #shopCard {
+    width: min(520px, 92vw); max-height: 70vh; overflow: auto;
+    border: 1px solid rgba(108,246,255,0.25);
+    background: linear-gradient(180deg, rgba(12,22,30,0.75), rgba(12,22,30,0.45));
+    border-radius: 14px; padding: 14px;
+  }
+  #shopHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  #shopGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .card {
     border: 1px solid rgba(108, 246, 255, 0.25);
     background: linear-gradient(180deg, rgba(12,22,30,0.5), rgba(12,22,30,0.25));
     border-radius: 12px; padding: 10px;
   }
   .card h4 { margin: 0 0 6px; font-size: 14px; color: #b9f7ff; }
-  .card .desc { font-size: 12px; color: #a6c8cc; }
+  .card .desc { font-size: 12px; color: #a6c8cc; margin-bottom: 8px; }
+  .price { font-size: 12px; color: #ffd54f; margin-bottom: 8px; }
+
+  /* Toast */
   #toast {
-    position: absolute; left: 20px; bottom: 20px; padding: 10px 12px;
+    position: absolute; left: 16px; bottom: 16px; padding: 10px 12px;
     border-radius: 8px; background: rgba(0,0,0,0.6); border: 1px solid rgba(108,246,255,0.25);
-    font-size: 13px; pointer-events:none; opacity:0; transform: translateY(8px);
-    transition: opacity .2s ease, transform .2s ease;
+    font-size: 13px; pointer-events:none; opacity:0; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease;
   }
   #toast.show { opacity:1; transform: translateY(0); }
 </style>
 </head>
 <body>
 <div id="wrap">
+  <!-- Top HUD -->
+  <div id="topbar">
+    <div class="stat">
+      <div id="hpBar"><div id="hpFill"></div></div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <div class="stat">Wave: <span id="wave">1</span></div>
+      <div class="stat">Koin: <span id="coins">0</span></div>
+      <div class="stat">Skor: <span id="score">0</span></div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button id="pauseBtn" class="btn">Pause</button>
+      <button id="resetBtn" class="btn">Reset</button>
+      <button id="cartBtn" class="btn" title="Buka Shop">
+        <!-- Cart icon -->
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 6h15l-2 8H7L6 6z" stroke="#6cf6ff" stroke-width="2" />
+          <circle cx="9" cy="20" r="1.6" fill="#6cf6ff"/>
+          <circle cx="18" cy="20" r="1.6" fill="#6cf6ff"/>
+        </svg>
+        Shop
+      </button>
+    </div>
+  </div>
+
+  <!-- Game area -->
   <div id="game">
     <canvas id="c"></canvas>
     <div id="toast"></div>
   </div>
-  <div id="hud">
-    <div class="section">
-      <div class="title">Status</div>
-      <div id="hpBar"><div id="hpFill"></div></div>
-      <div class="row">
-        <div class="pill">Wave: <span id="wave">1</span></div>
-        <div class="pill">Koin: <span id="coins">0</span></div>
-        <div class="pill">Skor: <span id="score">0</span></div>
-      </div>
-      <div class="row">
-        <button id="pauseBtn" class="btn">Pause</button>
-        <button id="resetBtn" class="btn">Reset</button>
-      </div>
-    </div>
 
-    <div class="section">
-      <div class="title">Shop</div>
-      <div id="shop">
-        <div class="card">
-          <h4>Upgrade Damage — 30 koin</h4>
-          <p class="desc">+10% damage.</p>
-          <button class="btn small" id="upDamage">Beli</button>
+  <!-- Shop modal -->
+  <div id="shopModal">
+    <div id="shopCard">
+      <div id="shopHeader">
+        <div style="color: var(--accent); font-weight: 600;">Shop & Skin</div>
+        <button id="closeShop" class="btn">Tutup</button>
+      </div>
+      <div style="margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <div class="card" style="flex:1;">
+          <h4>Upgrade Damage</h4>
+          <div class="price">30 koin</div>
+          <div class="desc">+10% damage per level.</div>
+          <button class="btn" id="upDamage">Beli</button>
         </div>
-        <div class="card">
-          <h4>Upgrade Rate Fire — 40 koin</h4>
-          <p class="desc">−8% cooldown tembak.</p>
-          <button class="btn small" id="upRate">Beli</button>
+        <div class="card" style="flex:1;">
+          <h4>Upgrade Rate Fire</h4>
+          <div class="price">40 koin</div>
+          <div class="desc">−8% cooldown tembak per level.</div>
+          <button class="btn" id="upRate">Beli</button>
         </div>
-        <div class="card">
-          <h4>Upgrade HP — 50 koin</h4>
-          <p class="desc">+20 max HP dan heal +20.</p>
-          <button class="btn small" id="upHP">Beli</button>
+        <div class="card" style="flex:1;">
+          <h4>Upgrade HP</h4>
+          <div class="price">50 koin</div>
+          <div class="desc">+20 max HP & heal +20.</div>
+          <button class="btn" id="upHP">Beli</button>
         </div>
       </div>
-    </div>
 
-    <div class="section">
-      <div class="title">Skin</div>
-      <div id="skins">
+      <div style="color:#b9f7ff; font-weight:600; margin:6px 0 10px;">Skin</div>
+      <div id="shopGrid">
         <div class="card">
-          <h4>Default — gratis</h4>
-          <p class="desc">Seimbang, peluru cyan.</p>
-          <button class="btn small skinBtn" data-skin="default">Pakai</button>
+          <h4>Default</h4>
+          <div class="price">Gratis</div>
+          <div class="desc">Seimbang, peluru cyan.</div>
+          <button class="btn skinBtn" data-skin="default">Pakai</button>
         </div>
         <div class="card">
-          <h4>Pulse — 60 koin</h4>
-          <p class="desc">+5% speed, peluru magenta.</p>
-          <button class="btn small skinBtn" data-skin="pulse">Beli/Pakai</button>
+          <h4>Pulse</h4>
+          <div class="price">60 koin</div>
+          <div class="desc">+5% speed, peluru magenta.</div>
+          <button class="btn skinBtn" data-skin="pulse">Beli/Pakai</button>
         </div>
         <div class="card">
-          <h4>Nova — 80 koin</h4>
-          <p class="desc">+8% damage, peluru kuning.</p>
-          <button class="btn small skinBtn" data-skin="nova">Beli/Pakai</button>
+          <h4>Nova</h4>
+          <div class="price">80 koin</div>
+          <div class="desc">+8% damage, peluru kuning.</div>
+          <button class="btn skinBtn" data-skin="nova">Beli/Pakai</button>
         </div>
         <div class="card">
           <h4>Aether (rahasia)</h4>
-          <p class="desc">Unlock via Secret Unit. +6% speed, +6% damage, aura neon.</p>
-          <button class="btn small skinBtn" data-skin="aether" disabled>Terkunci</button>
+          <div class="price">Unlock via Secret Unit</div>
+          <div class="desc">+6% speed, +6% damage, aura neon.</div>
+          <button class="btn skinBtn" data-skin="aether" disabled>Terkunci</button>
         </div>
       </div>
     </div>
@@ -150,6 +191,9 @@
     score: document.getElementById('score'),
     pauseBtn: document.getElementById('pauseBtn'),
     resetBtn: document.getElementById('resetBtn'),
+    cartBtn: document.getElementById('cartBtn'),
+    shopModal: document.getElementById('shopModal'),
+    closeShop: document.getElementById('closeShop'),
     upDamage: document.getElementById('upDamage'),
     upRate: document.getElementById('upRate'),
     upHP: document.getElementById('upHP'),
@@ -173,11 +217,10 @@
     mouse.y = (e.clientY - rect.top)  * (canvas.height / rect.height);
   });
 
-  // Klik kanan untuk menembak
-  let rightMouseDown = false;
-  canvas.addEventListener('mousedown', (e) => { if (e.button === 2) rightMouseDown = true; });
-  canvas.addEventListener('mouseup',   (e) => { if (e.button === 2) rightMouseDown = false; });
-  canvas.addEventListener('contextmenu', (e) => e.preventDefault()); // cegah menu klik kanan
+  // Klik kiri untuk menembak
+  let leftMouseDown = false;
+  canvas.addEventListener('mousedown', (e) => { if (e.button === 0) leftMouseDown = true; });
+  canvas.addEventListener('mouseup',   (e) => { if (e.button === 0) leftMouseDown = false; });
 
   // Utils
   const rand = (a=0, b=1) => a + Math.random() * (b - a);
@@ -217,7 +260,7 @@
       dropHeal: 0.10,
       dropOver: 0.08,
       dropShield: 0.06,
-      dropSecret: 0.001 // 0.1%
+      dropSecret: 1.0 // 100%
     }
   };
 
@@ -313,7 +356,6 @@
     if (Math.random() < cfg.dropHeal)   state.drops.push({x,y,type:'heal', value: 12});
     if (Math.random() < cfg.dropOver)   state.drops.push({x,y,type:'overcharge', value: 2500});
     if (Math.random() < cfg.dropShield) state.drops.push({x,y,type:'shield', value: 1800});
-    // Secret Unit: rare, memberikan bonus permanen kecil (stack sekali), dan unlock skin Aether
     if (Math.random() < cfg.dropSecret) state.drops.push({x,y,type:'secretUnit'});
   }
 
@@ -327,27 +369,24 @@
     if (keys['KeyA'] || keys['ArrowLeft']) dx -= 1;
     if (keys['KeyD'] || keys['ArrowRight']) dx += 1;
     const mag = Math.hypot(dx,dy) || 1;
-    p.vx = dx/mag * sp;
-    p.vy = dy/mag * sp;
+    p.vx = dx/mag * sp; p.vy = dy/mag * sp;
     p.x = clamp(p.x + p.vx, 20, canvas.width - 20);
     p.y = clamp(p.y + p.vy, 20, canvas.height - 20);
 
     // Dash
     p.dashCD = Math.max(0, p.dashCD - dt);
     if ((keys['ShiftLeft'] || keys['ShiftRight']) && p.dashCD <= 0) {
-      p.dashCD = 1200; p.iframes = 300;
-      addParticle(p.x, p.y, '#ffffff', 400, 3);
-      showToast('Dash!');
+      p.dashCD = 1200; p.iframes = 300; addParticle(p.x, p.y, '#ffffff', 400, 3); showToast('Dash!');
     }
     p.iframes = Math.max(0, p.iframes - dt);
 
-    // Shooting toward cursor with right click
+    // Shooting toward cursor with left click
     p.shootCD = Math.max(0, p.shootCD - dt);
     const rapid = rapidLeft();
     const canShoot = p.shootCD <= 0;
-    if (rightMouseDown && canShoot) {
+    if (leftMouseDown && canShoot) {
       const angle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
-      const spread = 0.08;
+      const spread = 0.08; // rasa arcade, set 0 buat presisi penuh
       shootBullet(angle, 1.0);
       shootBullet(angle - spread, 0.8);
       shootBullet(angle + spread, 0.8);
@@ -357,7 +396,7 @@
 
   function shootBullet(angle, scale=1) {
     const p = state.player; const speed = 5.2;
-    const vx = Math.cos(angle) * speed; const vy = Math.sin(angle) * speed;
+    const vx = Math.cos(angle) * speed, vy = Math.sin(angle) * speed;
     state.bullets.push({ x: p.x, y: p.y, vx, vy, color: p.color, damage: currentDamage() * scale });
   }
 
@@ -390,15 +429,10 @@
     const s = state.spawn;
     if (!state.boss) {
       if (s.enemiesToSpawn > 0 && t - s.lastSpawn > s.enemyCooldown) {
-        spawnEnemy();
-        s.lastSpawn = t;
-        s.enemiesToSpawn--;
+        spawnEnemy(); s.lastSpawn = t; s.enemiesToSpawn--;
       }
       if (s.enemiesToSpawn <= 0 && state.enemies.length === 0) {
-        state.wave++;
-        ui.wave.textContent = state.wave;
-        scheduleWave();
-        showToast('Wave berikutnya!');
+        state.wave++; ui.wave.textContent = state.wave; scheduleWave(); showToast('Wave berikutnya!');
       }
     }
 
@@ -407,8 +441,7 @@
       const b = state.boss;
       b.y = lerp(b.y, canvas.height * 0.25, 0.02);
       if (b.hp < b.maxHp * 0.5 && b.phase === 1) {
-        b.phase = 2; b.volleyCD *= 0.8; b.sweepCD *= 0.8;
-        showToast('Bos marah!');
+        b.phase = 2; b.volleyCD *= 0.8; b.sweepCD *= 0.8; showToast('Bos marah!');
       }
       if (t - b.lastVolley > b.volleyCD) {
         b.lastVolley = t;
@@ -417,7 +450,6 @@
           const a = (i / shots) * Math.PI * 2;
           state.enemies.push({
             x: b.x, y: b.y, r: 6, hp: 1, maxHp: 1,
-            speed: 2.2 + (b.phase===2?0.6:0),
             fireCD: 999999, lastShot: t, color: '#ff8abf', type: 'bosShot',
             vx: Math.cos(a) * 2.6, vy: Math.sin(a) * 2.6
           });
@@ -428,7 +460,6 @@
         for (let i=0;i<6;i++) {
           state.enemies.push({
             x: rand(40, canvas.width-40), y: -10, r: 7, hp: 1, maxHp: 1,
-            speed: 3.0 + (b.phase===2?0.6:0),
             fireCD: 999999, lastShot: t, color: '#ff2e88', type: 'bosSweep',
             vx: 0, vy: 3.4
           });
@@ -447,7 +478,7 @@
           e.lastShot = now();
           const a = Math.atan2(p.y - e.y, p.x - e.x);
           state.enemies.push({
-            x: e.x, y: e.y, r: 6, hp: 1, maxHp: 1, speed: 3.0,
+            x: e.x, y: e.y, r: 6, hp: 1, maxHp: 1,
             fireCD: 999999, lastShot: now(), color: '#b3fff7', type: 'shot',
             vx: Math.cos(a) * 3.2, vy: Math.sin(a) * 3.2
           });
@@ -464,17 +495,14 @@
 
       // Bullet collision
       for (let j = state.bullets.length - 1; j >= 0; j--) {
-        const b = state.bullets[j];
-        if (dist(e.x,e.y,b.x,b.y) < e.r + 3) {
-          e.hp -= b.damage;
-          addParticle(e.x, e.y, e.color, 500, 2);
+        const bl = state.bullets[j];
+        if (dist(e.x,e.y,bl.x,bl.y) < e.r + 3) {
+          e.hp -= bl.damage; addParticle(e.x, e.y, e.color, 500, 2);
           state.bullets.splice(j,1);
           if (e.hp <= 0) {
-            state.score += (e.type==='grunt'?5:1);
-            ui.score.textContent = state.score;
+            state.score += (e.type==='grunt'?5:1); ui.score.textContent = state.score;
             if (e.type === 'grunt') tryDrops(e.x, e.y);
-            state.enemies.splice(i,1);
-            break;
+            state.enemies.splice(i,1); break;
           }
         }
       }
@@ -492,15 +520,12 @@
       for (let j = state.bullets.length - 1; j >= 0; j--) {
         const bl = state.bullets[j];
         if (dist(b.x,b.y,bl.x,bl.y) < b.r + 6) {
-          b.hp -= bl.damage * 0.8;
-          addParticle(b.x, b.y, b.color, 600, 3);
+          b.hp -= bl.damage * 0.8; addParticle(b.x, b.y, b.color, 600, 3);
           state.bullets.splice(j,1);
           if (b.hp <= 0) {
-            state.score += 200;
-            ui.score.textContent = state.score;
+            state.score += 200; ui.score.textContent = state.score;
             for (let k=0;k<8;k++) tryDrops(b.x + rand(-10,10), b.y + rand(-10,10));
-            showToast('Bos kalah!');
-            state.boss = null;
+            showToast('Bos kalah!'); state.boss = null;
           }
         }
       }
@@ -509,8 +534,7 @@
 
   function damagePlayer(dmg) {
     const p = state.player;
-    p.hp = Math.max(0, p.hp - dmg);
-    hpBarUpdate();
+    p.hp = Math.max(0, p.hp - dmg); hpBarUpdate();
     for (let i=0;i<6;i++) addParticle(p.x, p.y, '#ffffff', 300, 2);
     if (p.hp <= 0) { state.running = false; showToast('Game Over'); }
   }
@@ -519,9 +543,7 @@
   function updateDrops(dt) {
     for (let i = state.drops.length - 1; i >= 0; i--) {
       const d = state.drops[i];
-      if (d.type !== 'overchargeActive') {
-        d.y += 0.6; d.x += Math.sin(d.y * 0.02) * 0.2;
-      }
+      if (d.type !== 'overchargeActive') { d.y += 0.6; d.x += Math.sin(d.y * 0.02) * 0.2; }
       if (dist(d.x,d.y,state.player.x,state.player.y) < state.player.r + 10) {
         if (d.type === 'coin') {
           state.coins += d.value; ui.coins.textContent = state.coins; showToast(`+${d.value} koin`);
@@ -532,8 +554,7 @@
         } else if (d.type === 'shield') {
           state.player.iframes = Math.max(state.player.iframes, 1200); showToast('Shield!');
         } else if (d.type === 'secretUnit') {
-          applySecretUnitBuff();
-          showToast('Secret Unit! +HP, +DMG, +Speed');
+          applySecretUnitBuff(); showToast('Secret Unit! +HP, +DMG, +Speed');
         }
         state.drops.splice(i,1);
       }
@@ -550,7 +571,7 @@
     }
   }
 
-  // Secret Unit: buff permanen kecil (stack sekali)
+  // Secret Unit: buff permanen kecil (sekali aja)
   let secretBuffApplied = false;
   function applySecretUnitBuff() {
     if (secretBuffApplied) return;
@@ -581,7 +602,7 @@
     ctx.fillRect(p.x-2, p.y-18, 4, 8);
     ctx.restore();
 
-    // Aether aura
+    // Aura saat Aether / buff secret aktif
     if (p.skin === 'aether' || secretBuffApplied) {
       const pulse = 4 + Math.sin(t * 0.006) * 2;
       ctx.strokeStyle = 'rgba(179,136,255,0.7)';
@@ -627,7 +648,7 @@
     for (const b of state.bullets) {
       ctx.save(); ctx.shadowColor = b.color; ctx.shadowBlur = 10;
       ctx.fillStyle = b.color;
-      ctx.fillRect(b.x-2, b.y-2, 6, 6); // bullet kecil arah bebas
+      ctx.fillRect(b.x-2, b.y-2, 6, 6);
       ctx.restore();
     }
   }
@@ -660,7 +681,10 @@
     }
   }
 
-  // UI
+  // UI: shop modal
+  ui.cartBtn.addEventListener('click', () => { ui.shopModal.style.display = 'grid'; });
+  ui.closeShop.addEventListener('click', () => { ui.shopModal.style.display = 'none'; });
+
   ui.pauseBtn.addEventListener('click', () => {
     state.running = !state.running;
     ui.pauseBtn.textContent = state.running ? 'Pause' : 'Resume';
