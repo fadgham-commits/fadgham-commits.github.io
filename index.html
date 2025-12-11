@@ -1,1569 +1,980 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Cartoon Colorful Shooter Plus Upgrades</title>
+<meta charset="UTF-8">
+<title>Cartoon Colorful Arena</title>
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: "Segoe UI", system-ui, sans-serif;
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background: linear-gradient(180deg, #a8e6ff, #ffffff 40%, #ffe9b3);
+        font-family: "Baloo 2", system-ui, sans-serif;
+        overflow: hidden;
+        color: #333;
+    }
+    #gameContainer {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+    }
+    canvas {
+        display: block;
+        margin: 0 auto;
+        background:
+            radial-gradient(circle at 10% 20%, #fff3c4 0, transparent 40%),
+            radial-gradient(circle at 90% 10%, #ffd4f0 0, transparent 40%),
+            radial-gradient(circle at 20% 90%, #c2f7ff 0, transparent 45%),
+            #fdf7ff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
 
-  body {
-    background: linear-gradient(135deg, #ffd3ba, #ffe8a3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #333;
-  }
+    /* UI overlay */
+    #ui {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+        font-family: "Baloo 2", system-ui, sans-serif;
+    }
+    #leftUI, #rightUI {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
 
-  #game-container {
-    position: relative;
-    width: 900px;
-    height: 550px;
-    background: #fdfcff;
-    border-radius: 24px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-  }
+    .barContainer {
+        width: 220px;
+        height: 20px;
+        border-radius: 999px;
+        border: 3px solid #ff7b7b;
+        background: #ffe5e5;
+        position: relative;
+        overflow: hidden;
+    }
+    .barFill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff9a9a, #ffd27f);
+        width: 100%;
+        border-radius: 999px;
+        transition: width 0.15s;
+    }
+    .barLabel {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        font-size: 12px;
+        font-weight: 600;
+        color: #b02c2c;
+    }
 
-  canvas {
-    display: block;
-    background: radial-gradient(circle at top, #ffffff 0%, #f5f1ff 45%, #fffbf0 100%);
-  }
+    .pillInfo {
+        font-size: 13px;
+        font-weight: 600;
+        background: #ffffffcc;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 2px solid #ffd27f;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-  /* Top UI bar */
-  #top-ui {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    pointer-events: none;
-  }
+    /* Shop button (keranjang kartun) */
+    #shopButton {
+        pointer-events: auto;
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        border: 3px solid #ffb64c;
+        background: #fff7e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    #shopButton:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    /* icon keranjang */
+    #shopButton::before {
+        content: "";
+        width: 22px;
+        height: 14px;
+        border-radius: 4px 4px 8px 8px;
+        border: 3px solid #ffb64c;
+        border-top: 0;
+        box-shadow: inset 0 3px 0 #ffb64c;
+        background: #ffe0a3;
+    }
+    #shopButton::after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        width: 18px;
+        height: 3px;
+        background: #ffb64c;
+        border-radius: 999px;
+    }
 
-  .ui-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    /* Shop panel */
+    #shopPanel {
+        position: absolute;
+        right: 20px;
+        top: 70px;
+        width: 280px;
+        background: #ffffffee;
+        border-radius: 18px;
+        border: 3px solid #ffb64c;
+        padding: 10px 12px 12px;
+        display: none;
+        pointer-events: auto;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+    #shopTitle {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f27b35;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    #shopTitle::before {
+        content: "🛒";
+    }
+    .shopSectionTitle {
+        font-size: 13px;
+        margin: 8px 0 4px;
+        color: #ff8b5c;
+        font-weight: 700;
+    }
+    .shopGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    .shopItem {
+        border-radius: 12px;
+        border: 2px solid #ffd6a5;
+        padding: 4px 6px;
+        font-size: 11px;
+        background: #fffaf1;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        transition: transform 0.08s, box-shadow 0.08s, border-color 0.08s;
+    }
+    .shopItem:hover {
+        border-color: #ffb64c;
+        box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+        transform: translateY(-1px);
+    }
+    .shopItemTitle {
+        font-weight: 700;
+        color: #ff7b7b;
+    }
+    .shopItemCost {
+        color: #f29f05;
+        font-size: 10px;
+        font-weight: 700;
+    }
+    .shopItemDesc {
+        font-size: 10px;
+        color: #666;
+    }
 
-  /* HP bar */
-  #hp-bar-wrapper {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 999px;
-    padding: 4px 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  }
+    .skinPreview {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #ffd6a5;
+        margin-bottom: 2px;
+    }
+    .equippedTag {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        background: #96f28b;
+        color: #2b6c1f;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 1px 4px;
+        border-radius: 999px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
 
-  #hp-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-  }
-
-  #hp-bar {
-    width: 200px;
-    height: 14px;
-    background: #ffe1e1;
-    border-radius: 999px;
-    overflow: hidden;
-    border: 1px solid #ffb3b3;
-  }
-
-  #hp-fill {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #ff6c6c, #ffb347);
-    transition: width 0.15s linear;
-  }
-
-  /* Coin display */
-  #coin-display {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 999px;
-    padding: 6px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  }
-
-  #coin-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #fff7c2, #ffc800);
-    border: 2px solid #e1a400;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 800;
-    color: #8b5a00;
-  }
-
-  #coin-text {
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  /* Shop button */
-  #shop-button {
-    pointer-events: auto;
-    width: 46px;
-    height: 46px;
-    border-radius: 16px;
-    background: #ffb347;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s;
-  }
-
-  #shop-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
-    background: #ff9f1c;
-  }
-
-  #shop-button:active {
-    transform: translateY(1px) scale(0.97);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  #shop-button-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    border: 2px solid #fff;
-    position: relative;
-  }
-
-  #shop-button-icon::before,
-  #shop-button-icon::after {
-    content: "";
-    position: absolute;
-    background: #fff;
-  }
-
-  /* cart wheels */
-  #shop-button-icon::before {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    bottom: -6px;
-    left: 3px;
-    box-shadow: 12px 0 0 0 #fff;
-  }
-
-  /* cart handle + basket */
-  #shop-button-icon::after {
-    width: 14px;
-    height: 12px;
-    border-radius: 3px;
-    border: 2px solid #fff;
-    border-top: none;
-    border-left: none;
-    transform: skewX(-12deg);
-    top: 3px;
-    left: 5px;
-  }
-
-  /* Boss incoming overlay */
-  #boss-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(10, 5, 40, 0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffe9a3;
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: 4px;
-    text-shadow: 0 0 18px rgba(255, 230, 120, 0.8);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-  }
-
-  /* Game over overlay */
-  #game-over-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 5, 30, 0.7);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #fff7e2;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-  }
-
-  #game-over-overlay.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  #game-over-overlay h1 {
-    font-size: 40px;
-    margin-bottom: 8px;
-  }
-
-  #game-over-overlay p {
-    margin-bottom: 18px;
-  }
-
-  #restart-button {
-    pointer-events: auto;
-    padding: 10px 24px;
-    border-radius: 999px;
-    border: none;
-    background: #ff6c6c;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s;
-  }
-
-  #restart-button:hover {
-    background: #ff5050;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
-  }
-
-  #restart-button:active {
-    transform: translateY(1px) scale(0.97);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-  }
-
-  /* Shop panel */
-  #shop-panel {
-    position: absolute;
-    right: 16px;
-    top: 70px;
-    width: 280px;
-    background: rgba(255, 255, 255, 0.96);
-    border-radius: 20px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-    padding: 12px 12px 16px 12px;
-    transform: translateY(-10px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-  }
-
-  #shop-panel.visible {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
-
-  #shop-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-
-  #shop-title {
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  #shop-subtitle {
-    font-size: 11px;
-    color: #777;
-  }
-
-  /* tabs */
-  #shop-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .shop-tab {
-    flex: 1;
-    padding: 4px 0;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    background: #f3f4ff;
-    color: #4b5563;
-    transition: background 0.1s ease, color 0.1s ease;
-  }
-
-  .shop-tab.active {
-    background: #ffb347;
-    color: #fff;
-  }
-
-  #shop-content {
-    min-height: 110px;
-  }
-
-  /* Skin grid */
-  #skin-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .skin-card {
-    background: #fdf4ff;
-    border-radius: 16px;
-    padding: 6px;
-    border: 2px solid transparent;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, border 0.1s ease, background 0.1s ease;
-  }
-
-  .skin-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
-  }
-
-  .skin-card.selected {
-    border-color: #ff9f1c;
-    background: #fff8e8;
-  }
-
-  .skin-preview {
-    height: 40px;
-    border-radius: 12px;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: #555;
-  }
-
-  .skin-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-  }
-
-  .skin-name {
-    font-weight: 700;
-  }
-
-  .skin-price {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .skin-price-coin {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: radialGradient(circle at 30% 30%, #fff7c2, #ffc800);
-  }
-
-  .skin-price-coin {
-    background: radial-gradient(circle at 30% 30%, #fff7c2, #ffc800);
-    border: 1px solid #e1a400;
-    font-size: 9px;
-    font-weight: 800;
-    color: #8b5a00;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .skin-status {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 999px;
-    background: #e5e5ff;
-    color: #4747c7;
-  }
-
-  .skin-status.owned {
-    background: #d6ffe0;
-    color: #228b4e;
-  }
-
-  .skin-status.equipped {
-    background: #ffd9a8;
-    color: #d96500;
-  }
-
-  /* Upgrade list */
-  #upgrade-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .upgrade-card {
-    border-radius: 12px;
-    padding: 6px 8px;
-    background: #f3f4ff;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-  }
-
-  .upgrade-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-    background: #e5e7ff;
-  }
-
-  .upgrade-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .upgrade-desc {
-    font-size: 11px;
-    color: #4b5563;
-  }
-
-  .upgrade-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-  }
-
-  .upgrade-level {
-    font-weight: 600;
-  }
-
-  .upgrade-price {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .upgrade-price-coin {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #fff7c2, #ffc800);
-    border: 1px solid #e1a400;
-    font-size: 9px;
-    font-weight: 800;
-    color: #8b5a00;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .upgrade-max {
-    font-size: 10px;
-    font-weight: 700;
-    color: #16a34a;
-  }
-
+    /* Boss warning overlay (kartun) */
+    #bossWarning {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.45);
+        color: #fff;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px #ff5a5a;
+        pointer-events: none;
+        animation: warningBounce 1s infinite;
+    }
+    @keyframes warningBounce {
+        0% { transform: scale(0.9); opacity: 0.1; }
+        40% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1); opacity: 0; }
+    }
 </style>
 </head>
 <body>
-<div id="game-container">
-  <canvas id="game" width="900" height="550"></canvas>
+<div id="gameContainer">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
 
-  <div id="top-ui">
-    <div class="ui-section">
-      <div id="hp-bar-wrapper">
-        <span id="hp-label">HP</span>
-        <div id="hp-bar">
-          <div id="hp-fill"></div>
+    <div id="ui">
+        <div id="leftUI">
+            <div class="barContainer">
+                <div id="hpFill" class="barFill"></div>
+                <div class="barLabel">HP</div>
+            </div>
+            <div class="pillInfo" id="coinDisplay">💰 0</div>
+            <div class="pillInfo" id="waveDisplay">Wave 1</div>
+            <div class="pillInfo" id="spawnDisplay">Spawn: 0.0s</div>
         </div>
-      </div>
+        <div id="rightUI">
+            <div class="pillInfo" id="statDisplay">DMG 0 | FR 0ms</div>
+            <div id="shopButton" title="Open Shop"></div>
+        </div>
     </div>
 
-    <div class="ui-section">
-      <div id="coin-display">
-        <div id="coin-icon">C</div>
-        <div id="coin-text">0</div>
-      </div>
+    <div id="shopPanel">
+        <div id="shopTitle">Shop</div>
 
-      <button id="shop-button" title="Shop">
-        <div id="shop-button-icon"></div>
-      </button>
+        <div class="shopSectionTitle">Upgrades (Permanent)</div>
+        <div class="shopGrid">
+            <div class="shopItem" data-type="upgrade" data-upgrade="hp">
+                <div class="shopItemTitle">Heart Boost</div>
+                <div class="shopItemCost">Cost: 50+</div>
+                <div class="shopItemDesc">Max HP +20</div>
+            </div>
+            <div class="shopItem" data-type="upgrade" data-upgrade="damage">
+                <div class="shopItemTitle">Power Shot</div>
+                <div class="shopItemCost">Cost: 60+</div>
+                <div class="shopItemDesc">Damage +5</div>
+            </div>
+            <div class="shopItem" data-type="upgrade" data-upgrade="fireRate">
+                <div class="shopItemTitle">Rapid Fun</div>
+                <div class="shopItemCost">Cost: 70+</div>
+                <div class="shopItemDesc">Shoot faster!</div>
+            </div>
+        </div>
+
+        <div class="shopSectionTitle">Skins</div>
+        <div class="shopGrid">
+            <div class="shopItem" data-type="skin" data-skin="default">
+                <div class="skinPreview" style="background: radial-gradient(circle at 30% 30%, #fff 0, #ff7b7b 40%, #ff4c4c 70%);"></div>
+                <div class="shopItemTitle">Cherry Puff</div>
+                <div class="shopItemCost">Owned</div>
+                <div class="shopItemDesc">Default cute hero</div>
+                <div class="equippedTag">EQUIPPED</div>
+            </div>
+            <div class="shopItem" data-type="skin" data-skin="mint">
+                <div class="skinPreview" style="background: radial-gradient(circle at 30% 30%, #fff 0, #98ffb3 40%, #53d88a 70%);"></div>
+                <div class="shopItemTitle">Mint Buddy</div>
+                <div class="shopItemCost">Cost: 120</div>
+                <div class="shopItemDesc">Fresh green style</div>
+            </div>
+            <div class="shopItem" data-type="skin" data-skin="bubble">
+                <div class="skinPreview" style="background: radial-gradient(circle at 30% 30%, #fff 0, #8fd1ff 40%, #4aa6ff 70%);"></div>
+                <div class="shopItemTitle">Bubble Pop</div>
+                <div class="shopItemCost">Cost: 120</div>
+                <div class="shopItemDesc">Blue bubbly hero</div>
+            </div>
+            <div class="shopItem" data-type="skin" data-skin="secret">
+                <div class="skinPreview" style="background: conic-gradient(#ff9a9a,#ffe174,#a2ff9e,#8fd1ff,#ff9aeb,#ff9a9a);"></div>
+                <div class="shopItemTitle">Secret Buddy</div>
+                <div class="shopItemCost">Drop Only</div>
+                <div class="shopItemDesc">Bonus stats included</div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="boss-overlay">BOSS INCOMING</div>
-
-  <!-- SHOP PANEL -->
-  <div id="shop-panel">
-    <div id="shop-header">
-      <div id="shop-title">Shop</div>
-      <div id="shop-subtitle">Tap untuk beli / upgrade</div>
-    </div>
-
-    <div id="shop-tabs">
-      <button class="shop-tab active" data-tab="skins">Skins</button>
-      <button class="shop-tab" data-tab="upgrades">Upgrades</button>
-    </div>
-
-    <div id="shop-content">
-      <div id="skin-grid"></div>
-      <div id="upgrade-list" style="display:none;"></div>
-    </div>
-  </div>
-
-  <div id="game-over-overlay">
-    <h1>GAME OVER</h1>
-    <p>Click restart to try again. Coins stay!</p>
-    <button id="restart-button">Restart</button>
-  </div>
+    <div id="bossWarning">BOSS TIME!</div>
 </div>
 
 <script>
-  const canvas = document.getElementById("game");
-  const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-  const hpFill = document.getElementById("hp-fill");
-  const coinText = document.getElementById("coin-text");
-  const bossOverlay = document.getElementById("boss-overlay");
-  const gameOverOverlay = document.getElementById("game-over-overlay");
-  const restartButton = document.getElementById("restart-button");
-  const shopButton = document.getElementById("shop-button");
-  const shopPanel = document.getElementById("shop-panel");
-  const skinGrid = document.getElementById("skin-grid");
-  const upgradeList = document.getElementById("upgrade-list");
-  const shopTabs = document.querySelectorAll(".shop-tab");
+const hpFill = document.getElementById("hpFill");
+const coinDisplay = document.getElementById("coinDisplay");
+const waveDisplay = document.getElementById("waveDisplay");
+const spawnDisplay = document.getElementById("spawnDisplay");
+const statDisplay = document.getElementById("statDisplay");
 
-  const GAME_WIDTH = canvas.width;
-  const GAME_HEIGHT = canvas.height;
+const shopButton = document.getElementById("shopButton");
+const shopPanel = document.getElementById("shopPanel");
+const bossWarning = document.getElementById("bossWarning");
+const shopItems = document.querySelectorAll(".shopItem");
 
-  // ====== STORAGE KEYS ======
-  const COIN_KEY = "cartoon_shooter_coins_v2";
-  const SKIN_KEY = "cartoon_shooter_skins_v2";
-  const EQUIPPED_SKIN_KEY = "cartoon_shooter_equipped_skin_v2";
-  const UPGRADE_KEY = "cartoon_shooter_upgrades_v2";
+// WORLD
+const world = {
+    width: canvas.width,
+    height: canvas.height,
+    wave: 1,
+    coins: 0,
+    spawnCooldown: 2000,
+    nextSpawnTime: 0,
+    enemiesPerWave: 14,
+    enemiesSpawned: 0,
+    enemiesKilled: 0,
+    bossActive: false,
+    inBossTransition: false
+};
 
-  // ====== MOUSE ======
-  let mouseX = GAME_WIDTH / 2;
-  let mouseY = GAME_HEIGHT / 2;
+// PLAYER
+const player = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 16,
 
-  // ====== BASE PLAYER STATS ======
-  const basePlayerStats = {
+    baseMaxHp: 100,
+    baseDamage: 10,
+    baseFireRate: 900,
+    speed: 3.6,   // nggak pelan, enak buat ngindar
+
     maxHp: 100,
-    dmg: 12,
-    speed: 3.0,
-    fireRate: 0.8, // peluru per detik (awal lambat)
-  };
+    hp: 100,
+    damage: 10,
+    fireRate: 900,
 
-  // SECRET BONUS
-  const secretBonus = {
-    maxHpBonus: 40,
-    dmgBonus: 8,
-    speedBonus: 1.5,
-    fireRateBonus: 0.5
-  };
-
-  // ====== UPGRADE DATA ======
-  const upgrades = {
-    fireRate: {
-      id: "fireRate",
-      name: "Fire Rate",
-      level: 0,
-      maxLevel: 10,
-      baseCost: 30,
-      costMult: 1.4,
-      perLevel: 0.12, // tambah fireRate
-      desc: "+Fire rate (tembakan lebih cepat)"
+    upgrades: {
+        hp: 0,
+        damage: 0,
+        fireRate: 0
     },
-    damage: {
-      id: "damage",
-      name: "Damage",
-      level: 0,
-      maxLevel: 10,
-      baseCost: 40,
-      costMult: 1.45,
-      perLevel: 1.8,
-      desc: "+Damage peluru"
-    },
-    maxHp: {
-      id: "maxHp",
-      name: "Max HP",
-      level: 0,
-      maxLevel: 10,
-      baseCost: 35,
-      costMult: 1.4,
-      perLevel: 8,
-      desc: "+HP maksimum"
-    }
-  };
 
-  // ====== PLAYER OBJECT ======
-  let player = {
-    x: GAME_WIDTH / 2,
-    y: GAME_HEIGHT / 2,
-    radius: 18,
-    hp: basePlayerStats.maxHp,
-    maxHp: basePlayerStats.maxHp,
-    dmg: basePlayerStats.dmg,
-    speed: basePlayerStats.speed,
-    fireRate: basePlayerStats.fireRate,
-    color: "#ff6c6c",
-    outline: "#ffb347",
-    hasSecret: false
-  };
+    skin: "default"
+};
 
-  // ====== GAME STATE ======
-  let coins = 0;
-  let enemies = [];
-  let bullets = [];
-  let items = [];
-  let boss = null;
-  let inBossFight = false;
-  let bossIncoming = false;
+let bullets = [];
+let enemies = [];
+let items = [];
+let boss = null;
 
-  let spawnCooldown = 1.6;
-  let spawnTimer = 0;
-  let wave = 1;
-  let enemiesThisWave = 0;
-  let enemiesKilledThisWave = 0;
-  let enemiesPerWave = 12;
-  let waveTransitionPause = 0;
+let lastShotTime = 0;
+let lastFrameTime = 0;
 
-  let shootTimer = 0;
-  let lastTime = 0;
-  let gameOver = false;
+let mouseX = canvas.width / 2;
+let mouseY = canvas.height / 2;
 
-  // ====== SKINS ======
-  const skins = [
-    {
-      id: "default",
-      name: "Default",
-      price: 0,
-      color: "#ff6c6c",
-      outline: "#ffb347",
-      owned: true,
-      bonus: { hp: 0, dmg: 0, speed: 0, fireRate: 0 }
-    },
-    {
-      id: "mint-blaster",
-      name: "Mint Blaster",
-      price: 50,
-      color: "#5eead4",
-      outline: "#22c55e",
-      owned: false,
-      bonus: { hp: 10, dmg: 2, speed: 0.3, fireRate: 0.1 }
-    },
-    {
-      id: "violet-orb",
-      name: "Violet Orb",
-      price: 80,
-      color: "#a855f7",
-      outline: "#f97316",
-      owned: false,
-      bonus: { hp: 15, dmg: 4, speed: 0, fireRate: 0.15 }
-    },
-    {
-      id: "sunny-rocket",
-      name: "Sunny Rocket",
-      price: 120,
-      color: "#facc15",
-      outline: "#fb923c",
-      owned: false,
-      bonus: { hp: 5, dmg: 6, speed: 0.6, fireRate: 0.05 }
-    }
-  ];
+const keys = {};
 
-  let equippedSkinId = "default";
+// INPUT
+document.addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
+    if (e.key === "Escape") shopPanel.style.display = "none";
+});
+document.addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
+});
 
-  // ====== LOAD PERSISTED DATA ======
-  function loadPersisted() {
-    const savedCoins = parseInt(localStorage.getItem(COIN_KEY) || "0", 10);
-    if (!isNaN(savedCoins)) coins = savedCoins;
-
-    const savedSkinData = JSON.parse(localStorage.getItem(SKIN_KEY) || "null");
-    if (savedSkinData && Array.isArray(savedSkinData)) {
-      skins.forEach(s => {
-        const found = savedSkinData.find(ss => ss.id === s.id);
-        if (found) s.owned = !!found.owned;
-      });
-    }
-
-    const savedEquipped = localStorage.getItem(EQUIPPED_SKIN_KEY);
-    if (savedEquipped) equippedSkinId = savedEquipped;
-
-    const savedUpgrades = JSON.parse(localStorage.getItem(UPGRADE_KEY) || "null");
-    if (savedUpgrades) {
-      Object.keys(upgrades).forEach(k => {
-        if (savedUpgrades[k] != null) upgrades[k].level = savedUpgrades[k];
-      });
-    }
-  }
-
-  function saveCoins() {
-    localStorage.setItem(COIN_KEY, String(coins));
-  }
-
-  function saveSkins() {
-    const data = skins.map(s => ({ id: s.id, owned: s.owned }));
-    localStorage.setItem(SKIN_KEY, JSON.stringify(data));
-  }
-
-  function saveEquippedSkin() {
-    localStorage.setItem(EQUIPPED_SKIN_KEY, equippedSkinId);
-  }
-
-  function saveUpgrades() {
-    const data = {};
-    Object.keys(upgrades).forEach(k => {
-      data[k] = upgrades[k].level;
-    });
-    localStorage.setItem(UPGRADE_KEY, JSON.stringify(data));
-  }
-
-  // ====== UI UPDATE ======
-  function updateCoinUI() {
-    coinText.textContent = coins;
-  }
-
-  function updateHPUI() {
-    const ratio = Math.max(0, player.hp) / player.maxHp;
-    hpFill.style.width = (ratio * 100) + "%";
-
-    if (ratio > 0.6) {
-      hpFill.style.background = "linear-gradient(90deg, #4ade80, #a3e635)";
-    } else if (ratio > 0.3) {
-      hpFill.style.background = "linear-gradient(90deg, #facc15, #fb923c)";
-    } else {
-      hpFill.style.background = "linear-gradient(90deg, #f97373, #fb7185)";
-    }
-  }
-
-  // ====== APPLY STATS ======
-  function applyBaseStats() {
-    player.maxHp = basePlayerStats.maxHp;
-    player.dmg = basePlayerStats.dmg;
-    player.speed = basePlayerStats.speed;
-    player.fireRate = basePlayerStats.fireRate;
-
-    // Upgrades effect
-    const up = upgrades;
-    player.fireRate += up.fireRate.level * up.fireRate.perLevel;
-    player.dmg += up.damage.level * up.damage.perLevel;
-    player.maxHp += up.maxHp.level * up.maxHp.perLevel;
-
-    // Skin bonus
-    const skin = skins.find(s => s.id === equippedSkinId) || skins[0];
-    if (skin && skin.bonus) {
-      player.maxHp += skin.bonus.hp;
-      player.dmg += skin.bonus.dmg;
-      player.speed += skin.bonus.speed;
-      player.fireRate += skin.bonus.fireRate;
-    }
-
-    // Secret unit bonus
-    if (player.hasSecret) {
-      player.maxHp += secretBonus.maxHpBonus;
-      player.dmg += secretBonus.dmgBonus;
-      player.speed += secretBonus.speedBonus;
-      player.fireRate += secretBonus.fireRateBonus;
-    }
-
-    // Bound minimal biar ga aneh
-    if (player.fireRate < 0.2) player.fireRate = 0.2;
-
-    // refill hp setelah update stat
-    player.hp = player.maxHp;
-    updateHPUI();
-  }
-
-  function applySkinVisual() {
-    const skin = skins.find(s => s.id === equippedSkinId) || skins[0];
-    player.color = skin.color;
-    player.outline = skin.outline;
-  }
-
-  function equipSkin(id) {
-    const skin = skins.find(s => s.id === id);
-    if (!skin || !skin.owned) return;
-    equippedSkinId = id;
-    saveEquippedSkin();
-    applySkinVisual();
-    applyBaseStats();
-    renderShop();
-  }
-
-  function buyOrEquipSkin(id) {
-    const skin = skins.find(s => s.id === id);
-    if (!skin) return;
-
-    if (!skin.owned) {
-      if (coins >= skin.price) {
-        coins -= skin.price;
-        skin.owned = true;
-        updateCoinUI();
-        saveCoins();
-        saveSkins();
-      } else {
-        return;
-      }
-    }
-    equipSkin(id);
-  }
-
-  // ====== SHOP RENDER ======
-  function renderSkins() {
-    skinGrid.innerHTML = "";
-    skins.forEach(s => {
-      const card = document.createElement("div");
-      card.className = "skin-card";
-      if (equippedSkinId === s.id) card.classList.add("selected");
-
-      const preview = document.createElement("div");
-      preview.className = "skin-preview";
-      preview.style.background = "radial-gradient(circle at 30% 20%, #ffffff, " + s.color + ")";
-      preview.style.boxShadow = "0 0 0 3px " + s.outline + "44";
-      preview.textContent = s.name;
-
-      const meta = document.createElement("div");
-      meta.className = "skin-meta";
-
-      const name = document.createElement("div");
-      name.className = "skin-name";
-      name.textContent = s.name;
-
-      const status = document.createElement("div");
-      status.className = "skin-status";
-      if (!s.owned) {
-        status.textContent = "Locked";
-      } else if (equippedSkinId === s.id) {
-        status.textContent = "Equipped";
-        status.classList.add("equipped");
-      } else {
-        status.textContent = "Owned";
-        status.classList.add("owned");
-      }
-
-      meta.appendChild(name);
-      meta.appendChild(status);
-
-      const price = document.createElement("div");
-      price.className = "skin-price";
-      if (s.price > 0) {
-        const c = document.createElement("div");
-        c.className = "skin-price-coin";
-        c.textContent = "C";
-        const t = document.createElement("span");
-        t.textContent = s.price;
-        price.appendChild(c);
-        price.appendChild(t);
-      } else {
-        price.textContent = "FREE";
-      }
-
-      card.appendChild(preview);
-      card.appendChild(meta);
-      card.appendChild(price);
-
-      card.addEventListener("click", () => buyOrEquipSkin(s.id));
-
-      skinGrid.appendChild(card);
-    });
-  }
-
-  function getUpgradeCost(upg) {
-    return Math.floor(upg.baseCost * Math.pow(upg.costMult, upg.level));
-  }
-
-  function renderUpgrades() {
-    upgradeList.innerHTML = "";
-
-    Object.values(upgrades).forEach(upg => {
-      const card = document.createElement("div");
-      card.className = "upgrade-card";
-
-      const header = document.createElement("div");
-      header.className = "upgrade-header";
-      const name = document.createElement("div");
-      name.textContent = upg.name;
-      const lvl = document.createElement("div");
-      lvl.textContent = "Lv. " + upg.level + "/" + upg.maxLevel;
-      header.appendChild(name);
-      header.appendChild(lvl);
-
-      const desc = document.createElement("div");
-      desc.className = "upgrade-desc";
-      desc.textContent = upg.desc;
-
-      const bottom = document.createElement("div");
-      bottom.className = "upgrade-bottom";
-
-      const levelText = document.createElement("div");
-      levelText.className = "upgrade-level";
-      levelText.textContent = "Bonus per level: +" + upg.perLevel.toFixed(2);
-
-      const priceWrap = document.createElement("div");
-      if (upg.level >= upg.maxLevel) {
-        const max = document.createElement("div");
-        max.className = "upgrade-max";
-        max.textContent = "MAX";
-        priceWrap.appendChild(max);
-      } else {
-        const price = getUpgradeCost(upg);
-        const c = document.createElement("div");
-        c.className = "upgrade-price";
-        const coinIcon = document.createElement("div");
-        coinIcon.className = "upgrade-price-coin";
-        coinIcon.textContent = "C";
-        const span = document.createElement("span");
-        span.textContent = price;
-        c.appendChild(coinIcon);
-        c.appendChild(span);
-        priceWrap.appendChild(c);
-      }
-
-      bottom.appendChild(levelText);
-      bottom.appendChild(priceWrap);
-
-      card.appendChild(header);
-      card.appendChild(desc);
-      card.appendChild(bottom);
-
-      card.addEventListener("click", () => {
-        handleUpgradePurchase(upg.id);
-      });
-
-      upgradeList.appendChild(card);
-    });
-  }
-
-  function renderShop() {
-    renderSkins();
-    renderUpgrades();
-  }
-
-  function handleUpgradePurchase(id) {
-    const upg = upgrades[id];
-    if (!upg) return;
-    if (upg.level >= upg.maxLevel) return;
-
-    const cost = getUpgradeCost(upg);
-    if (coins < cost) return;
-
-    coins -= cost;
-    upg.level++;
-    saveCoins();
-    saveUpgrades();
-    updateCoinUI();
-    applyBaseStats();
-    renderUpgrades();
-  }
-
-  // ====== INPUT ======
-  canvas.addEventListener("mousemove", (e) => {
+canvas.addEventListener("mousemove", e => {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
-  });
+});
 
-  shopButton.addEventListener("click", () => {
-    const visible = shopPanel.classList.contains("visible");
-    if (visible) shopPanel.classList.remove("visible");
-    else shopPanel.classList.add("visible");
-  });
+// SHOP
+shopButton.addEventListener("click", () => {
+    shopPanel.style.display = shopPanel.style.display === "none" ? "block" : "none";
+});
 
-  restartButton.addEventListener("click", () => {
-    resetGame();
-  });
-
-  shopTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      shopTabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      const tabId = tab.dataset.tab;
-      if (tabId === "skins") {
-        skinGrid.style.display = "grid";
-        upgradeList.style.display = "none";
-      } else {
-        skinGrid.style.display = "none";
-        upgradeList.style.display = "flex";
-      }
+shopItems.forEach(el => {
+    el.addEventListener("click", () => {
+        const type = el.dataset.type;
+        if (type === "upgrade") {
+            buyUpgrade(el.dataset.upgrade);
+        } else if (type === "skin") {
+            buySkin(el.dataset.skin, el);
+        }
     });
-  });
+});
 
-  // ====== GAME LOGIC ======
-  function resetGame() {
+function applyUpgrades() {
+    player.maxHp = player.baseMaxHp + player.upgrades.hp * 20;
+    player.hp = Math.min(player.hp, player.maxHp);
+
+    player.damage = player.baseDamage + player.upgrades.damage * 5;
+
+    player.fireRate = Math.max(160, player.baseFireRate - player.upgrades.fireRate * 70);
+}
+
+function buyUpgrade(type) {
+    let cost = 0;
+    if (type === "hp") cost = 50 + player.upgrades.hp * 12;
+    if (type === "damage") cost = 60 + player.upgrades.damage * 16;
+    if (type === "fireRate") cost = 70 + player.upgrades.fireRate * 20;
+
+    if (world.coins >= cost) {
+        world.coins -= cost;
+        player.upgrades[type]++;
+        applyUpgrades();
+    }
+}
+
+function clearEquippedTag() {
+    document.querySelectorAll(".equippedTag").forEach(e => e.remove());
+}
+function markEquippedSkin(name) {
+    clearEquippedTag();
+    document.querySelectorAll(`.shopItem[data-type="skin"]`).forEach(el => {
+        if (el.dataset.skin === name) {
+            const tag = document.createElement("div");
+            tag.className = "equippedTag";
+            tag.textContent = "EQUIPPED";
+            el.appendChild(tag);
+        }
+    });
+}
+
+function buySkin(skinName, el) {
+    if (skinName === "default") {
+        player.skin = "default";
+        markEquippedSkin("default");
+        return;
+    }
+    if (skinName === "secret") {
+        // secret cuma dari drop
+        return;
+    }
+    const costEl = el.querySelector(".shopItemCost");
+    if (costEl && costEl.textContent.includes("Owned")) {
+        player.skin = skinName;
+        markEquippedSkin(skinName);
+        return;
+    }
+    const cost = 120;
+    if (world.coins >= cost) {
+        world.coins -= cost;
+        if (costEl) costEl.textContent = "Owned";
+        player.skin = skinName;
+        markEquippedSkin(skinName);
+    }
+}
+
+// MOVEMENT
+function movePlayer(delta) {
+    const vel = player.speed * (delta / 16.67);
+    if (keys["w"]) player.y -= vel;
+    if (keys["s"]) player.y += vel;
+    if (keys["a"]) player.x -= vel;
+    if (keys["d"]) player.x += vel;
+
+    player.x = Math.max(player.radius, Math.min(world.width - player.radius, player.x));
+    player.y = Math.max(player.radius, Math.min(world.height - player.radius, player.y));
+}
+
+// AUTO SHOOT
+function autoShoot(timestamp) {
+    if (timestamp - lastShotTime >= player.fireRate) {
+        shootBullet();
+        lastShotTime = timestamp;
+    }
+}
+
+function shootBullet() {
+    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+    const speed = 8;
+    bullets.push({
+        x: player.x,
+        y: player.y,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+        radius: 4,
+        damage: player.damage
+    });
+}
+
+// ENEMY & BOSS
+function spawnEnemy() {
+    const margin = 40;
+    const side = Math.floor(Math.random() * 4);
+    let x, y;
+    if (side === 0) { x = Math.random() * world.width; y = -margin; }
+    if (side === 1) { x = world.width + margin; y = Math.random() * world.height; }
+    if (side === 2) { x = Math.random() * world.width; y = world.height + margin; }
+    if (side === 3) { x = -margin; y = Math.random() * world.height; }
+
+    const typeRand = Math.random();
+    // cartoon enemies with different colors
+    let hp = 26;
+    let speed = 1.4;
+    let color = "#ff9a9a";
+
+    if (typeRand < 0.35) {
+        hp = 20; speed = 2.1; color = "#ffd27f"; // fast
+    } else if (typeRand > 0.7) {
+        hp = 46; speed = 1.0; color = "#b5e48c"; // tank
+    }
+
+    enemies.push({
+        x, y,
+        radius: 15,
+        hp,
+        maxHp: hp,
+        speed,
+        color,
+        isBoss: false
+    });
+}
+
+function spawnBoss() {
+    const hp = 420 + world.wave * 90;
+    boss = {
+        x: world.width / 2,
+        y: 130,
+        radius: 45,
+        hp,
+        maxHp: hp,
+        speed: 1.4,
+        phase: 1,
+        phaseTimer: 0,
+        isBoss: true
+    };
+    world.bossActive = true;
+}
+
+// ITEMS
+function spawnItem(x, y, type) {
+    const colors = {
+        heal: "#ff9a9a",
+        fireRate: "#8fd1ff",
+        damage: "#ffd27f",
+        speed: "#b5e48c",
+        coin: "#ffbf69",
+        secretUnit: "#ff9af2"
+    };
+    items.push({
+        x, y,
+        radius: 9,
+        type,
+        color: colors[type] || "#ffffff",
+        pulse: 0
+    });
+}
+
+// PROGRESSION
+function startBossTransition() {
+    world.inBossTransition = true;
+    bossWarning.style.display = "flex";
+    setTimeout(() => {
+        bossWarning.style.display = "none";
+        world.inBossTransition = false;
+        spawnBoss();
+    }, 2000);
+}
+
+function updateSpawn(timestamp) {
+    if (world.bossActive || world.inBossTransition) {
+        spawnDisplay.textContent = "Boss Stage";
+        return;
+    }
+
+    if (world.enemiesSpawned >= world.enemiesPerWave) {
+        if (enemies.length === 0) {
+            if (!world.bossActive && !world.inBossTransition) {
+                startBossTransition();
+            }
+        }
+        return;
+    }
+
+    if (timestamp >= world.nextSpawnTime) {
+        spawnEnemy();
+        world.enemiesSpawned++;
+        world.spawnCooldown = Math.max(500, world.spawnCooldown - 30);
+        world.nextSpawnTime = timestamp + world.spawnCooldown;
+    }
+
+    const remaining = Math.max(0, world.nextSpawnTime - timestamp);
+    spawnDisplay.textContent = "Spawn: " + (remaining / 1000).toFixed(1) + "s";
+}
+
+// HELPERS
+function dist2(ax, ay, bx, by) {
+    const dx = ax - bx;
+    const dy = ay - by;
+    return dx*dx + dy*dy;
+}
+
+// BULLET UPDATE
+function updateBullets(delta) {
+    const toRemove = new Set();
+
+    bullets.forEach((b, i) => {
+        b.x += b.dx * (delta / 16.67);
+        b.y += b.dy * (delta / 16.67);
+
+        if (b.x < -20 || b.x > world.width + 20 || b.y < -20 || b.y > world.height + 20) {
+            toRemove.add(i);
+            return;
+        }
+
+        // hit enemies
+        enemies.forEach((e, j) => {
+            if (dist2(b.x, b.y, e.x, e.y) < (b.radius + e.radius) ** 2) {
+                e.hp -= b.damage;
+                toRemove.add(i);
+                if (e.hp <= 0) {
+                    world.enemiesKilled++;
+                    world.coins += 5;
+
+                    if (Math.random() < 0.25) spawnItem(e.x, e.y, "heal");
+                    if (Math.random() < 0.25) spawnItem(e.x, e.y, "coin");
+                    if (Math.random() < 0.13) spawnItem(e.x, e.y, "damage");
+                    if (Math.random() < 0.08) spawnItem(e.x, e.y, "fireRate");
+                    if (Math.random() < 0.06) spawnItem(e.x, e.y, "speed");
+
+                    enemies.splice(j, 1);
+                }
+            }
+        });
+
+        // hit boss
+        if (boss) {
+            if (dist2(b.x, b.y, boss.x, boss.y) < (b.radius + boss.radius) ** 2) {
+                boss.hp -= b.damage;
+                toRemove.add(i);
+                if (boss.hp <= 0) {
+                    world.coins += 120;
+                    if (Math.random() < 0.6) {
+                        spawnItem(boss.x, boss.y, "secretUnit");
+                    }
+                    boss = null;
+                    world.bossActive = false;
+                    nextWave();
+                }
+            }
+        }
+    });
+
+    bullets = bullets.filter((_, idx) => !toRemove.has(idx));
+}
+
+// ENEMY & BOSS UPDATE
+function updateEnemies(delta) {
+    enemies.forEach(e => {
+        const angle = Math.atan2(player.y - e.y, player.x - e.x);
+        const vel = e.speed * (delta / 16.67);
+        e.x += Math.cos(angle) * vel;
+        e.y += Math.sin(angle) * vel;
+
+        if (dist2(e.x, e.y, player.x, player.y) < (e.radius + player.radius) ** 2) {
+            player.hp -= 0.25 * (delta / 16.67);
+            if (player.hp <= 0) resetGame();
+        }
+    });
+
+    if (boss) {
+        boss.phaseTimer += delta;
+        const vel = boss.speed * (delta / 16.67);
+        if (boss.phase === 1) {
+            boss.x = world.width / 2 + Math.sin(boss.phaseTimer * 0.0025) * 160;
+        } else {
+            const angle = Math.atan2(player.y - boss.y, player.x - boss.x);
+            boss.x += Math.cos(angle) * vel;
+            boss.y += Math.sin(angle) * vel * 0.7;
+        }
+        if (boss.hp < boss.maxHp * 0.5) boss.phase = 2;
+
+        if (dist2(boss.x, boss.y, player.x, player.y) < (boss.radius + player.radius) ** 2) {
+            player.hp -= 0.55 * (delta / 16.67);
+            if (player.hp <= 0) resetGame();
+        }
+    }
+}
+
+// ITEMS UPDATE
+function updateItems(delta) {
+    items.forEach(it => {
+        it.pulse += delta * 0.005;
+        // auto attract
+        if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2 + 50) {
+            const angle = Math.atan2(player.y - it.y, player.x - it.x);
+            const vel = 2.6 * (delta / 16.67);
+            it.x += Math.cos(angle) * vel;
+            it.y += Math.sin(angle) * vel;
+        }
+    });
+
+    // pickup
+    for (let i = items.length - 1; i >= 0; i--) {
+        const it = items[i];
+        if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2) {
+            if (it.type === "heal") {
+                player.hp = Math.min(player.maxHp, player.hp + 28);
+            } else if (it.type === "coin") {
+                world.coins += 15;
+            } else if (it.type === "damage") {
+                player.damage += 4;
+            } else if (it.type === "fireRate") {
+                player.fireRate = Math.max(140, player.fireRate - 120);
+            } else if (it.type === "speed") {
+                player.speed += 0.35;
+            } else if (it.type === "secretUnit") {
+                player.baseMaxHp += 30;
+                player.baseDamage += 6;
+                player.speed += 0.3;
+                player.skin = "secret";
+                markEquippedSkin("secret");
+                applyUpgrades();
+            }
+            items.splice(i, 1);
+        }
+    }
+}
+
+// WAVE
+function nextWave() {
+    world.wave++;
+    world.enemiesPerWave += 6;
+    world.enemiesSpawned = 0;
+    world.enemiesKilled = 0;
+    world.spawnCooldown = Math.max(600, 1900 - world.wave * 90);
+    world.nextSpawnTime = performance.now() + 1500;
+}
+
+// RESET
+function resetGame() {
     enemies = [];
     bullets = [];
     items = [];
     boss = null;
-    inBossFight = false;
-    bossIncoming = false;
-    spawnCooldown = 1.6;
-    spawnTimer = 0;
-    wave = 1;
-    enemiesThisWave = 0;
-    enemiesKilledThisWave = 0;
-    enemiesPerWave = 12;
-    waveTransitionPause = 0;
-    shootTimer = 0;
-    gameOver = false;
-    player.hasSecret = false;
-    applyBaseStats();
-    applySkinVisual();
-    player.x = GAME_WIDTH / 2;
-    player.y = GAME_HEIGHT / 2;
-    gameOverOverlay.classList.remove("visible");
-  }
 
-  function distance(a, b) {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+    player.hp = player.maxHp;
+    player.x = world.width / 2;
+    player.y = world.height / 2;
 
-  function spawnEnemy() {
-    if (inBossFight || bossIncoming) return;
+    world.wave = 1;
+    world.enemiesPerWave = 14;
+    world.enemiesSpawned = 0;
+    world.enemiesKilled = 0;
+    world.spawnCooldown = 2000;
+    world.nextSpawnTime = performance.now() + 1000;
+    world.bossActive = false;
+    world.inBossTransition = false;
+}
 
-    const size = 16 + Math.random() * 10;
-    const speed = 1.0 + Math.random() * 0.8 + wave * 0.1;
-
-    let x, y;
-    const edge = Math.floor(Math.random() * 4);
-    if (edge === 0) {
-      x = 0 - size;
-      y = Math.random() * GAME_HEIGHT;
-    } else if (edge === 1) {
-      x = GAME_WIDTH + size;
-      y = Math.random() * GAME_HEIGHT;
-    } else if (edge === 2) {
-      x = Math.random() * GAME_WIDTH;
-      y = 0 - size;
-    } else {
-      x = Math.random() * GAME_WIDTH;
-      y = GAME_HEIGHT + size;
-    }
-
-    const hp = 25 + wave * 4 + Math.random() * 10;
-
-    enemies.push({
-      x,
-      y,
-      radius: size,
-      hp,
-      maxHp: hp,
-      speed,
-      color: "#4f46e5",
-      type: "normal"
-    });
-
-    enemiesThisWave++;
-  }
-
-  function spawnBoss() {
-    inBossFight = true;
-    bossIncoming = true;
-    bossOverlay.style.opacity = 1;
-
-    setTimeout(() => {
-      bossIncoming = false;
-      bossOverlay.style.opacity = 0;
-      boss = {
-        x: GAME_WIDTH / 2,
-        y: -80,
-        targetY: 120,
-        radius: 55,
-        hp: 600 + wave * 120,
-        maxHp: 600 + wave * 120,
-        speed: 1.2,
-        color: "#f97316"
-      };
-    }, 1500);
-  }
-
-  function spawnItem(x, y) {
-    const r = Math.random();
-    let type;
-    if (r < 0.4) type = "heal";
-    else if (r < 0.7) type = "firerate";
-    else if (r < 0.9) type = "speed";
-    else type = "secret";
-
-    items.push({
-      x,
-      y,
-      radius: 10,
-      type,
-      ttl: 12
-    });
-  }
-
-  function spawnCoin(x, y) {
-    items.push({
-      x,
-      y,
-      radius: 8,
-      type: "coin",
-      ttl: 12
-    });
-  }
-
-  function updatePlayer(dt) {
-    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-    const speed = player.speed;
-
-    player.x += Math.cos(angle) * speed * dt * 60 * 0.3;
-    player.y += Math.sin(angle) * speed * dt * 60 * 0.3;
-
-    player.x = Math.max(player.radius + 5, Math.min(GAME_WIDTH - player.radius - 5, player.x));
-    player.y = Math.max(player.radius + 5, Math.min(GAME_HEIGHT - player.radius - 5, player.y));
-  }
-
-  function updateShooting(dt) {
-    shootTimer += dt;
-    const interval = 1 / player.fireRate;
-    if (shootTimer >= interval) {
-      shootTimer = 0;
-      const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-      bullets.push({
-        x: player.x,
-        y: player.y,
-        angle,
-        speed: 420,
-        radius: 6,
-        dmg: player.dmg
-      });
-    }
-  }
-
-  function updateEnemies(dt) {
-    enemies.forEach(e => {
-      const angle = Math.atan2(player.y - e.y, player.x - e.x);
-      e.x += Math.cos(angle) * e.speed * dt * 60;
-      e.y += Math.sin(angle) * e.speed * dt * 60;
-
-      const dist = distance(player, e);
-      if (dist < player.radius + e.radius) {
-        const dmgTaken = 10 + Math.random() * 6;
-        player.hp -= dmgTaken;
-        updateHPUI();
-        e.hp -= player.dmg * 0.5;
-
-        const push = 10;
-        player.x -= Math.cos(angle) * push;
-        player.y -= Math.sin(angle) * push;
-
-        if (player.hp <= 0 && !gameOver) {
-          handleGameOver();
-        }
-      }
-    });
-
-    enemies = enemies.filter(e => e.hp > 0);
-
-    const totalToSpawn = enemiesPerWave;
-    if (!inBossFight && enemiesKilledThisWave >= totalToSpawn && enemies.length === 0 && !bossIncoming) {
-      spawnBoss();
-    }
-  }
-
-  function updateBoss(dt) {
-    if (!boss) return;
-
-    if (boss.y < boss.targetY) {
-      boss.y += dt * 60 * 1.5;
-    } else {
-      boss.y += Math.sin(performance.now() / 600) * 0.3;
-    }
-
-    const dist = distance(player, boss);
-    if (dist < player.radius + boss.radius - 10) {
-      player.hp -= 20 * dt;
-      updateHPUI();
-      if (player.hp <= 0 && !gameOver) {
-        handleGameOver();
-      }
-    }
-  }
-
-  function updateBullets(dt) {
-    bullets.forEach(b => {
-      b.x += Math.cos(b.angle) * b.speed * dt;
-      b.y += Math.sin(b.angle) * b.speed * dt;
-    });
-
-    bullets = bullets.filter(b =>
-      b.x >= -20 && b.x <= GAME_WIDTH + 20 &&
-      b.y >= -20 && b.y <= GAME_HEIGHT + 20
-    );
-
-    bullets.forEach(b => {
-      enemies.forEach(e => {
-        const d = Math.hypot(b.x - e.x, b.y - e.y);
-        if (d < b.radius + e.radius) {
-          e.hp -= b.dmg;
-          b.toDelete = true;
-
-          if (e.hp <= 0) {
-            enemiesKilledThisWave++;
-            if (Math.random() < 0.8) spawnCoin(e.x, e.y);
-            if (Math.random() < 0.3) spawnItem(e.x, e.y);
-          }
-        }
-      });
-
-      if (boss) {
-        const d = Math.hypot(b.x - boss.x, b.y - boss.y);
-        if (d < b.radius + boss.radius) {
-          boss.hp -= b.dmg * 0.7;
-          b.toDelete = true;
-          if (boss.hp <= 0) {
-            inBossFight = false;
-            boss = null;
-            wave++;
-            enemiesPerWave += 4;
-            enemiesKilledThisWave = 0;
-            enemiesThisWave = 0;
-            spawnCooldown = Math.max(0.8, spawnCooldown - 0.15);
-            waveTransitionPause = 1.8;
-
-            coins += 50;
-            updateCoinUI();
-            saveCoins();
-          }
-        }
-      }
-    });
-
-    bullets = bullets.filter(b => !b.toDelete);
-  }
-
-  function updateItems(dt) {
-    items.forEach(i => i.ttl -= dt);
-    items = items.filter(i => i.ttl > 0);
-
-    items.forEach(i => {
-      const d = Math.hypot(player.x - i.x, player.y - i.y);
-      if (d < player.radius + i.radius + 5) {
-        if (i.type === "coin") {
-          const gained = 3 + Math.floor(Math.random() * 4);
-          coins += gained;
-          updateCoinUI();
-          saveCoins();
-        } else if (i.type === "heal") {
-          player.hp = Math.min(player.maxHp, player.hp + 25);
-          updateHPUI();
-        } else if (i.type === "firerate") {
-          player.fireRate += 0.4;
-        } else if (i.type === "speed") {
-          player.speed += 0.4;
-        } else if (i.type === "secret") {
-          player.hasSecret = true;
-          applyBaseStats();
-          applySkinVisual();
-        }
-        i.ttl = -1;
-      }
-    });
-
-    items = items.filter(i => i.ttl > 0);
-  }
-
-  function handleGameOver() {
-    gameOver = true;
-    gameOverOverlay.classList.add("visible");
-    saveCoins();
-  }
-
-  function updateSpawn(dt) {
-    if (inBossFight || bossIncoming) return;
-
-    if (waveTransitionPause > 0) {
-      waveTransitionPause -= dt;
-      return;
-    }
-
-    spawnTimer += dt;
-    if (spawnTimer >= spawnCooldown && enemiesThisWave < enemiesPerWave) {
-      spawnTimer = 0;
-      spawnEnemy();
-    }
-  }
-
-  // ====== RENDER ======
-  function drawPlayer() {
+// DRAW
+function drawBackgroundFun() {
+    // soft clouds style
     ctx.save();
-    ctx.translate(player.x, player.y);
-    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-    ctx.rotate(angle);
-
-    ctx.fillStyle = player.color;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, player.radius + 4, player.radius, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = player.outline;
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    ctx.fillStyle = "#fffaf0";
-    ctx.beginPath();
-    ctx.roundRect(player.radius - 4, -6, 14, 12, 6);
-    ctx.fill();
-
-    ctx.rotate(-angle);
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(-6, -4, 4, 0, Math.PI * 2);
-    ctx.arc(-6, 4, 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#111827";
-    ctx.beginPath();
-    ctx.arc(-7, -4, 2, 0, Math.PI * 2);
-    ctx.arc(-7, 4, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawEnemies() {
-    enemies.forEach(e => {
-      ctx.save();
-      ctx.translate(e.x, e.y);
-      ctx.fillStyle = e.color;
-      ctx.beginPath();
-      ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = "#c4b5fd";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      const hpRatio = e.hp / e.maxHp;
-      const barWidth = e.radius * 1.6;
-      ctx.fillStyle = "#11182733";
-      ctx.fillRect(-barWidth / 2, -e.radius - 10, barWidth, 6);
-      ctx.fillStyle = hpRatio > 0.4 ? "#22c55e" : "#ef4444";
-      ctx.fillRect(-barWidth / 2, -e.radius - 10, barWidth * hpRatio, 6);
-      ctx.restore();
-    });
-  }
-
-  function drawBoss() {
-    if (!boss) return;
-    ctx.save();
-    ctx.translate(boss.x, boss.y);
-
-    const t = performance.now() / 300;
-    const pulse = Math.sin(t) * 4;
-
-    const gradient = ctx.createRadialGradient(0, -10, 10, 0, 0, boss.radius + 20);
-    gradient.addColorStop(0, "#fff7ed");
-    gradient.addColorStop(0.4, "#fed7aa");
-    gradient.addColorStop(0.8, "#ea580c");
-
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(0, 0, boss.radius + pulse, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#7c2d12";
-    ctx.lineWidth = 5;
-    ctx.stroke();
-
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(-18, -8, 8, 0, Math.PI * 2);
-    ctx.arc(18, -8, 8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#111827";
-    ctx.beginPath();
-    ctx.arc(-19, -8, 4, 0, Math.PI * 2);
-    ctx.arc(17, -8, 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#7c2d12";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(0, 10, 18, 0.15 * Math.PI, 0.85 * Math.PI);
-    ctx.stroke();
-
-    const w = 200;
-    const ratio = boss.hp / boss.maxHp;
-    ctx.fillStyle = "#11182755";
-    ctx.fillRect(-w / 2, boss.radius + 10, w, 10);
-    ctx.fillStyle = "#f97316";
-    ctx.fillRect(-w / 2, boss.radius + 10, w * ratio, 10);
-
-    ctx.restore();
-  }
-
-  function drawBullets() {
-    bullets.forEach(b => {
-      ctx.save();
-      ctx.translate(b.x, b.y);
-      ctx.rotate(b.angle);
-      ctx.fillStyle = "#f97316";
-      ctx.beginPath();
-      ctx.roundRect(-4, -3, 12, 6, 3);
-      ctx.fill();
-      ctx.restore();
-    });
-  }
-
-  function drawItems() {
-    items.forEach(i => {
-      ctx.save();
-      ctx.translate(i.x, i.y);
-
-      if (i.type === "coin") {
-        ctx.fillStyle = "#facc15";
+    ctx.globalAlpha = 0.12;
+    for (let i = 0; i < 6; i++) {
+        const x = (i * 180 + performance.now() * 0.02) % (canvas.width + 200) - 100;
+        const y = 60 + (i % 3) * 120;
         ctx.beginPath();
-        ctx.arc(0, 0, i.radius, 0, Math.PI * 2);
+        ctx.ellipse(x, y, 90, 30, 0, 0, Math.PI * 2);
+        ctx.fillStyle = ["#ffe9b3","#ffd6f4","#c2f2ff"][i % 3];
         ctx.fill();
-        ctx.strokeStyle = "#b45309";
+    }
+    ctx.restore();
+}
+
+function drawPlayer() {
+    let grad;
+    if (player.skin === "default") {
+        grad = ctx.createRadialGradient(player.x-4, player.y-4, 3, player.x, player.y, player.radius+2);
+        grad.addColorStop(0, "#fff");
+        grad.addColorStop(0.4, "#ff9a9a");
+        grad.addColorStop(1, "#ff4c4c");
+    } else if (player.skin === "mint") {
+        grad = ctx.createRadialGradient(player.x-4, player.y-4, 3, player.x, player.y, player.radius+2);
+        grad.addColorStop(0, "#fff");
+        grad.addColorStop(0.4, "#b5f8c5");
+        grad.addColorStop(1, "#53d88a");
+    } else if (player.skin === "bubble") {
+        grad = ctx.createRadialGradient(player.x-4, player.y-4, 3, player.x, player.y, player.radius+2);
+        grad.addColorStop(0, "#fff");
+        grad.addColorStop(0.4, "#b3e0ff");
+        grad.addColorStop(1, "#4aa6ff");
+    } else if (player.skin === "secret") {
+        grad = ctx.createRadialGradient(player.x-4, player.y-4, 3, player.x, player.y, player.radius+2);
+        grad.addColorStop(0, "#ffffff");
+        grad.addColorStop(0.4, "#ffe174");
+        grad.addColorStop(0.7, "#a2ff9e");
+        grad.addColorStop(1, "#ff9af2");
+    }
+
+    // outer soft shadow
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.radius + 6, 0, Math.PI*2);
+    ctx.fillStyle = "rgba(0,0,0,0.09)";
+    ctx.fill();
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#ffffffcc";
+    ctx.stroke();
+
+    // direction "nose"
+    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+    ctx.beginPath();
+    ctx.arc(player.x + Math.cos(angle) * 9, player.y + Math.sin(angle) * 9, 4, 0, Math.PI*2);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+}
+
+function drawBullets() {
+    bullets.forEach(b => {
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.beginPath();
+        ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffd27f";
+        ctx.fill();
+        ctx.strokeStyle = "#ffb64c";
         ctx.lineWidth = 2;
         ctx.stroke();
-        ctx.fillStyle = "#b45309";
-        ctx.font = "10px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("C", 0, 1);
-      } else if (i.type === "heal") {
-        ctx.fillStyle = "#bbf7d0";
-        ctx.beginPath();
-        ctx.roundRect(-10, -10, 20, 20, 5);
-        ctx.fill();
-        ctx.fillStyle = "#16a34a";
-        ctx.fillRect(-3, -7, 6, 14);
-        ctx.fillRect(-7, -3, 14, 6);
-      } else if (i.type === "firerate") {
-        ctx.fillStyle = "#e0f2fe";
-        ctx.beginPath();
-        ctx.roundRect(-10, -10, 20, 20, 5);
-        ctx.fill();
-        ctx.fillStyle = "#0ea5e9";
-        ctx.beginPath();
-        ctx.moveTo(-5, 7);
-        ctx.lineTo(5, -7);
-        ctx.lineTo(0, -7);
-        ctx.lineTo(0, -12);
-        ctx.lineTo(-5, 2);
-        ctx.lineTo(0, 2);
-        ctx.closePath();
-        ctx.fill();
-      } else if (i.type === "speed") {
-        ctx.fillStyle = "#fef3c7";
-        ctx.beginPath();
-        ctx.roundRect(-10, -10, 20, 20, 5);
-        ctx.fill();
-        ctx.fillStyle = "#fbbf24";
-        ctx.beginPath();
-        ctx.moveTo(-8, 4);
-        ctx.lineTo(0, -6);
-        ctx.lineTo(0, 0);
-        ctx.lineTo(8, -10);
-        ctx.lineTo(0, 10);
-        ctx.closePath();
-        ctx.fill();
-      } else if (i.type === "secret") {
-        const t = performance.now() / 400;
-        const radius = 12 + Math.sin(t) * 2;
-        const gradient = ctx.createRadialGradient(0, 0, 4, 0, 0, radius);
-        gradient.addColorStop(0, "#fef9c3");
-        gradient.addColorStop(0.5, "#a855f7");
-        gradient.addColorStop(1, "#f97316");
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.restore();
+        ctx.restore();
     });
-  }
+}
 
-  function drawBackgroundDecor() {
-    ctx.save();
-    ctx.globalAlpha = 0.35;
-    ctx.fillStyle = "#fee2e2";
-    for (let i = 0; i < 8; i++) {
-      const x = (i * 120 + (performance.now() / 20)) % (GAME_WIDTH + 200) - 100;
-      const y = 70 + Math.sin((x + i * 20) / 80) * 20;
-      ctx.beginPath();
-      ctx.arc(x, y, 18, 0, Math.PI * 2);
-      ctx.fill();
+function drawEnemies() {
+    enemies.forEach(e => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.radius, 0, Math.PI*2);
+        ctx.fillStyle = e.color;
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#ffffffcc";
+        ctx.stroke();
+        ctx.restore();
+
+        // hp bar mini
+        const w = 26;
+        const h = 4;
+        const pct = e.hp / e.maxHp;
+        ctx.fillStyle = "#ffffffdd";
+        ctx.fillRect(e.x - w/2, e.y - e.radius - 9, w, h);
+        ctx.fillStyle = "#ff7b7b";
+        ctx.fillRect(e.x - w/2, e.y - e.radius - 9, w * pct, h);
+        ctx.strokeStyle = "#e28b8b";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(e.x - w/2, e.y - e.radius - 9, w, h);
+    });
+
+    if (boss) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(boss.x, boss.y, boss.radius, 0, Math.PI*2);
+        const grad = ctx.createRadialGradient(boss.x-8,boss.y-10,5,boss.x,boss.y,boss.radius+8);
+        grad.addColorStop(0,"#fff");
+        grad.addColorStop(0.4,"#ff9aeb");
+        grad.addColorStop(1,"#ff5a99");
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#ffffffdd";
+        ctx.stroke();
+        ctx.restore();
+
+        // boss HP bar
+        const w = canvas.width * 0.6;
+        const h = 14;
+        const pct = boss.hp / boss.maxHp;
+        const x = (canvas.width - w) / 2;
+        const y = 18;
+
+        ctx.fillStyle = "#ffffffdd";
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = "#ff7b7b";
+        ctx.fillRect(x, y, w * pct, h);
+        ctx.strokeStyle = "#ff5a5a";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, w, h);
     }
-    ctx.restore();
-  }
+}
 
-  function drawWaveInfo() {
-    ctx.save();
-    ctx.fillStyle = "#6b21a8";
-    ctx.font = "bold 16px 'Segoe UI'";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillText("Wave " + wave, 12, GAME_HEIGHT - 26);
-    ctx.restore();
-  }
+function drawItems() {
+    items.forEach(it => {
+        const scale = 1 + Math.sin(it.pulse) * 0.16;
+        ctx.save();
+        ctx.translate(it.x, it.y);
+        ctx.scale(scale, scale);
 
-  // ===== MAIN LOOP =====
-  function gameLoop(timestamp) {
-    const dt = (timestamp - lastTime) / 1000;
-    lastTime = timestamp;
+        ctx.beginPath();
+        ctx.arc(0, 0, it.radius + 3, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
+        ctx.fill();
 
-    ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    drawBackgroundDecor();
+        ctx.beginPath();
+        ctx.arc(0, 0, it.radius, 0, Math.PI * 2);
+        ctx.fillStyle = it.color;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffffdd";
+        ctx.stroke();
 
-    if (!gameOver) {
-      updatePlayer(dt);
-      updateShooting(dt);
-      updateSpawn(dt);
-      updateEnemies(dt);
-      updateBoss(dt);
-      updateBullets(dt);
-      updateItems(dt);
-    }
+        ctx.restore();
+    });
+}
 
-    drawItems();
-    drawEnemies();
-    drawBoss();
+// UI UPDATE
+function updateUI() {
+    const hpPct = Math.max(0, player.hp / player.maxHp);
+    hpFill.style.width = (hpPct * 100) + "%";
+    coinDisplay.textContent = "💰 " + Math.floor(world.coins);
+    waveDisplay.textContent = "Wave " + world.wave;
+    statDisplay.textContent = "DMG " + player.damage + " | FR " + Math.floor(player.fireRate) + "ms";
+}
+
+// MAIN LOOP
+function gameLoop(timestamp) {
+    if (!lastFrameTime) lastFrameTime = timestamp;
+    const delta = timestamp - lastFrameTime;
+    lastFrameTime = timestamp;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackgroundFun();
+
+    movePlayer(delta);
+    autoShoot(timestamp);
+    updateSpawn(timestamp);
+    updateBullets(delta);
+    updateEnemies(delta);
+    updateItems(delta);
+
     drawBullets();
+    drawEnemies();
+    drawItems();
     drawPlayer();
-    drawWaveInfo();
+
+    updateUI();
 
     requestAnimationFrame(gameLoop);
-  }
+}
 
-  // ===== INIT =====
-  loadPersisted();
-  updateCoinUI();
-  applySkinVisual();
-  applyBaseStats();
-  renderShop();
-  requestAnimationFrame(gameLoop);
+// INIT
+resetGame();
+applyUpgrades();
+markEquippedSkin("default");
+requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>
