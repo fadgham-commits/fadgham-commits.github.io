@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cartoon Colorful Arena</title>
+<title>Cartoon Colorful Bullet Arena</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -37,7 +37,6 @@
         display: flex;
         justify-content: space-between;
         pointer-events: none;
-        font-family: "Baloo 2", system-ui, sans-serif;
     }
     #leftUI, #rightUI {
         display: flex;
@@ -101,7 +100,6 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
-    /* icon keranjang */
     #shopButton::before {
         content: "";
         width: 22px;
@@ -190,7 +188,6 @@
         font-size: 10px;
         color: #666;
     }
-
     .skinPreview {
         width: 26px;
         height: 26px;
@@ -212,7 +209,7 @@
         box-shadow: 0 1px 2px rgba(0,0,0,0.15);
     }
 
-    /* Boss warning overlay (kartun) */
+    /* Boss warning */
     #bossWarning {
         position: absolute;
         inset: 0;
@@ -331,9 +328,9 @@ const world = {
     height: canvas.height,
     wave: 1,
     coins: 0,
-    spawnCooldown: 2000,
+    spawnCooldown: 1800,
     nextSpawnTime: 0,
-    enemiesPerWave: 14,
+    enemiesPerWave: 12,
     enemiesSpawned: 0,
     enemiesKilled: 0,
     bossActive: false,
@@ -349,7 +346,7 @@ const player = {
     baseMaxHp: 100,
     baseDamage: 10,
     baseFireRate: 900,
-    speed: 3.6,   // nggak pelan, enak buat ngindar
+    speed: 3.7,
 
     maxHp: 100,
     hp: 100,
@@ -365,7 +362,8 @@ const player = {
     skin: "default"
 };
 
-let bullets = [];
+let bullets = [];         // peluru player
+let enemyBullets = [];    // peluru musuh & bos
 let enemies = [];
 let items = [];
 let boss = null;
@@ -401,27 +399,22 @@ shopButton.addEventListener("click", () => {
 shopItems.forEach(el => {
     el.addEventListener("click", () => {
         const type = el.dataset.type;
-        if (type === "upgrade") {
-            buyUpgrade(el.dataset.upgrade);
-        } else if (type === "skin") {
-            buySkin(el.dataset.skin, el);
-        }
+        if (type === "upgrade") buyUpgrade(el.dataset.upgrade);
+        else if (type === "skin") buySkin(el.dataset.skin, el);
     });
 });
 
 function applyUpgrades() {
     player.maxHp = player.baseMaxHp + player.upgrades.hp * 20;
     player.hp = Math.min(player.hp, player.maxHp);
-
     player.damage = player.baseDamage + player.upgrades.damage * 5;
-
-    player.fireRate = Math.max(160, player.baseFireRate - player.upgrades.fireRate * 70);
+    player.fireRate = Math.max(150, player.baseFireRate - player.upgrades.fireRate * 70);
 }
 
 function buyUpgrade(type) {
     let cost = 0;
-    if (type === "hp") cost = 50 + player.upgrades.hp * 12;
-    if (type === "damage") cost = 60 + player.upgrades.damage * 16;
+    if (type === "hp") cost = 50 + player.upgrades.hp * 15;
+    if (type === "damage") cost = 60 + player.upgrades.damage * 18;
     if (type === "fireRate") cost = 70 + player.upgrades.fireRate * 20;
 
     if (world.coins >= cost) {
@@ -453,8 +446,7 @@ function buySkin(skinName, el) {
         return;
     }
     if (skinName === "secret") {
-        // secret cuma dari drop
-        return;
+        return; // cuma dari drop
     }
     const costEl = el.querySelector(".shopItemCost");
     if (costEl && costEl.textContent.includes("Owned")) {
@@ -483,14 +475,13 @@ function movePlayer(delta) {
     player.y = Math.max(player.radius, Math.min(world.height - player.radius, player.y));
 }
 
-// AUTO SHOOT
+// AUTO-SHOOT
 function autoShoot(timestamp) {
     if (timestamp - lastShotTime >= player.fireRate) {
         shootBullet();
         lastShotTime = timestamp;
     }
 }
-
 function shootBullet() {
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
     const speed = 8;
@@ -500,11 +491,47 @@ function shootBullet() {
         dx: Math.cos(angle) * speed,
         dy: Math.sin(angle) * speed,
         radius: 4,
-        damage: player.damage
+        damage: player.damage,
+        friendly: true
     });
 }
 
-// ENEMY & BOSS
+// ENEMY & BOSS SHOOT
+function enemyShoot(e) {
+    const angle = Math.atan2(player.y - e.y, player.x - e.x);
+    const speed = 3;
+    enemyBullets.push({
+        x: e.x,
+        y: e.y,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+        radius: 4,
+        damage: 6,
+        friendly: false,
+        color: "#ff9a9a"
+    });
+}
+function bossShootSpread(b) {
+    const base = Math.atan2(player.y - b.y, player.x - b.x);
+    const count = 7;
+    const spread = 0.9;
+    for (let i = 0; i < count; i++) {
+        const angle = base - spread/2 + (spread/(count-1))*i;
+        const speed = 3.3;
+        enemyBullets.push({
+            x: b.x,
+            y: b.y,
+            dx: Math.cos(angle) * speed,
+            dy: Math.sin(angle) * speed,
+            radius: 5,
+            damage: 8,
+            friendly: false,
+            color: "#ff9af2"
+        });
+    }
+}
+
+// ENEMY / BOSS SPAWN
 function spawnEnemy() {
     const margin = 40;
     const side = Math.floor(Math.random() * 4);
@@ -515,15 +542,21 @@ function spawnEnemy() {
     if (side === 3) { x = -margin; y = Math.random() * world.height; }
 
     const typeRand = Math.random();
-    // cartoon enemies with different colors
-    let hp = 26;
-    let speed = 1.4;
-    let color = "#ff9a9a";
+    let hp = 24 + world.wave * 2;
+    let speed = 1.4 + world.wave * 0.05;
+    let color = "#ffb5b5";
+    let shootCooldown = 2000 + Math.random() * 800;
 
     if (typeRand < 0.35) {
-        hp = 20; speed = 2.1; color = "#ffd27f"; // fast
+        hp -= 4;
+        speed += 0.6;
+        color = "#ffd27f";
+        shootCooldown += 400;
     } else if (typeRand > 0.7) {
-        hp = 46; speed = 1.0; color = "#b5e48c"; // tank
+        hp += 15;
+        speed -= 0.4;
+        color = "#b5e48c";
+        shootCooldown -= 300;
     }
 
     enemies.push({
@@ -533,21 +566,26 @@ function spawnEnemy() {
         maxHp: hp,
         speed,
         color,
-        isBoss: false
+        isBoss: false,
+        nextShot: performance.now() + shootCooldown,
+        shootCooldownBase: shootCooldown
     });
 }
 
 function spawnBoss() {
-    const hp = 420 + world.wave * 90;
+    const hpBase = 450;
+    const hp = hpBase + world.wave * 120; // makin tebal tiap wave
     boss = {
         x: world.width / 2,
         y: 130,
-        radius: 45,
+        radius: 46,
         hp,
         maxHp: hp,
         speed: 1.4,
         phase: 1,
         phaseTimer: 0,
+        nextShot: performance.now() + 1000,
+        shootInterval: Math.max(900, 1600 - world.wave * 60),
         isBoss: true
     };
     world.bossActive = true;
@@ -590,10 +628,8 @@ function updateSpawn(timestamp) {
     }
 
     if (world.enemiesSpawned >= world.enemiesPerWave) {
-        if (enemies.length === 0) {
-            if (!world.bossActive && !world.inBossTransition) {
-                startBossTransition();
-            }
+        if (enemies.length === 0 && !world.bossActive && !world.inBossTransition) {
+            startBossTransition();
         }
         return;
     }
@@ -601,7 +637,7 @@ function updateSpawn(timestamp) {
     if (timestamp >= world.nextSpawnTime) {
         spawnEnemy();
         world.enemiesSpawned++;
-        world.spawnCooldown = Math.max(500, world.spawnCooldown - 30);
+        world.spawnCooldown = Math.max(450, world.spawnCooldown - 40); // makin cepat
         world.nextSpawnTime = timestamp + world.spawnCooldown;
     }
 
@@ -617,18 +653,16 @@ function dist2(ax, ay, bx, by) {
 }
 
 // BULLET UPDATE
-function updateBullets(delta) {
+function updateBullets(delta, timestamp) {
+    // player bullets
     const toRemove = new Set();
-
     bullets.forEach((b, i) => {
         b.x += b.dx * (delta / 16.67);
         b.y += b.dy * (delta / 16.67);
-
-        if (b.x < -20 || b.x > world.width + 20 || b.y < -20 || b.y > world.height + 20) {
+        if (b.x < -30 || b.x > world.width + 30 || b.y < -30 || b.y > world.height + 30) {
             toRemove.add(i);
             return;
         }
-
         // hit enemies
         enemies.forEach((e, j) => {
             if (dist2(b.x, b.y, e.x, e.y) < (b.radius + e.radius) ** 2) {
@@ -636,47 +670,62 @@ function updateBullets(delta) {
                 toRemove.add(i);
                 if (e.hp <= 0) {
                     world.enemiesKilled++;
-                    world.coins += 5;
-
+                    world.coins += 6;
                     if (Math.random() < 0.25) spawnItem(e.x, e.y, "heal");
                     if (Math.random() < 0.25) spawnItem(e.x, e.y, "coin");
                     if (Math.random() < 0.13) spawnItem(e.x, e.y, "damage");
                     if (Math.random() < 0.08) spawnItem(e.x, e.y, "fireRate");
                     if (Math.random() < 0.06) spawnItem(e.x, e.y, "speed");
-
                     enemies.splice(j, 1);
                 }
             }
         });
-
         // hit boss
-        if (boss) {
-            if (dist2(b.x, b.y, boss.x, boss.y) < (b.radius + boss.radius) ** 2) {
-                boss.hp -= b.damage;
-                toRemove.add(i);
-                if (boss.hp <= 0) {
-                    world.coins += 120;
-                    if (Math.random() < 0.6) {
-                        spawnItem(boss.x, boss.y, "secretUnit");
-                    }
-                    boss = null;
-                    world.bossActive = false;
-                    nextWave();
-                }
+        if (boss && dist2(b.x, b.y, boss.x, boss.y) < (b.radius + boss.radius) ** 2) {
+            boss.hp -= b.damage;
+            toRemove.add(i);
+            if (boss.hp <= 0) {
+                world.coins += 150;
+                if (Math.random() < 0.6) spawnItem(boss.x, boss.y, "secretUnit");
+                boss = null;
+                world.bossActive = false;
+                nextWave();
             }
         }
     });
-
     bullets = bullets.filter((_, idx) => !toRemove.has(idx));
+
+    // enemy bullets
+    const toRemoveEnemy = new Set();
+    enemyBullets.forEach((b, i) => {
+        b.x += b.dx * (delta / 16.67);
+        b.y += b.dy * (delta / 16.67);
+        if (b.x < -40 || b.x > world.width + 40 || b.y < -40 || b.y > world.height + 40) {
+            toRemoveEnemy.add(i);
+            return;
+        }
+        if (dist2(b.x, b.y, player.x, player.y) < (b.radius + player.radius) ** 2) {
+            player.hp -= b.damage;
+            toRemoveEnemy.add(i);
+            if (player.hp <= 0) resetGame();
+        }
+    });
+    enemyBullets = enemyBullets.filter((_, idx) => !toRemoveEnemy.has(idx));
 }
 
 // ENEMY & BOSS UPDATE
-function updateEnemies(delta) {
+function updateEnemies(delta, timestamp) {
     enemies.forEach(e => {
         const angle = Math.atan2(player.y - e.y, player.x - e.x);
         const vel = e.speed * (delta / 16.67);
         e.x += Math.cos(angle) * vel;
         e.y += Math.sin(angle) * vel;
+
+        // enemy shooting
+        if (timestamp >= e.nextShot) {
+            enemyShoot(e);
+            e.nextShot = timestamp + e.shootCooldownBase;
+        }
 
         if (dist2(e.x, e.y, player.x, player.y) < (e.radius + player.radius) ** 2) {
             player.hp -= 0.25 * (delta / 16.67);
@@ -696,6 +745,11 @@ function updateEnemies(delta) {
         }
         if (boss.hp < boss.maxHp * 0.5) boss.phase = 2;
 
+        if (timestamp >= boss.nextShot) {
+            bossShootSpread(boss);
+            boss.nextShot = timestamp + boss.shootInterval;
+        }
+
         if (dist2(boss.x, boss.y, player.x, player.y) < (boss.radius + player.radius) ** 2) {
             player.hp -= 0.55 * (delta / 16.67);
             if (player.hp <= 0) resetGame();
@@ -707,7 +761,6 @@ function updateEnemies(delta) {
 function updateItems(delta) {
     items.forEach(it => {
         it.pulse += delta * 0.005;
-        // auto attract
         if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2 + 50) {
             const angle = Math.atan2(player.y - it.y, player.x - it.x);
             const vel = 2.6 * (delta / 16.67);
@@ -716,18 +769,17 @@ function updateItems(delta) {
         }
     });
 
-    // pickup
     for (let i = items.length - 1; i >= 0; i--) {
         const it = items[i];
         if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2) {
             if (it.type === "heal") {
-                player.hp = Math.min(player.maxHp, player.hp + 28);
+                player.hp = Math.min(player.maxHp, player.hp + 30);
             } else if (it.type === "coin") {
-                world.coins += 15;
+                world.coins += 18;
             } else if (it.type === "damage") {
                 player.damage += 4;
             } else if (it.type === "fireRate") {
-                player.fireRate = Math.max(140, player.fireRate - 120);
+                player.fireRate = Math.max(130, player.fireRate - 110);
             } else if (it.type === "speed") {
                 player.speed += 0.35;
             } else if (it.type === "secretUnit") {
@@ -749,7 +801,7 @@ function nextWave() {
     world.enemiesPerWave += 6;
     world.enemiesSpawned = 0;
     world.enemiesKilled = 0;
-    world.spawnCooldown = Math.max(600, 1900 - world.wave * 90);
+    world.spawnCooldown = Math.max(450, 1800 - world.wave * 90);
     world.nextSpawnTime = performance.now() + 1500;
 }
 
@@ -757,6 +809,7 @@ function nextWave() {
 function resetGame() {
     enemies = [];
     bullets = [];
+    enemyBullets = [];
     items = [];
     boss = null;
 
@@ -765,10 +818,10 @@ function resetGame() {
     player.y = world.height / 2;
 
     world.wave = 1;
-    world.enemiesPerWave = 14;
+    world.enemiesPerWave = 12;
     world.enemiesSpawned = 0;
     world.enemiesKilled = 0;
-    world.spawnCooldown = 2000;
+    world.spawnCooldown = 1800;
     world.nextSpawnTime = performance.now() + 1000;
     world.bossActive = false;
     world.inBossTransition = false;
@@ -776,7 +829,6 @@ function resetGame() {
 
 // DRAW
 function drawBackgroundFun() {
-    // soft clouds style
     ctx.save();
     ctx.globalAlpha = 0.12;
     for (let i = 0; i < 6; i++) {
@@ -815,7 +867,6 @@ function drawPlayer() {
         grad.addColorStop(1, "#ff9af2");
     }
 
-    // outer soft shadow
     ctx.save();
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius + 6, 0, Math.PI*2);
@@ -831,7 +882,6 @@ function drawPlayer() {
     ctx.strokeStyle = "#ffffffcc";
     ctx.stroke();
 
-    // direction "nose"
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
     ctx.beginPath();
     ctx.arc(player.x + Math.cos(angle) * 9, player.y + Math.sin(angle) * 9, 4, 0, Math.PI*2);
@@ -852,6 +902,19 @@ function drawBullets() {
         ctx.stroke();
         ctx.restore();
     });
+
+    enemyBullets.forEach(b => {
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.beginPath();
+        ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color || "#ff9a9a";
+        ctx.fill();
+        ctx.strokeStyle = "#ffffffdd";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+    });
 }
 
 function drawEnemies() {
@@ -866,7 +929,6 @@ function drawEnemies() {
         ctx.stroke();
         ctx.restore();
 
-        // hp bar mini
         const w = 26;
         const h = 4;
         const pct = e.hp / e.maxHp;
@@ -894,7 +956,6 @@ function drawEnemies() {
         ctx.stroke();
         ctx.restore();
 
-        // boss HP bar
         const w = canvas.width * 0.6;
         const h = 14;
         const pct = boss.hp / boss.maxHp;
@@ -917,12 +978,10 @@ function drawItems() {
         ctx.save();
         ctx.translate(it.x, it.y);
         ctx.scale(scale, scale);
-
         ctx.beginPath();
         ctx.arc(0, 0, it.radius + 3, 0, Math.PI*2);
         ctx.fillStyle = "rgba(255,255,255,0.6)";
         ctx.fill();
-
         ctx.beginPath();
         ctx.arc(0, 0, it.radius, 0, Math.PI * 2);
         ctx.fillStyle = it.color;
@@ -930,12 +989,11 @@ function drawItems() {
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#ffffffdd";
         ctx.stroke();
-
         ctx.restore();
     });
 }
 
-// UI UPDATE
+// UI
 function updateUI() {
     const hpPct = Math.max(0, player.hp / player.maxHp);
     hpFill.style.width = (hpPct * 100) + "%";
@@ -956,8 +1014,8 @@ function gameLoop(timestamp) {
     movePlayer(delta);
     autoShoot(timestamp);
     updateSpawn(timestamp);
-    updateBullets(delta);
-    updateEnemies(delta);
+    updateBullets(delta, timestamp);
+    updateEnemies(delta, timestamp);
     updateItems(delta);
 
     drawBullets();
