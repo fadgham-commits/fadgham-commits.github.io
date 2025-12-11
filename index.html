@@ -308,6 +308,8 @@
 </div>
 
 <script>
+
+   <script>
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -322,7 +324,14 @@ const shopPanel = document.getElementById("shopPanel");
 const bossWarning = document.getElementById("bossWarning");
 const shopItems = document.querySelectorAll(".shopItem");
 
-// WORLD
+/* ✅ LIMIT UPGRADE */
+const upgradeLimit = {
+    hp: 50,
+    damage: 25,
+    fireRate: 10
+};
+
+/* ✅ WORLD */
 const world = {
     width: canvas.width,
     height: canvas.height,
@@ -337,7 +346,7 @@ const world = {
     inBossTransition: false
 };
 
-// PLAYER
+/* ✅ PLAYER */
 const player = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -362,8 +371,9 @@ const player = {
     skin: "default"
 };
 
-let bullets = [];         // peluru player
-let enemyBullets = [];    // peluru musuh & bos
+/* ✅ GAME ARRAYS */
+let bullets = [];
+let enemyBullets = [];
 let enemies = [];
 let items = [];
 let boss = null;
@@ -376,7 +386,7 @@ let mouseY = canvas.height / 2;
 
 const keys = {};
 
-// INPUT
+/* ✅ INPUT HANDLING */
 document.addEventListener("keydown", e => {
     keys[e.key.toLowerCase()] = true;
     if (e.key === "Escape") shopPanel.style.display = "none";
@@ -385,17 +395,19 @@ document.addEventListener("keyup", e => {
     keys[e.key.toLowerCase()] = false;
 });
 
+/* ✅ MOUSE AIM */
 canvas.addEventListener("mousemove", e => {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
 });
 
-// SHOP
+/* ✅ SHOP TOGGLE */
 shopButton.addEventListener("click", () => {
     shopPanel.style.display = shopPanel.style.display === "none" ? "block" : "none";
 });
 
+/* ✅ SHOP CLICK HANDLER */
 shopItems.forEach(el => {
     el.addEventListener("click", () => {
         const type = el.dataset.type;
@@ -404,14 +416,25 @@ shopItems.forEach(el => {
     });
 });
 
+/* ✅ APPLY UPGRADES */
 function applyUpgrades() {
     player.maxHp = player.baseMaxHp + player.upgrades.hp * 20;
     player.hp = Math.min(player.hp, player.maxHp);
+
     player.damage = player.baseDamage + player.upgrades.damage * 5;
+
     player.fireRate = Math.max(150, player.baseFireRate - player.upgrades.fireRate * 70);
 }
 
+/* ✅ BUY UPGRADE (SUDAH ADA LIMIT MAX) */
 function buyUpgrade(type) {
+
+    // CEK LIMIT
+    if (player.upgrades[type] >= upgradeLimit[type]) {
+        updateShopUI();
+        return;
+    }
+
     let cost = 0;
     if (type === "hp") cost = 50 + player.upgrades.hp * 15;
     if (type === "damage") cost = 60 + player.upgrades.damage * 18;
@@ -421,12 +444,15 @@ function buyUpgrade(type) {
         world.coins -= cost;
         player.upgrades[type]++;
         applyUpgrades();
+        updateShopUI();
     }
 }
 
+/* ✅ SKIN SYSTEM */
 function clearEquippedTag() {
     document.querySelectorAll(".equippedTag").forEach(e => e.remove());
 }
+
 function markEquippedSkin(name) {
     clearEquippedTag();
     document.querySelectorAll(`.shopItem[data-type="skin"]`).forEach(el => {
@@ -443,60 +469,31 @@ function buySkin(skinName, el) {
     if (skinName === "default") {
         player.skin = "default";
         markEquippedSkin("default");
+        updateShopUI();
         return;
     }
     if (skinName === "secret") {
-        return; // cuma dari drop
+        return; // hanya drop
     }
+
     const costEl = el.querySelector(".shopItemCost");
     if (costEl && costEl.textContent.includes("Owned")) {
         player.skin = skinName;
         markEquippedSkin(skinName);
+        updateShopUI();
         return;
     }
+
     const cost = 120;
     if (world.coins >= cost) {
         world.coins -= cost;
         if (costEl) costEl.textContent = "Owned";
         player.skin = skinName;
         markEquippedSkin(skinName);
+        updateShopUI();
     }
 }
-
-// MOVEMENT
-function movePlayer(delta) {
-    const vel = player.speed * (delta / 16.67);
-    if (keys["w"]) player.y -= vel;
-    if (keys["s"]) player.y += vel;
-    if (keys["a"]) player.x -= vel;
-    if (keys["d"]) player.x += vel;
-
-    player.x = Math.max(player.radius, Math.min(world.width - player.radius, player.x));
-    player.y = Math.max(player.radius, Math.min(world.height - player.radius, player.y));
-}
-
-// AUTO-SHOOT
-function autoShoot(timestamp) {
-    if (timestamp - lastShotTime >= player.fireRate) {
-        shootBullet();
-        lastShotTime = timestamp;
-    }
-}
-function shootBullet() {
-    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
-    const speed = 8;
-    bullets.push({
-        x: player.x,
-        y: player.y,
-        dx: Math.cos(angle) * speed,
-        dy: Math.sin(angle) * speed,
-        radius: 4,
-        damage: player.damage,
-        friendly: true
-    });
-}
-
-// ENEMY & BOSS SHOOT
+/* ✅ ENEMY SHOOT */
 function enemyShoot(e) {
     const angle = Math.atan2(player.y - e.y, player.x - e.x);
     const speed = 3;
@@ -511,13 +508,17 @@ function enemyShoot(e) {
         color: "#ff9a9a"
     });
 }
+
+/* ✅ BOSS SHOOT (SPREAD) */
 function bossShootSpread(b) {
     const base = Math.atan2(player.y - b.y, player.x - b.x);
     const count = 7;
     const spread = 0.9;
+
     for (let i = 0; i < count; i++) {
         const angle = base - spread/2 + (spread/(count-1))*i;
         const speed = 3.3;
+
         enemyBullets.push({
             x: b.x,
             y: b.y,
@@ -531,17 +532,19 @@ function bossShootSpread(b) {
     }
 }
 
-// ENEMY / BOSS SPAWN
+/* ✅ SPAWN ENEMY */
 function spawnEnemy() {
     const margin = 40;
     const side = Math.floor(Math.random() * 4);
     let x, y;
+
     if (side === 0) { x = Math.random() * world.width; y = -margin; }
     if (side === 1) { x = world.width + margin; y = Math.random() * world.height; }
     if (side === 2) { x = Math.random() * world.width; y = world.height + margin; }
     if (side === 3) { x = -margin; y = Math.random() * world.height; }
 
     const typeRand = Math.random();
+
     let hp = 24 + world.wave * 2;
     let speed = 1.4 + world.wave * 0.05;
     let color = "#ffb5b5";
@@ -572,9 +575,11 @@ function spawnEnemy() {
     });
 }
 
+/* ✅ SPAWN BOSS */
 function spawnBoss() {
     const hpBase = 450;
-    const hp = hpBase + world.wave * 120; // makin tebal tiap wave
+    const hp = hpBase + world.wave * 120;
+
     boss = {
         x: world.width / 2,
         y: 130,
@@ -588,10 +593,11 @@ function spawnBoss() {
         shootInterval: Math.max(900, 1600 - world.wave * 60),
         isBoss: true
     };
+
     world.bossActive = true;
 }
 
-// ITEMS
+/* ✅ DROP ITEM */
 function spawnItem(x, y, type) {
     const colors = {
         heal: "#ff9a9a",
@@ -601,6 +607,7 @@ function spawnItem(x, y, type) {
         coin: "#ffbf69",
         secretUnit: "#ff9af2"
     };
+
     items.push({
         x, y,
         radius: 9,
@@ -610,10 +617,11 @@ function spawnItem(x, y, type) {
     });
 }
 
-// PROGRESSION
+/* ✅ BOSS TRANSITION */
 function startBossTransition() {
     world.inBossTransition = true;
     bossWarning.style.display = "flex";
+
     setTimeout(() => {
         bossWarning.style.display = "none";
         world.inBossTransition = false;
@@ -621,6 +629,7 @@ function startBossTransition() {
     }, 2000);
 }
 
+/* ✅ SPAWN SYSTEM */
 function updateSpawn(timestamp) {
     if (world.bossActive || world.inBossTransition) {
         spawnDisplay.textContent = "Boss Stage";
@@ -637,7 +646,8 @@ function updateSpawn(timestamp) {
     if (timestamp >= world.nextSpawnTime) {
         spawnEnemy();
         world.enemiesSpawned++;
-        world.spawnCooldown = Math.max(450, world.spawnCooldown - 40); // makin cepat
+
+        world.spawnCooldown = Math.max(450, world.spawnCooldown - 40);
         world.nextSpawnTime = timestamp + world.spawnCooldown;
     }
 
@@ -645,83 +655,102 @@ function updateSpawn(timestamp) {
     spawnDisplay.textContent = "Spawn: " + (remaining / 1000).toFixed(1) + "s";
 }
 
-// HELPERS
+/* ✅ DISTANCE HELPER */
 function dist2(ax, ay, bx, by) {
     const dx = ax - bx;
     const dy = ay - by;
     return dx*dx + dy*dy;
 }
 
-// BULLET UPDATE
+/* ✅ BULLET UPDATE */
 function updateBullets(delta, timestamp) {
-    // player bullets
+
+    /* ✅ PLAYER BULLETS */
     const toRemove = new Set();
+
     bullets.forEach((b, i) => {
         b.x += b.dx * (delta / 16.67);
         b.y += b.dy * (delta / 16.67);
+
         if (b.x < -30 || b.x > world.width + 30 || b.y < -30 || b.y > world.height + 30) {
             toRemove.add(i);
             return;
         }
-        // hit enemies
+
+        /* ✅ HIT ENEMY */
         enemies.forEach((e, j) => {
             if (dist2(b.x, b.y, e.x, e.y) < (b.radius + e.radius) ** 2) {
                 e.hp -= b.damage;
                 toRemove.add(i);
+
                 if (e.hp <= 0) {
                     world.enemiesKilled++;
                     world.coins += 6;
+
                     if (Math.random() < 0.25) spawnItem(e.x, e.y, "heal");
                     if (Math.random() < 0.25) spawnItem(e.x, e.y, "coin");
                     if (Math.random() < 0.13) spawnItem(e.x, e.y, "damage");
                     if (Math.random() < 0.08) spawnItem(e.x, e.y, "fireRate");
                     if (Math.random() < 0.06) spawnItem(e.x, e.y, "speed");
+
                     enemies.splice(j, 1);
                 }
             }
         });
-        // hit boss
+
+        /* ✅ HIT BOSS */
         if (boss && dist2(b.x, b.y, boss.x, boss.y) < (b.radius + boss.radius) ** 2) {
             boss.hp -= b.damage;
             toRemove.add(i);
+
             if (boss.hp <= 0) {
                 world.coins += 150;
+
                 if (Math.random() < 0.6) spawnItem(boss.x, boss.y, "secretUnit");
+
                 boss = null;
                 world.bossActive = false;
                 nextWave();
             }
         }
     });
+
     bullets = bullets.filter((_, idx) => !toRemove.has(idx));
 
-    // enemy bullets
+    /* ✅ ENEMY BULLETS */
     const toRemoveEnemy = new Set();
+
     enemyBullets.forEach((b, i) => {
         b.x += b.dx * (delta / 16.67);
         b.y += b.dy * (delta / 16.67);
+
         if (b.x < -40 || b.x > world.width + 40 || b.y < -40 || b.y > world.height + 40) {
             toRemoveEnemy.add(i);
             return;
         }
+
         if (dist2(b.x, b.y, player.x, player.y) < (b.radius + player.radius) ** 2) {
             player.hp -= b.damage;
             toRemoveEnemy.add(i);
+
             if (player.hp <= 0) resetGame();
         }
     });
+
     enemyBullets = enemyBullets.filter((_, idx) => !toRemoveEnemy.has(idx));
 }
 
-// ENEMY & BOSS UPDATE
+/* ✅ ENEMY & BOSS UPDATE */
 function updateEnemies(delta, timestamp) {
+
+    /* ✅ ENEMY AI */
     enemies.forEach(e => {
         const angle = Math.atan2(player.y - e.y, player.x - e.x);
         const vel = e.speed * (delta / 16.67);
+
         e.x += Math.cos(angle) * vel;
         e.y += Math.sin(angle) * vel;
 
-        // enemy shooting
         if (timestamp >= e.nextShot) {
             enemyShoot(e);
             e.nextShot = timestamp + e.shootCooldownBase;
@@ -733,9 +762,11 @@ function updateEnemies(delta, timestamp) {
         }
     });
 
+    /* ✅ BOSS AI */
     if (boss) {
         boss.phaseTimer += delta;
         const vel = boss.speed * (delta / 16.67);
+
         if (boss.phase === 1) {
             boss.x = world.width / 2 + Math.sin(boss.phaseTimer * 0.0025) * 160;
         } else {
@@ -743,6 +774,7 @@ function updateEnemies(delta, timestamp) {
             boss.x += Math.cos(angle) * vel;
             boss.y += Math.sin(angle) * vel * 0.7;
         }
+
         if (boss.hp < boss.maxHp * 0.5) boss.phase = 2;
 
         if (timestamp >= boss.nextShot) {
@@ -757,13 +789,15 @@ function updateEnemies(delta, timestamp) {
     }
 }
 
-// ITEMS UPDATE
+/* ✅ ITEM UPDATE */
 function updateItems(delta) {
     items.forEach(it => {
         it.pulse += delta * 0.005;
+
         if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2 + 50) {
             const angle = Math.atan2(player.y - it.y, player.x - it.x);
             const vel = 2.6 * (delta / 16.67);
+
             it.x += Math.cos(angle) * vel;
             it.y += Math.sin(angle) * vel;
         }
@@ -771,18 +805,15 @@ function updateItems(delta) {
 
     for (let i = items.length - 1; i >= 0; i--) {
         const it = items[i];
+
         if (dist2(it.x, it.y, player.x, player.y) < (it.radius + player.radius) ** 2) {
-            if (it.type === "heal") {
-                player.hp = Math.min(player.maxHp, player.hp + 30);
-            } else if (it.type === "coin") {
-                world.coins += 18;
-            } else if (it.type === "damage") {
-                player.damage += 4;
-            } else if (it.type === "fireRate") {
-                player.fireRate = Math.max(130, player.fireRate - 110);
-            } else if (it.type === "speed") {
-                player.speed += 0.35;
-            } else if (it.type === "secretUnit") {
+
+            if (it.type === "heal") player.hp = Math.min(player.maxHp, player.hp + 30);
+            else if (it.type === "coin") world.coins += 18;
+            else if (it.type === "damage") player.damage += 4;
+            else if (it.type === "fireRate") player.fireRate = Math.max(130, player.fireRate - 110);
+            else if (it.type === "speed") player.speed += 0.35;
+            else if (it.type === "secretUnit") {
                 player.baseMaxHp += 30;
                 player.baseDamage += 6;
                 player.speed += 0.3;
@@ -790,12 +821,13 @@ function updateItems(delta) {
                 markEquippedSkin("secret");
                 applyUpgrades();
             }
+
             items.splice(i, 1);
         }
     }
 }
 
-// WAVE
+/* ✅ NEXT WAVE */
 function nextWave() {
     world.wave++;
     world.enemiesPerWave += 6;
@@ -805,7 +837,7 @@ function nextWave() {
     world.nextSpawnTime = performance.now() + 1500;
 }
 
-// RESET
+/* ✅ RESET GAME */
 function resetGame() {
     enemies = [];
     bullets = [];
@@ -825,25 +857,31 @@ function resetGame() {
     world.nextSpawnTime = performance.now() + 1000;
     world.bossActive = false;
     world.inBossTransition = false;
-}
 
-// DRAW
+    updateShopUI();
+}
+/* ✅ BACKGROUND */
 function drawBackgroundFun() {
     ctx.save();
     ctx.globalAlpha = 0.12;
+
     for (let i = 0; i < 6; i++) {
         const x = (i * 180 + performance.now() * 0.02) % (canvas.width + 200) - 100;
         const y = 60 + (i % 3) * 120;
+
         ctx.beginPath();
         ctx.ellipse(x, y, 90, 30, 0, 0, Math.PI * 2);
         ctx.fillStyle = ["#ffe9b3","#ffd6f4","#c2f2ff"][i % 3];
         ctx.fill();
     }
+
     ctx.restore();
 }
 
+/* ✅ DRAW PLAYER */
 function drawPlayer() {
     let grad;
+
     if (player.skin === "default") {
         grad = ctx.createRadialGradient(player.x-4, player.y-4, 3, player.x, player.y, player.radius+2);
         grad.addColorStop(0, "#fff");
@@ -867,6 +905,7 @@ function drawPlayer() {
         grad.addColorStop(1, "#ff9af2");
     }
 
+    /* Shadow */
     ctx.save();
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius + 6, 0, Math.PI*2);
@@ -874,6 +913,7 @@ function drawPlayer() {
     ctx.fill();
     ctx.restore();
 
+    /* Body */
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
     ctx.fillStyle = grad;
@@ -882,6 +922,7 @@ function drawPlayer() {
     ctx.strokeStyle = "#ffffffcc";
     ctx.stroke();
 
+    /* Nose (direction indicator) */
     const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
     ctx.beginPath();
     ctx.arc(player.x + Math.cos(angle) * 9, player.y + Math.sin(angle) * 9, 4, 0, Math.PI*2);
@@ -889,6 +930,7 @@ function drawPlayer() {
     ctx.fill();
 }
 
+/* ✅ DRAW BULLETS */
 function drawBullets() {
     bullets.forEach(b => {
         ctx.save();
@@ -917,6 +959,7 @@ function drawBullets() {
     });
 }
 
+/* ✅ DRAW ENEMIES & BOSS */
 function drawEnemies() {
     enemies.forEach(e => {
         ctx.save();
@@ -929,26 +972,33 @@ function drawEnemies() {
         ctx.stroke();
         ctx.restore();
 
+        /* HP BAR */
         const w = 26;
         const h = 4;
         const pct = e.hp / e.maxHp;
+
         ctx.fillStyle = "#ffffffdd";
         ctx.fillRect(e.x - w/2, e.y - e.radius - 9, w, h);
+
         ctx.fillStyle = "#ff7b7b";
         ctx.fillRect(e.x - w/2, e.y - e.radius - 9, w * pct, h);
+
         ctx.strokeStyle = "#e28b8b";
         ctx.lineWidth = 1;
         ctx.strokeRect(e.x - w/2, e.y - e.radius - 9, w, h);
     });
 
+    /* ✅ BOSS */
     if (boss) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(boss.x, boss.y, boss.radius, 0, Math.PI*2);
+
         const grad = ctx.createRadialGradient(boss.x-8,boss.y-10,5,boss.x,boss.y,boss.radius+8);
         grad.addColorStop(0,"#fff");
         grad.addColorStop(0.4,"#ff9aeb");
         grad.addColorStop(1,"#ff5a99");
+
         ctx.fillStyle = grad;
         ctx.fill();
         ctx.lineWidth = 4;
@@ -956,6 +1006,7 @@ function drawEnemies() {
         ctx.stroke();
         ctx.restore();
 
+        /* BOSS HP BAR */
         const w = canvas.width * 0.6;
         const h = 14;
         const pct = boss.hp / boss.maxHp;
@@ -964,45 +1015,108 @@ function drawEnemies() {
 
         ctx.fillStyle = "#ffffffdd";
         ctx.fillRect(x, y, w, h);
+
         ctx.fillStyle = "#ff7b7b";
         ctx.fillRect(x, y, w * pct, h);
+
         ctx.strokeStyle = "#ff5a5a";
         ctx.lineWidth = 2;
         ctx.strokeRect(x, y, w, h);
     }
 }
 
+/* ✅ DRAW ITEMS */
 function drawItems() {
     items.forEach(it => {
         const scale = 1 + Math.sin(it.pulse) * 0.16;
+
         ctx.save();
         ctx.translate(it.x, it.y);
         ctx.scale(scale, scale);
+
         ctx.beginPath();
         ctx.arc(0, 0, it.radius + 3, 0, Math.PI*2);
         ctx.fillStyle = "rgba(255,255,255,0.6)";
         ctx.fill();
+
         ctx.beginPath();
         ctx.arc(0, 0, it.radius, 0, Math.PI * 2);
         ctx.fillStyle = it.color;
         ctx.fill();
+
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#ffffffdd";
         ctx.stroke();
+
         ctx.restore();
     });
 }
 
-// UI
+/* ✅ UI UPDATE */
 function updateUI() {
     const hpPct = Math.max(0, player.hp / player.maxHp);
     hpFill.style.width = (hpPct * 100) + "%";
+
     coinDisplay.textContent = "💰 " + Math.floor(world.coins);
     waveDisplay.textContent = "Wave " + world.wave;
     statDisplay.textContent = "DMG " + player.damage + " | FR " + Math.floor(player.fireRate) + "ms";
 }
 
-// MAIN LOOP
+/* ✅ SHOP UI MAX SYSTEM */
+function updateShopUI() {
+    document.querySelectorAll(".shopItem").forEach(el => {
+        const type = el.dataset.upgrade;
+        if (!type) return;
+
+        const costEl = el.querySelector(".shopItemCost");
+
+        if (player.upgrades[type] >= upgradeLimit[type]) {
+            costEl.textContent = "MAX";
+            el.style.opacity = "0.7";
+            el.style.pointerEvents = "none"; // tidak bisa diklik
+        } else {
+            el.style.opacity = "1";
+            el.style.pointerEvents = "auto"; // tetap bisa hover
+        }
+    });
+}
+/* ✅ PLAYER MOVEMENT */
+function movePlayer(delta) {
+    const vel = player.speed * (delta / 16.67);
+
+    if (keys["w"]) player.y -= vel;
+    if (keys["s"]) player.y += vel;
+    if (keys["a"]) player.x -= vel;
+    if (keys["d"]) player.x += vel;
+
+    player.x = Math.max(player.radius, Math.min(world.width - player.radius, player.x));
+    player.y = Math.max(player.radius, Math.min(world.height - player.radius, player.y));
+}
+
+/* ✅ AUTO SHOOT */
+function autoShoot(timestamp) {
+    if (timestamp - lastShotTime >= player.fireRate) {
+        shootBullet();
+        lastShotTime = timestamp;
+    }
+}
+
+function shootBullet() {
+    const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+    const speed = 8;
+
+    bullets.push({
+        x: player.x,
+        y: player.y,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+        radius: 4,
+        damage: player.damage,
+        friendly: true
+    });
+}
+
+/* ✅ MAIN GAME LOOP */
 function gameLoop(timestamp) {
     if (!lastFrameTime) lastFrameTime = timestamp;
     const delta = timestamp - lastFrameTime;
@@ -1028,10 +1142,11 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop);
 }
 
-// INIT
+/* ✅ INIT GAME */
 resetGame();
 applyUpgrades();
 markEquippedSkin("default");
+updateShopUI();
 requestAnimationFrame(gameLoop);
 </script>
 </body>
